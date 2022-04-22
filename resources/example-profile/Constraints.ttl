@@ -1,0 +1,93 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix vocab: <https://w3id.org/schematransform/ExampleVocabulary#> .
+@prefix shape: <https://w3id.org/schematransform/ExampleShape#> .
+@prefix : <https://w3id.org/schematransform/ExampleShape#> .
+
+
+shape:AShape
+    a sh:NodeShape ;
+    sh:targetClass vocab:A ;
+    sh:property shape:idShape;
+    sh:property [
+          sh:path vocab:FromAtoC ;
+          sh:node shape:CShape ;
+          sh:minCount 1;
+          sh:maxCount 1;
+      ] ;
+    sh:property[
+          sh:path vocab:abc ;
+          sh:datatype xsd:dateTime ;
+          sh:minCount 0;
+          sh:maxCount 5;
+      ] .
+
+shape:BShape
+    a sh:NodeShape ;
+    rdfs:comment "RootObject" ;
+    sh:targetClass vocab:B ;
+    sh:property shape:idShape ;
+    sh:property [
+          sh:path vocab:FromBtoD ;
+          sh:node shape:DShape ;
+          sh:minCount 0 ;
+          sh:maxCount 1 ;
+      ] ;
+    sh:property [
+          sh:path vocab:FromBtoDButSomehowDifferent ;
+          sh:node shape:DShape ;
+          sh:minCount 1 ;
+          sh:maxCount 1 ;
+      ] ;
+    sh:property [
+          sh:path vocab:bcd ;
+          sh:datatype xsd:double ;
+          sh:minCount 2 ;
+      ] .
+
+shape:CShape
+    a sh:NodeShape ;
+    sh:targetClass vocab:C ;
+    sh:in (
+          vocab:individual1
+          vocab:individual2
+          vocab:Individual3
+      ).
+
+
+shape:DShape
+    a sh:NodeShape ;
+    sh:targetClass vocab:D ;
+    sh:property shape:idShape ;
+    sh:property [
+          sh:path vocab:def ;
+          sh:datatype xsd:int ;
+          sh:minCount 0 ;
+          sh:maxCount 1 ;
+      ];
+    sh:property [
+          sh:path vocab:fromDtoB ;
+          sh:node shape:BShape ;
+          sh:minCount 1 ;
+          sh:maxCount 3 ;
+      ] .
+
+shape:EShape
+    a sh:NodeShape ;
+    sh:TargetClass vocab:E ;
+    sh:property [
+          sh:path vocab:fromEtoC ;
+          sh:node shape:CShape ;
+          sh:minCount 0 ;
+          sh:maxCount 1 ;
+      ] .
+
+
+shape:idShape
+    a sh:PropertyShape ;
+    sh:path vocab:id ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 .
