@@ -3,7 +3,9 @@
             [clojure.spec.alpha :as s]
             [schema-transformer.utils :as utils])
   (:import (org.eclipse.rdf4j.rio Rio)
-           (org.eclipse.rdf4j.rio RDFFormat)))
+           (org.eclipse.rdf4j.model IRI)
+           (org.eclipse.rdf4j.rio RDFFormat)
+           (org.eclipse.rdf4j.model.util Values)))
 
 
 (defn- simple-statement->map
@@ -14,7 +16,7 @@
     (as-> #:rdf{:subject (.getSubject st)
                 :predicate (.getPredicate st)
                 :object (.getObject st)} v
-      (conj v (when ctx [:rdf/contexts ctx]))
+      (conj v (when ctx [:rdf/context (str ctx)]))
       (utils/map-values str v))))
 
 (defn read-file
@@ -40,9 +42,15 @@
   {:pre [(.isDirectory path) (fn? ctx-fn)]
    :post [(s/valid? (s/coll-of :rdf/triple) %)]}
 
-  nil
+  
   ;; TODO.
-)
+  )
 
 ;; (read-directory (io/file "resources/example-profile/") (fn [f] (str "http://" (.getName f))))
-(read-file (io/file "resources/example-profile/Profile.ttl") utils/iri-from-file-name)
+(read-file (io/file "resources/example-profile/Profile.ttl")
+           (fn [path] (into-array IRI [(utils/iri-from-filename path)
+                                       (Values/iri "http://some-other-iri")])))
+
+(read-file (io/file "resources/example-profile/Profile.ttl")
+           (fn [path] (into-array IRI [(utils/iri-from-filename path)
+                                       (Values/iri "http://some-other-iri")])))

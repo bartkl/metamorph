@@ -11,6 +11,5 @@
     (first v)
     (.get v (.getType v))))
 
-(defn iri-from-file-name [path]
-  (into-array IRI [(Values/iri (str "http://" path))]))
-
+(defn iri-from-filename [path]
+  (Values/iri (str "http://" path)))
