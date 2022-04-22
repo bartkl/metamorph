@@ -30,6 +30,7 @@
    :post [(s/valid? (s/coll-of :rdf/triple) %)]}
 
   ;; TODO: Make context function optional. Using `let`?
+  ;; TODO: Get the RDF format instead of hard-coded turtle.
   (with-open [rdr (clojure.java.io/reader path)]
     (into (hash-set)
           (map simple-statement->map
