@@ -1,5 +1,6 @@
 (ns schema-transformer.rdf
   (:require [clojure.java.io :as io]
+            [clojure.set :as set]
             [clojure.spec.alpha :as s]
             [schema-transformer.utils :as utils])
   (:import (org.eclipse.rdf4j.rio Rio)
@@ -7,6 +8,8 @@
            (org.eclipse.rdf4j.rio RDFFormat)
            (org.eclipse.rdf4j.model.util Values)))
 
+
+(def supported-files #{"ttl", "rdf", "jsonld"})
 
 (defn- simple-statement->map
   "Creates a triple-map from an rdf4j `SimpleStatement.`"
@@ -27,7 +30,6 @@
    :post [(s/valid? (s/coll-of :rdf/triple) %)]}
 
   ;; TODO: Make context function optional. Using `let`?
-
   (with-open [rdr (clojure.java.io/reader path)]
     (into (hash-set)
           (map simple-statement->map
@@ -42,15 +44,21 @@
   {:pre [(.isDirectory path) (fn? ctx-fn)]
    :post [(s/valid? (s/coll-of :rdf/triple) %)]}
 
-  
-  ;; TODO.
-  )
+  (->> (file-seq path)
+       (filter #(supported-files (utils/file-ext %)))
+       (map #(read-file % ctx-fn))
+       (reduce set/union)))
 
-;; (read-directory (io/file "resources/example-profile/") (fn [f] (str "http://" (.getName f))))
+(read-directory (io/file "resources/example-profile/")
+                (fn [path] (into-array IRI [(utils/iri-from-filename path)])))
+
+;; TODO: Improve this call... See below for a start, although that too seems sub-optimal.
 (read-file (io/file "resources/example-profile/Profile.ttl")
            (fn [path] (into-array IRI [(utils/iri-from-filename path)
                                        (Values/iri "http://some-other-iri")])))
 
-(read-file (io/file "resources/example-profile/Profile.ttl")
-           (fn [path] (into-array IRI [(utils/iri-from-filename path)
-                                       (Values/iri "http://some-other-iri")])))
+;; (utils/apply-fns-to-arg [#(utils/iri-from-filename %)
+;;                          #(Values/iri "http://some-other-iri")]
+;;                         (io/file "resources/example-profile/Profile.ttl"))
+
+;; (utils/apply-fns-to-arg [+ *] 1 2)

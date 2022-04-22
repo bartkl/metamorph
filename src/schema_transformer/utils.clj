@@ -13,3 +13,11 @@
 
 (defn iri-from-filename [path]
   (Values/iri (str "http://" path)))
+
+(defn file-ext [f]
+  (last
+   (re-find #"\.([^.\\/:*\"?<>|\r\n]+)$" (.getName f))))
+
+;; (defn apply-fns-to-arg
+;;   [fns & args]
+;;   (map (fn [f] (apply f args)) fns))
