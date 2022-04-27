@@ -4,18 +4,23 @@
 
 (l/def-record-schema D
   "This is yet another class"
-  [:id l/string-schema])
-  ;; [:def (l/union-schema [l/null-schema l/string-schema])])
+  [:id :required l/string-schema]
+  [:def l/int-schema])
 
 (l/def-record-schema B
-  "This is a subclass"
-  [:FromBtoD D])
+  "This is a sub-class"
+  [:fromBtoD "Association from B to D" :required D]
+  [:fromBtoDButSomehowDifferent "Association from B to D but somehow different" :required (l/map-schema D)])
+
 
 (with-open [w (io/writer "testme.json")]
-  (.write w (l/json person-schema)))
+  (.write w (l/json B)))
 
-(l/edn person-schema)
+(l/default-data B)
+(l/edn B)
 
-(l/def-record-schema person-schema
-  [:name l/string-schema]
-  [:age l/int-schema])
+
+
+;; Primitive type names are also defined type names. Thus, for example, the schema "string" is equivalent to:
+
+;; {"type": "string"}
