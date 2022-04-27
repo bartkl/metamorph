@@ -4,5 +4,5 @@
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.11.1"]
-                 [org.eclipse.rdf4j/rdf4j-rio-turtle "4.0.0-M3"]]
-  :repl-options {:init-ns schema-transformer.core})
+                 [org.eclipse.rdf4j/rdf4j-rio-turtle "4.0.0-M3"]
+                 [deercreeklabs/lancaster "0.9.15"]])
