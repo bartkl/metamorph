@@ -1,6 +1,10 @@
 (ns schema-transformer.lancaster-poc
   (:require [deercreeklabs.lancaster :as l]
-            [clojure.java.io :as io]))
+            [schema-transformer.rdf :as rdf]
+            [clojure.java.io :as io]
+            [schema-transformer.utils :as utils])
+  (:import (org.eclipse.rdf4j.model IRI)
+           (org.eclipse.rdf4j.model.util Values)))
 
 (l/def-record-schema D
   "This is yet another class"
@@ -13,14 +17,20 @@
   [:fromBtoDButSomehowDifferent "Association from B to D but somehow different" :required (l/map-schema D)])
 
 
-(with-open [w (io/writer "testme.json")]
-  (.write w (l/json B)))
+;; (with-open [w (io/writer "testme.json")]
+;;   (.write w (l/json B)))
 
 (l/default-data B)
 (l/edn B)
 
 
+;; From RDF model [WIP]
 
-;; Primitive type names are also defined type names. Thus, for example, the schema "string" is equivalent to:
+(def example-model
+  (rdf/read-file (io/file "resources/example-profile/Constraints.ttl")
+                 (fn [path] (into-array IRI [(utils/iri-from-filename path)
+                                             (Values/iri "http://some-other-iri")]))))
 
-;; {"type": "string"}
+(filter #(and (= (:rdf/predicate %) "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+              (= (:rdf/object %) "http://www.w3.org/ns/shacl#NodeShape"))
+        example-model)
