@@ -76,13 +76,14 @@ shape:DShape
 
 shape:EShape
     a sh:NodeShape ;
-    sh:TargetClass vocab:E ;
-    sh:property [
-          sh:path vocab:fromEtoC ;
-          sh:node shape:CShape ;
-          sh:minCount 0 ;
-          sh:maxCount 1 ;
-      ] .
+    sh:property shape:idShape ;
+    sh:targetClass vocab:E .
+    # sh:property [
+    #       sh:path vocab:fromEtoC ;
+    #       sh:node shape:CShape ;
+    #       sh:minCount 0 ;
+    #       sh:maxCount 1 ;
+    #   ] .
 
 
 shape:idShape
