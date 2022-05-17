@@ -34,26 +34,26 @@
 
 ;; (.toString RDF/TYPE)  ;; Does not work because `q` is a macro I guess?
 
-(as->
- (d/q '[:find [?r ...] ;;?label ?comment
-        :where
-        [?r "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" "http://www.w3.org/ns/shacl#NodeShape"]
-        [?r "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" "http://www.w3.org/ns/shacl#NodeShape"]
+;; (as->
+;;  (d/q '[:find [?r ...] ;;?label ?comment
+;;         :where
+;;         [?r "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" "http://www.w3.org/ns/shacl#NodeShape"]
+;;         [?r "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" "http://www.w3.org/ns/shacl#NodeShape"]
 
-        ;; [?r "http://www.w3.org/2000/01/rdf-schema#comment" "\"RootObject\"^^<http://www.w3.org/2001/XMLSchema#string>"]
-        [?r "http://www.w3.org/ns/shacl#targetClass" ?targetClass]
-        [?r "http://www.w3.org/ns/shacl#property" * ?p]
-        ;; [?targetClass "http://www.w3.org/2000/01/rdf-schema#comment" ?comment]
-        ;; [?targetClass "http://www.w3.org/2000/01/rdf-schema#label" ?label]
-        ]conn) v
-  (map #(d/entity conn % true) v) (first v))
+;;         ;; [?r "http://www.w3.org/2000/01/rdf-schema#comment" "\"RootObject\"^^<http://www.w3.org/2001/XMLSchema#string>"]
+;;         [?r "http://www.w3.org/ns/shacl#targetClass" ?targetClass]
+;;         [?r "http://www.w3.org/ns/shacl#property" * ?p]
+;;         ;; [?targetClass "http://www.w3.org/2000/01/rdf-schema#comment" ?comment]
+;;         ;; [?targetClass "http://www.w3.org/2000/01/rdf-schema#label" ?label]
+;;         ]conn) v
+;;   (map #(d/entity conn % true) v) (first v))
       ;; (first v)
 ;;  (d/entity conn v true))
 
+(d/entity (d/db conn) (java.net.URI. "https://w3id.org/schematransform/ExampleShape#BShape") false)
 (d/entity (d/db conn) (java.net.URI. "https://w3id.org/schematransform/ExampleShape#BShape") true)
-(d/entity (d/db conn) "https://w3id.org/schematransform/ExampleShape#BShape" true)
-(d/entity (d/db conn) "_:e0047c979d3f4f7ebe4d980b2fd52b7293" true)
-(d/entity (d/db conn) "https://w3id.org/schematransform/ExampleShape#idShape" true)
+(d/entity (d/db conn) (java.net.URI. "https://w3id.org/schematransform/ExampleShape#EShape") false)
+(d/entity (d/db conn) (java.net.URI. "https://w3id.org/schematransform/ExampleShape#idShape") true)
 
 ;; (->>
 ;; (map #(d/entity conn %) (d/q '[:find [?x ...] :where [?x ?y "https://w3id.org/schematransform/ExampleVocabulary#D"]] conn))
