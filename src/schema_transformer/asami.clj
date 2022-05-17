@@ -50,7 +50,7 @@
       ;; (first v)
 ;;  (d/entity conn v true))
 
-(d/entity (d/db conn) (java.net.URI. "https://w3id.org/schematransform/ExampleShape#EShape") true)
+(d/entity (d/db conn) (java.net.URI. "https://w3id.org/schematransform/ExampleShape#BShape") true)
 (d/entity (d/db conn) "https://w3id.org/schematransform/ExampleShape#BShape" true)
 (d/entity (d/db conn) "_:e0047c979d3f4f7ebe4d980b2fd52b7293" true)
 (d/entity (d/db conn) "https://w3id.org/schematransform/ExampleShape#idShape" true)
@@ -59,3 +59,5 @@
 ;; (map #(d/entity conn %) (d/q '[:find [?x ...] :where [?x ?y "https://w3id.org/schematransform/ExampleVocabulary#D"]] conn))
 ;; (take 1)
 ;;  )
+
+
