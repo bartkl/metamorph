@@ -1,6 +1,7 @@
 (ns schema-transformer.rdf
   (:require [clojure.java.io :as io]
             [clojure.set :as set]
+            [ont-app.vocabulary.core :as vocab]
             [clojure.spec.alpha :as s]
             [schema-transformer.utils :as utils])
   (:import (org.eclipse.rdf4j.rio Rio)
@@ -20,15 +21,15 @@
         predicate (.getPredicate st)
         object (.getObject st)]
     [(if (.isIRI subject)
-       (java.net.URI. (str subject))
-       (java.net.URI. (subs (str subject) 2)))
+       (vocab/keyword-for (str subject))
+       (keyword (str subject)))
 
-     (java.net.URI. (str predicate))
+     (vocab/keyword-for (str predicate))
 
      (cond
-       (.isIRI object) (java.net.URI. (str object))
        (.isLiteral object) (str object)
-       :else (java.net.URI. (subs (str object) 2)))]))
+       (.isIRI object) (vocab/keyword-for (str object))
+       :else (keyword (str object)))]))
 
 
 (defn read-file
@@ -65,3 +66,8 @@
 ;;                         (io/file "resources/example-profile/Profile.ttl"))
 
 ;; (utils/apply-fns-to-arg [+ *] 1 2)
+
+(vocab/put-ns-meta!
+ 'ont-app.vocabulary.prof
+ {:vann/preferredNamespacePrefix "prof"
+  :vann/preferredNamespaceUri "http://www.w3.org/ns/dx/prof/"})

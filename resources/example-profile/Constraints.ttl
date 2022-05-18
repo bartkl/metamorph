@@ -4,7 +4,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix vocab: <https://w3id.org/schematransform/ExampleVocabulary#> .
 @prefix shape: <https://w3id.org/schematransform/ExampleShape#> .
-@prefix : <https://w3id.org/schematransform/ExampleShape#> .
+@prefix _: <https://w3id.org/schematransform/ExampleShape#> .
 
 
 shape:AShape
@@ -77,13 +77,13 @@ shape:DShape
 shape:EShape
     a sh:NodeShape ;
     sh:property shape:idShape ;
-    sh:targetClass vocab:E .
-    # sh:property [
-    #       sh:path vocab:fromEtoC ;
-    #       sh:node shape:CShape ;
-    #       sh:minCount 0 ;
-    #       sh:maxCount 1 ;
-    #   ] .
+    sh:targetClass vocab:E ;
+    sh:property [
+          sh:path vocab:fromEtoC ;
+          sh:node shape:CShape ;
+          sh:minCount 0 ;
+          sh:maxCount 1 ;
+      ] .
 
 
 shape:idShape

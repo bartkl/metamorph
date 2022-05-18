@@ -4,8 +4,7 @@
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.11.1"]
-                 [org.eclipse.rdf4j/rdf4j-rio-turtle "4.0.0-M3"]
-                 [deercreeklabs/lancaster "0.9.15"]
-                 [funcool/cuerdas "2022.03.27-397"]
-                 [org.clojars.quoll/asami "2.3.1-SNAPSHOT"]
-                 [org.clojars.quoll/asami-loom "0.3.1"]])
+                 [org.eclipse.rdf4j/rdf4j-rio-turtle "4.0.0"]
+                 [deercreeklabs/lancaster "0.9.17"]
+                 [ont-app/vocabulary "0.1.7"]
+                 [org.clojars.quoll/asami "2.3.1-SNAPSHOT"]])
