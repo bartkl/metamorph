@@ -68,13 +68,13 @@ shape:DShape
           sh:datatype xsd:int ;
           sh:minCount 0 ;
           sh:maxCount 1 ;
-      ];
-    sh:property [
-          sh:path vocab:fromDtoB ;
-          sh:node shape:BShape ;
-          sh:minCount 1 ;
-          sh:maxCount 3 ;
       ] .
+    # sh:property [
+    #       sh:path vocab:fromDtoB ;
+    #       sh:node shape:BShape ;
+    #       sh:minCount 1 ;
+    #       sh:maxCount 3 ;
+    #   ] .
 
 shape:EShape
     a sh:NodeShape ;

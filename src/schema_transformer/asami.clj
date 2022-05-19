@@ -2,6 +2,7 @@
   (:require [asami.core :as d]
             [deercreeklabs.lancaster :as l]
             [clojure.java.io :as io]
+            [clojure.string :as string]
             [schema-transformer.utils :as utils]
             [schema-transformer.rdf :as rdf])
   (:import (org.eclipse.rdf4j.rio Rio)
@@ -26,9 +27,15 @@
 
 @(d/transact conn {:tx-triples model})
 
+(defn count->int [s]
+(-> (string/split s #"\^\^")
+    (first)
+    (string/replace #"\"" "")
+    Integer/parseInt)
+  )
 
 (defn bnode? [kw]
-     (clojure.string/starts-with? (str kw) ":_:"))
+     (string/starts-with? (str kw) ":_:"))
 
 (defn get-resources [conn]
     (map first
@@ -73,6 +80,7 @@
   #:xsd{:string l/string-schema
         :double l/double-schema
         :boolean l/boolean-schema
+        :int l/int-schema
         :decimal l/bytes-schema
         :float l/float-schema
         :duration l/fixed-schema
@@ -94,11 +102,11 @@
    [0 :*] (comp l/maybe l/array-schema)})
 
 (defn- field-schema [node]
-(let [min-count (node :sh/minCount)
-      max-count (node :sh/maxCount)
+(let [min-count (count->int (node :sh/minCount))
+      max-count (count->int (node :sh/maxCount))
       schema (condp #(get %2 %1) node
                :sh/datatype :>> datatype-sh->avro
-               :sh/node :>> str
+               :sh/node :>> #(print %)
                nil)]
   ((cardinality->schema-fn [(min min-count 1) (if (> max-count 1) :* max-count)]) schema)))
 
@@ -109,9 +117,10 @@
 
 (defn avro-field [node]
     [(field-name node)
+    :required 
      (field-schema node)])
 
-(def node (first test-props))
+(def node (first g))
 
 (defn rdf-list->seq [rdf-list]
   (loop [l rdf-list
@@ -142,7 +151,7 @@
 ;; (l/default-data B)
 ;; (l/edn B)
 
-(def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#BShape true))
+(def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
 (def x (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
 (def root-node start-node)
 (def node start-node)
@@ -157,3 +166,10 @@
   :sh/minCount "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>",
   :sh/path :https://w3id.org/schematransform/ExampleVocabulary#id,
   :id {:id :https://w3id.org/schematransform/ExampleShape#idShape}})
+
+
+
+{:name :D,
+ :type :record,
+ :fields [{:name :def, :type [:null :int], :default nil} {:name :id, :type [:null :string], :default nil}],
+ :doc "\"This is yet another class\"^^<http://www.w3.org/2001/XMLSchema#string>"}
