@@ -4,12 +4,13 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix vocab: <https://w3id.org/schematransform/ExampleVocabulary#> .
 @prefix shape: <https://w3id.org/schematransform/ExampleShape#> .
-@prefix _: <https://w3id.org/schematransform/ExampleShape#> .
+@prefix : <https://w3id.org/schematransform/ExampleShape#> .
 
 
 shape:AShape
     a sh:NodeShape ;
     sh:targetClass vocab:A ;
+    sh:and (:EShape :CShape) ;
     sh:property shape:idShape;
     sh:property [
           sh:path vocab:FromAtoC ;
@@ -26,6 +27,7 @@ shape:AShape
 
 shape:BShape
     a sh:NodeShape ;
+    sh:and (shape:AShape :EShape) ;
     rdfs:comment "RootObject" ;
     sh:targetClass vocab:B ;
     sh:property shape:idShape ;
@@ -76,6 +78,7 @@ shape:DShape
 
 shape:EShape
     a sh:NodeShape ;
+    sh:and () ;
     sh:property shape:idShape ;
     sh:targetClass vocab:E ;
     sh:property [
