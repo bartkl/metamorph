@@ -65,9 +65,9 @@ shape:DShape
     sh:property shape:idShape ;
     sh:property [
           sh:path vocab:def ;
-          sh:datatype xsd:int ;
+          sh:datatype xsd:float ;
           sh:minCount 0 ;
-          sh:maxCount 1 ;
+          sh:maxCount 3 ;
       ] .
     # sh:property [
     #       sh:path vocab:fromDtoB ;

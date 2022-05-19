@@ -76,6 +76,9 @@
   (let [target-class (get node :sh/targetClass)]
     (target-class :rdfs/comment)))
 
+(defn- field-name [node]
+  (iri-local-name (get-in node [:sh/path :id :id])))
+
 (def datatype-sh->avro
   #:xsd{:string l/string-schema
         :double l/double-schema
@@ -88,12 +91,6 @@
         :date l/string-schema
         :time l/string-schema
         :anyURI l/string-schema})
-
-(defn- field-name [node]
-  (iri-local-name (get-in node [:sh/path :id :id])))
-
-(def node {:sh/datatype :xsd/float :sh/minCount 1 :sh/maxCount 2})
-
 
 (def cardinality->schema-fn
   {[1  1] identity
@@ -108,19 +105,14 @@
                :sh/datatype :>> datatype-sh->avro
                :sh/node :>> #(print %)
                nil)]
-  ((cardinality->schema-fn [(min min-count 1) (if (> max-count 1) :* max-count)]) schema)))
-
-(field-schema node)
-(#(get %2 %1) :sh/node node)
-
-
+  ((cardinality->schema-fn [(min min-count 1)
+                            (if (> max-count 1) :* max-count)])
+   schema)))
 
 (defn avro-field [node]
     [(field-name node)
-    :required 
+    :required   ;; Hack required to disable optionality. Maybe schemes and such do work though.
      (field-schema node)])
-
-(def node (first g))
 
 (defn rdf-list->seq [rdf-list]
   (loop [l rdf-list
