@@ -62,6 +62,7 @@
 ;;;;;;;;;;;;;;;;; AVRO.
 
 (defn iri-local-name [kw]
+  (println kw)
   (as-> (str kw) v
     (subs v 1)
     (URI. v)
@@ -75,9 +76,6 @@
 (defn record-doc [node]
   (let [target-class (get node :sh/targetClass)]
     (target-class :rdfs/comment)))
-
-(defn- field-name [node]
-  (iri-local-name (get-in node [:sh/path :id :id])))
 
 (def datatype-sh->avro
   #:xsd{:string l/string-schema
@@ -98,26 +96,35 @@
    [1 :*] l/array-schema
    [0 :*] (comp l/maybe l/array-schema)})
 
-(defn- field-schema [node]
+(defn- field-name [node]
+  (iri-local-name (get-in node [:sh/path :id :id])))
+
+(defn- field-schema [node type]
   (let [min-count (count->int (node :sh/minCount))
-        max-count (count->int (node :sh/maxCount))
-        schema (condp #(get %2 %1) node
-                 :sh/datatype :>> datatype-sh->avro
-                 :sh/node :>> #(when (not= (keys %) '(:id)) (avro-schema %))
-                 nil)]
-    (when (some? schema)
-                 ((cardinality->schema-fn [(min min-count 1)
-                                           (if (> max-count 1) :* max-count)])
-                 schema))))
+        max-count (count->int (node :sh/maxCount))]
+    ((cardinality->schema-fn [(min min-count 1)
+                              (if (> max-count 1) :* max-count)])
+     type)))
+
+(def g (get-properties root-node))
+(def g-props (get-properties node))
 
 (def node (nth g 2))
 (get-in node [:sh/path :id])
 (node :sh/node)
+
 (avro-schema (node :sh/node))
+
 (defn avro-field [node]
-    [(field-name node)
-    :required   ;; Hack required to disable optionality. Maybe schemes and such do work though.
-     (field-schema node)])
+  (let [type (condp #(get %2 %1) node
+               :sh/datatype :>> datatype-sh->avro
+               :sh/node :>> #(when (not= (keys %) '(:id)) (avro-schema %))
+               nil)]
+    (if (some? type)
+      [(field-name node)
+       :required   ;; Hack required to disable optionality. Maybe schemes and such do work though.
+       (field-schema node type)]
+      [])))
 
 (defn rdf-list->seq [rdf-list]
   (loop [l rdf-list
@@ -139,10 +146,13 @@
    (get-inherited-props node)))
 
 (defn avro-schema [root-node]
-  (l/record-schema
-   (record-name root-node)
-   (record-doc root-node)
-   (map avro-field (get-properties root-node))))
+  (let [properties (get-properties root-node)]
+    (l/record-schema
+     (record-name root-node)
+     (record-doc root-node)
+     (if (some? properties)
+       (map avro-field properties)
+       (vector)))))
    
 
 ;; (l/default-data B)
@@ -154,3 +164,5 @@
 
 (def a (avro-schema start-node))
 (l/edn a)
+
+(l/record-schema :name :doc [["a" "d" l/string-schema]])
