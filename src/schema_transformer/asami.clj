@@ -16,7 +16,7 @@
 
 (def db-uri "asami:mem://profile")
 (d/create-database db-uri)
-(d/delete-database db-uri)
+;; (d/delete-database db-uri)
 
 (def conn (d/connect db-uri))
 
@@ -58,7 +58,7 @@
 
 (mark-resources-as-entities conn)
 
-(d/q '[:find ?s ?p ?o :where [?s ?p ?o]] conn)
+;; (d/q '[:find ?s ?p ?o :where [?s ?p ?o]] conn)
 ;;;;;;;;;;;;;;;;; AVRO.
 
 (defn iri-local-name [kw]
@@ -99,16 +99,21 @@
    [0 :*] (comp l/maybe l/array-schema)})
 
 (defn- field-schema [node]
-(let [min-count (count->int (node :sh/minCount))
-      max-count (count->int (node :sh/maxCount))
-      schema (condp #(get %2 %1) node
-               :sh/datatype :>> datatype-sh->avro
-               :sh/node :>> #(print %)
-               nil)]
-  ((cardinality->schema-fn [(min min-count 1)
-                            (if (> max-count 1) :* max-count)])
-   schema)))
+  (let [min-count (count->int (node :sh/minCount))
+        max-count (count->int (node :sh/maxCount))
+        schema (condp #(get %2 %1) node
+                 :sh/datatype :>> datatype-sh->avro
+                 :sh/node :>> #(when (not= (keys %) '(:id)) (avro-schema %))
+                 nil)]
+    (when (some? schema)
+                 ((cardinality->schema-fn [(min min-count 1)
+                                           (if (> max-count 1) :* max-count)])
+                 schema))))
 
+(def node (nth g 2))
+(get-in node [:sh/path :id])
+(node :sh/node)
+(avro-schema (node :sh/node))
 (defn avro-field [node]
     [(field-name node)
     :required   ;; Hack required to disable optionality. Maybe schemes and such do work though.
@@ -143,25 +148,9 @@
 ;; (l/default-data B)
 ;; (l/edn B)
 
-(def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
-(def x (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
+(def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#BShape true))
+(def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
 (def root-node start-node)
-(def node start-node)
 
 (def a (avro-schema start-node))
 (l/edn a)
-
-;; (record-name (target-class-iri :https://w3id.org/schematransform/ExampleShape#CShape conn))
-(def node {:sh/maxCount "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>",
-  :sh/datatype :xsd/string,
-  :rdf/type :sh/PropertyShape,
-  :sh/minCount "\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>",
-  :sh/path :https://w3id.org/schematransform/ExampleVocabulary#id,
-  :id {:id :https://w3id.org/schematransform/ExampleShape#idShape}})
-
-
-
-{:name :D,
- :type :record,
- :fields [{:name :def, :type [:null :int], :default nil} {:name :id, :type [:null :string], :default nil}],
- :doc "\"This is yet another class\"^^<http://www.w3.org/2001/XMLSchema#string>"}
