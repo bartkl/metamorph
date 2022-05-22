@@ -12,27 +12,12 @@
            (org.eclipse.rdf4j.rio RDFFormat)
            (org.eclipse.rdf4j.model.util Values)))
 
-
-
-(def db-uri "asami:mem://profile")
-(d/create-database db-uri)
-;; (d/delete-database db-uri)
-
-(def conn (d/connect db-uri))
-
-(def model
-  (rdf/read-directory (io/file "resources/example-profile/")))
-
-(take 2 model)
-
-@(d/transact conn {:tx-triples model})
-
 (defn count->int [s]
-(-> (string/split s #"\^\^")
-    (first)
-    (string/replace #"\"" "")
-    Integer/parseInt)
-  )
+ (-> (string/split s #"\^\^")
+     (first)
+     (string/replace #"\"" "")
+     Integer/parseInt))
+  
 
 (defn bnode? [kw]
      (string/starts-with? (str kw) ":_:"))
@@ -56,13 +41,9 @@
                                (add-id %))
                              (get-resources conn))}))
 
-(mark-resources-as-entities conn)
-
-;; (d/q '[:find ?s ?p ?o :where [?s ?p ?o]] conn)
 ;;;;;;;;;;;;;;;;; AVRO.
 
 (defn iri-local-name [kw]
-  (println kw)
   (as-> (str kw) v
     (subs v 1)
     (URI. v)
@@ -99,32 +80,35 @@
 (defn- field-name [node]
   (iri-local-name (get-in node [:sh/path :id :id])))
 
+(defn field-doc [node]
+   "TODO")
+
+
 (defn- field-schema [node type]
-  (let [min-count (count->int (node :sh/minCount))
-        max-count (count->int (node :sh/maxCount))]
+  (let [min-count (count->int (:sh/minCount node "0"))
+        max-count (count->int (:sh/maxCount node "99"))]
     ((cardinality->schema-fn [(min min-count 1)
                               (if (> max-count 1) :* max-count)])
      type)))
 
-(def g (get-properties root-node))
-(def g-props (get-properties node))
+;; (def g (get-properties root-node))
+;; (def g-props (get-properties node))
 
-(def node (nth g 2))
-(get-in node [:sh/path :id])
-(node :sh/node)
+;; (def node (nth g 2))
+;; (get-in node [:sh/path :id])
+;; (node :sh/node)
 
-(avro-schema (node :sh/node))
+;; (avro-schema (node :sh/node))
 
 (defn avro-field [node]
   (let [type (condp #(get %2 %1) node
                :sh/datatype :>> datatype-sh->avro
                :sh/node :>> #(when (not= (keys %) '(:id)) (avro-schema %))
                nil)]
-    (if (some? type)
-      [(field-name node)
-       :required   ;; Hack required to disable optionality. Maybe schemes and such do work though.
-       (field-schema node type)]
-      [])))
+    [(field-name node)
+     (field-doc node)
+     :required   ;; Hack required to disable optionality. Maybe schemes and such do work though.
+     (field-schema node type)]))
 
 (defn rdf-list->seq [rdf-list]
   (loop [l rdf-list
@@ -139,10 +123,15 @@
   ;;        props (list)]
   ;;   (rdf-list->seq (shape :sh/and))))
 
+(defn- properties [shape]
+(let [p (:sh/property shape)]
+  (->>
+   (if (map? p) (list p) p)
+   (filter #(not= (keys (% :sh/node)) '(:id))))))
 
 (defn get-properties [node]
   (concat
-   (:sh/property node)
+   (properties node)
    (get-inherited-props node)))
 
 (defn avro-schema [root-node]
@@ -157,12 +146,34 @@
 
 ;; (l/default-data B)
 ;; (l/edn B)
+(comment
+ (l/record-schema :name :doc [["a" "d" l/string-schema]])
 
-(def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#BShape true))
-(def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
-(def root-node start-node)
 
-(def a (avro-schema start-node))
-(l/edn a)
+ (def db-uri "asami:mem://profile")
+ (d/create-database db-uri)
+ (d/delete-database db-uri)
 
-(l/record-schema :name :doc [["a" "d" l/string-schema]])
+ (def conn (d/connect db-uri))
+
+ (def model
+   (rdf/read-directory (io/file "resources/example-profile/")))
+
+ (take 2 model)
+
+ @(d/transact conn {:tx-triples model})
+
+ (mark-resources-as-entities conn)
+
+
+
+ (def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#BShape true))
+ (def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
+ (def root-node start-node)
+
+ (def a (avro-schema start-node))
+ (l/edn a)
+
+ (spit "testBShape.json" (l/json a)))
+
+  

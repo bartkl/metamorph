@@ -52,6 +52,7 @@ shape:BShape
 shape:CShape
     a sh:NodeShape ;
     sh:targetClass vocab:C ;
+    sh:property shape:idShape ;
     sh:in (
           vocab:individual1
           vocab:individual2
