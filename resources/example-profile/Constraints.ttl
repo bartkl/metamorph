@@ -82,7 +82,7 @@ shape:EShape
     sh:property shape:idShape ;
     sh:targetClass vocab:E ;
     sh:property [
-          sh:path vocab:fromEtoC ;
+          sh:path vocab:FromEtoC ;
           sh:node shape:CShape ;
           sh:minCount 0 ;
           sh:maxCount 1 ;
