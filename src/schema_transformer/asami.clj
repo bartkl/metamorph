@@ -54,6 +54,10 @@
   (iri-local-name
    (get-in node [:sh/targetClass :id :id])))
 
+(defn enum-symbol [node]
+  (iri-local-name
+   (get-in node [:id :id])))
+
 (defn record-doc [node]
   (let [target-class (get node :sh/targetClass)]
     (target-class :rdfs/comment)))
@@ -127,14 +131,18 @@
              (get-inherited-props node))))
 
 (defn avro-schema [root-node]
-  ;; TODO: check for `sh:in` and if present, create enum.
-  (let [properties (get-properties root-node)]
-    (l/record-schema
+  (if (contains? root-node :sh/in)
+    (l/enum-schema
      (record-name root-node)
      (record-doc root-node)
-     (if (some? properties)
-       (map avro-field properties)
-       (vector)))))
+     (map enum-symbol (rdf-list->seq (:sh/in root-node))))
+    (let [properties (get-properties root-node)]
+      (l/record-schema
+       (record-name root-node)
+       (record-doc root-node)
+       (if (some? properties)
+         (map avro-field properties)
+         (vector))))))
 
 (defn avro-field [node]
   (let [type (condp #(get %2 %1) node
@@ -145,12 +153,13 @@
      (field-doc node)
      :required   ;; Hack required to disable optionality. Maybe schemes and such do work though.
      (field-schema node type)]))
-   
 
 ;; (l/default-data B)
 ;; (l/edn B)
 (comment
- (l/record-schema :name :doc [["a" "d" l/string-schema]])
+ (l/edn (l/record-schema :name :doc [
+                              [:a "d" :required l/string-schema]
+                              ]))
 
 
  (def db-uri "asami:mem://profile")
@@ -170,7 +179,7 @@
 
 
 
- (def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#CShape true))
+ (def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#BShape true))
  (def a-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
  (def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
  (def root-node start-node)
