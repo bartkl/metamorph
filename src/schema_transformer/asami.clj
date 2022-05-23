@@ -170,7 +170,7 @@
 
 
 
- (def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#BShape true))
+ (def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#CShape true))
  (def a-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
  (def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
  (def root-node start-node)
