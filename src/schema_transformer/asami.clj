@@ -100,6 +100,41 @@
 
 ;; (avro-schema (node :sh/node))
 
+(defn rdf-list->seq [rdf-list]
+  (if (nil? rdf-list) '() ;; TODO: Improve.
+      (loop [l rdf-list
+             s (list)]
+        (if (= l :rdf/nil)
+          s
+          (recur (l :rdf/rest) (conj s (l :rdf/first)))))))
+
+(defn get-inherited-props [shape]
+  (let [other-shapes (rdf-list->seq (shape :sh/and))]
+    (if (not (empty? other-shapes))
+      (mapcat get-properties other-shapes)
+      '())))
+
+(defn- properties [shape])
+(let [p (:sh/property shape)]
+  (->>
+   (if (map? p) (list p) p)
+   (filter #(not= (keys (% :sh/node)) '(:id)))))
+
+(defn get-properties [node]
+  (into #{} (concat
+             (properties node)
+             (get-inherited-props node))))
+
+(defn avro-schema [root-node]
+  ;; TODO: check for `sh:in` and if present, create enum.
+  (let [properties (get-properties root-node)]
+    (l/record-schema
+     (record-name root-node)
+     (record-doc root-node)
+     (if (some? properties)
+       (map avro-field properties)
+       (vector)))))
+
 (defn avro-field [node]
   (let [type (condp #(get %2 %1) node
                :sh/datatype :>> datatype-sh->avro
@@ -109,39 +144,6 @@
      (field-doc node)
      :required   ;; Hack required to disable optionality. Maybe schemes and such do work though.
      (field-schema node type)]))
-
-(defn rdf-list->seq [rdf-list]
-  (loop [l rdf-list
-         s (list)]
-    (if (= l :rdf/nil)
-      s
-      (recur (l :rdf/rest) (conj s (l :rdf/first))))))
-
-(defn get-inherited-props [shape]
-  ())
-  ;; (loop [other-shapes shape
-  ;;        props (list)]
-  ;;   (rdf-list->seq (shape :sh/and))))
-
-(defn- properties [shape]
-(let [p (:sh/property shape)]
-  (->>
-   (if (map? p) (list p) p)
-   (filter #(not= (keys (% :sh/node)) '(:id))))))
-
-(defn get-properties [node]
-  (concat
-   (properties node)
-   (get-inherited-props node)))
-
-(defn avro-schema [root-node]
-  (let [properties (get-properties root-node)]
-    (l/record-schema
-     (record-name root-node)
-     (record-doc root-node)
-     (if (some? properties)
-       (map avro-field properties)
-       (vector)))))
    
 
 ;; (l/default-data B)
@@ -168,8 +170,10 @@
 
 
  (def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#BShape true))
+ (def a-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
  (def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
  (def root-node start-node)
+ (map #(get-in % [:sh/path]) (get-inherited-props a-shape))
 
  (def a (avro-schema start-node))
  (l/edn a)
