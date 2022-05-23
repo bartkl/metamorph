@@ -81,7 +81,8 @@
   (iri-local-name (get-in node [:sh/path :id :id])))
 
 (defn field-doc [node]
-   "TODO")
+  ;; ""
+  (get-in node [:sh/path :rdfs/comment] ""))
 
 
 (defn- field-schema [node type]
