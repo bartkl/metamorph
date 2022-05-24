@@ -11,7 +11,7 @@
 
 (def supported-file-exts #{"ttl", "rdf", "jsonld"})
 
-(defn literal->type [x]
+(defn- literal->type [x]
   (condp #(= (.getCoreDatatype %2) %1) x
     CoreDatatype$XSD/STRING (.stringValue x)
     CoreDatatype$XSD/BOOLEAN (.booleanValue x)
