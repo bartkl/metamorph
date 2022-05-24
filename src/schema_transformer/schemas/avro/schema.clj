@@ -1,9 +1,10 @@
 (ns schema-transformer.schemas.avro.schema
   (:require [deercreeklabs.lancaster :as l]
-            [schema-transformer.schemas.avro.cardinality :refer [cardinality->schema-fn]]
-            [schema-transformer.schemas.avro.datatype :refer [xsd->avro]]
+            [schema-transformer.graph.db :as graph.db]
             [schema-transformer.graph.shacl :as shacl]
             [schema-transformer.rdf.datatype :refer [rdf-list->seq]]
+            [schema-transformer.schemas.avro.cardinality :refer [cardinality->schema-fn]]
+            [schema-transformer.schemas.avro.datatype :refer [xsd->avro]]
             [schema-transformer.utils.uri :as utils.uri]))
 
 (declare property->record-field)

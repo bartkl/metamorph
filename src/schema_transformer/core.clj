@@ -3,7 +3,7 @@
             [deercreeklabs.lancaster :as l]
             [asami.core :as d]
             [clojure.java.io :as io]
-            [schema-transformer.reading :as rdf]
+            [schema-transformer.rdf.reading :as rdf]
             [ont-app.vocabulary.core :as vocab]
             [schema-transformer.schemas.avro.schema :refer [avro-schema]]
             [schema-transformer.graph.db :as graph.db]
