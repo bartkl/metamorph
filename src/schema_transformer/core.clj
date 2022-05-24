@@ -29,7 +29,7 @@
     (d/create-database db-uri)
 
     (let [conn (d/connect db-uri)]
-    data
+      data
       @(d/transact conn {:tx-triples data})
       (mark-resources-as-entities conn)
 
@@ -37,36 +37,24 @@
            (avro-schema)
            (l/edn)))))
 
-(-main)
+(comment "Playground."
+         (def db-uri "asami:mem://profile")
+         (d/create-database db-uri)
+         (d/delete-database db-uri)
 
+         (def conn (d/connect db-uri))
 
+         (def model
+           (rdf/read-directory (io/file "resources/example_profile/")))
 
+         (take 2 model)
 
+         @(d/transact conn {:tx-triples model})
 
+         (mark-resources-as-entities conn)
 
-(comment
-  (def db-uri "asami:mem://profile")
-  (d/create-database db-uri)
-  (d/delete-database db-uri)
+         (def a-shape (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#AShape") true))
+         (def s (avro-schema a-shape))
+         (l/edn s)
 
-  (def conn (d/connect db-uri))
-
-  (def model
-    (rdf/read-directory (io/file "resources/example_profile/")))
-
-  (take 2 model)
-
-  @(d/transact conn {:tx-triples model})
-
-  (mark-resources-as-entities conn)
-
-
- (def a-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
- (l/edn (avro-schema a-shape))
-;;  (def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
-;;  (def root-node start-node)
-;;  (map #(get-in % [:sh/path]) (get-inherited-props a-shape))
-
-
-;;  (spit "testBShape.json" (l/json a))
-  )
+         (spit "testBShape.json" (l/json s)))
