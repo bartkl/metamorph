@@ -13,21 +13,21 @@
            (org.eclipse.rdf4j.model.util Values)))
 
 (defn count->int [s]
- (-> (string/split s #"\^\^")
-     (first)
-     (string/replace #"\"" "")
-     Integer/parseInt))
-  
+  (-> (string/split s #"\^\^")
+      (first)
+      (string/replace #"\"" "")
+      Integer/parseInt))
+
 
 (defn bnode? [kw]
-     (string/starts-with? (str kw) ":_:"))
+  (string/starts-with? (str kw) ":_:"))
 
 (defn get-resources [conn]
-    (map first
-         (d/q '[:find ?e
+  (map first
+       (d/q '[:find ?e
                 ;; :in $ ?is-bnode
-                :where [?e _ _]]
-              conn)))
+              :where [?e _ _]]
+            conn)))
                 ;; (not [(?is-bnode ?e)])]
               ;; conn bnode?)))
 
@@ -113,22 +113,26 @@
           s
           (recur (l :rdf/rest) (conj s (l :rdf/first)))))))
 
+(declare get-properties)
+
 (defn get-inherited-props [shape]
   (let [other-shapes (rdf-list->seq (shape :sh/and))]
     (if (not (empty? other-shapes))
       (mapcat get-properties other-shapes)
       '())))
 
-(defn- properties [shape])
-(let [p (:sh/property shape)]
-  (->>
-   (if (map? p) (list p) p)
-   (filter #(not= (keys (% :sh/node)) '(:id)))))
+(defn- properties [shape]
+  (let [p (:sh/property shape)]
+    (->>
+     (if (map? p) (list p) p)
+     (filter #(not= (keys (% :sh/node)) '(:id))))))
 
 (defn get-properties [node]
   (into #{} (concat
              (properties node)
              (get-inherited-props node))))
+
+(declare avro-field)
 
 (defn avro-schema [root-node]
   (if (contains? root-node :sh/in)
@@ -157,37 +161,34 @@
 ;; (l/default-data B)
 ;; (l/edn B)
 (comment
- (l/edn (l/record-schema :name :doc [
-                              [:a "d" :required l/string-schema]
-                              ]))
+  (l/edn (l/record-schema :name :doc [[:a "d" :required l/string-schema]]))
 
 
- (def db-uri "asami:mem://profile")
- (d/create-database db-uri)
- (d/delete-database db-uri)
+  (def db-uri "asami:mem://profile")
+  (d/create-database db-uri)
+  (d/delete-database db-uri)
 
- (def conn (d/connect db-uri))
+  (def conn (d/connect db-uri))
 
- (def model
-   (rdf/read-directory (io/file "resources/example-profile/")))
+  (def model
+    (rdf/read-directory (io/file "resources/example-profile/")))
 
- (take 2 model)
+  (take 2 model)
 
- @(d/transact conn {:tx-triples model})
+  @(d/transact conn {:tx-triples model})
 
- (mark-resources-as-entities conn)
+  (mark-resources-as-entities conn)
 
 
 
- (def start-node (d/entity conn :https://w3id.org/schematransform/ExampleShape#BShape true))
- (def a-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
- (def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
- (def root-node start-node)
- (map #(get-in % [:sh/path]) (get-inherited-props a-shape))
+;;  (def start-node (d/entity conn :a//w3id.org/schematransform/ExampleShape#BShape true))
+;;  (def a-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
+;;  (def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
+;;  (def root-node start-node)
+;;  (map #(get-in % [:sh/path]) (get-inherited-props a-shape))
 
- (def a (avro-schema start-node))
- (l/edn a)
+;;  (def a (avro-schema start-node))
+;;  (l/edn a)
 
- (spit "testBShape.json" (l/json a)))
-
-  
+;;  (spit "testBShape.json" (l/json a))
+  )

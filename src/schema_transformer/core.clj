@@ -10,7 +10,7 @@
   (println args))
 
 (expound/def ::avro-args
-  (fn [&args] false) "Erreur args to avro")
+  (fn [& args] false) "Erreur args to avro")
 
 (def cli-conf
   {:app {:command "schema-transformer"
