@@ -1,6 +1,6 @@
 (ns schema-transformer.graph.shacl
   (:require [schema-transformer.rdf.datatype :as datatype]
-            [schema-transformer.graph.db :as asami]
+            [schema-transformer.graph.db :as graph.db]
             [clojure.string :as string]))
 
 (defn blak-node? [kw]
@@ -18,7 +18,7 @@
   (let [prop (:sh/property node-shape)]
     (->>
      (if (map? prop) (list prop) prop)
-     (filter #(not (asami/node-ref? (:sh/node %)))))))
+     (filter #(not (graph.db/node-ref? (:sh/node %)))))))
 
 (defn properties [node-shape & {:keys [inherit]
                                 :or {inherit true}}]
