@@ -1,8 +1,10 @@
 (ns schema-transformer.core
   (:require [cli-matic.core :refer [run-cmd]]
+            [deercreeklabs.lancaster :as l]
             [asami.core :as d]
             [clojure.java.io :as io]
             [schema-transformer.rdf :as rdf]
+            [ont-app.vocabulary.core :as vocab]
             [schema-transformer.schemas.avro.schema :refer [avro-schema]]
             [schema-transformer.graph.db :as graph.db]
             [schema-transformer.vocabs.prof :as prof]
@@ -15,7 +17,6 @@
                                (graph.db/add-id %))
                              (graph.db/get-resources conn))}))
 
-
 (defn -main
   "This is our entry point.
   Just pass parameters and configuration.
@@ -23,13 +24,22 @@
   [& args]
 
   ;; (run-cmd args cli/conf))
-
   (let [db-uri "asami:mem://profile"
-        conn #(d/connect db-uri)]
-    (do
-      (as-> (rdf/read-directory (io/file "resources/example_profile/")) v
-        @(d/transact conn {:tx-triples v}))
-      (mark-resources-as-entities conn))))
+        data (rdf/read-directory (io/file "resources/example_profile/"))]
+    (d/create-database db-uri)
+
+    (let [conn (d/connect db-uri)]
+    data
+      @(d/transact conn {:tx-triples data})
+      (mark-resources-as-entities conn)
+
+      (->> (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true)
+           (avro-schema)
+           (l/edn)))))
+
+(-main)
+
+
 
 
 
@@ -51,14 +61,12 @@
   (mark-resources-as-entities conn)
 
 
-  (def start-node (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true))
-;;  (def a-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
+ (def a-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
+ (l/edn (avro-schema a-shape))
 ;;  (def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
 ;;  (def root-node start-node)
 ;;  (map #(get-in % [:sh/path]) (get-inherited-props a-shape))
 
-  (def a (avro-schema start-node))
-  (l/edn a)
 
 ;;  (spit "testBShape.json" (l/json a))
   )
