@@ -1,5 +1,5 @@
 (ns schema-transformer.graph.shacl
-  (:require [schema-transformer.utils.datatype :as datatype]
+  (:require [schema-transformer.rdf.datatype :as datatype]
             [schema-transformer.graph.db :as asami]
             [clojure.string :as string]))
 
