@@ -1,46 +1,19 @@
 (ns schema-transformer.core
   (:require [cli-matic.core :refer [run-cmd]]
-            [clojure.spec.alpha :as spec]
-            [expound.alpha :as expound]))
+            [asami.core :as d]
+            [clojure.java.io :as io]
+            [schema-transformer.rdf :as rdf]
+            [schema-transformer.schemas.avro.schema :refer [avro-schema]]
+            [schema-transformer.graph.db :as graph.db]
+            [schema-transformer.vocabs.prof :as prof]
+            [schema-transformer.cli :as cli]))
 
-;; To run this, try from the project root:
-;; ./toycalc-nosub.clj -a 1 -b 80
-
-(defn transform-schema [& args]
-  (println args))
-
-(expound/def ::avro-args
-  (fn [& args] false) "Erreur args to avro")
-
-(def cli-conf
-  {:app {:command "schema-transformer"
-         :description "Tool to transform dx-prof/CIM501 profiles to a variety of schema"
-         :version "0.0.1"}
-   :global-opts [{:as "Manifest file which describes the changed files since last run"
-                  :option "manifest"
-                  :short  "m"
-                  :type :string}
-                 {:as "Base path for the relative file paths in the manifest file"
-                  :option "base-path"
-                  :short "b"
-                  :type :string}]
-   :commands [{:command "avro"
-               :spec ::avro-args
-               :description "Apache AVRO schema"
-               :opts [{:as "Serialization format"
-                       :default :json
-                       :option "format"
-                       :short  "f"
-                       :type #{:edn :json}}
-                      {:as "Output file"
-                       :default "./avro.json"
-                       :option "output"
-                       :short  "o"
-                       :type #{:edn :json}}]
-
-               :runs transform-schema}]})
-
-
+(defn mark-resources-as-entities [conn]
+  @(d/transact conn {:tx-triples
+                     (mapcat #(list
+                               (graph.db/mark-entity %)
+                               (graph.db/add-id %))
+                             (graph.db/get-resources conn))}))
 
 
 (defn -main
@@ -48,4 +21,44 @@
   Just pass parameters and configuration.
   Commands (functions) will be invoked as appropriate."
   [& args]
-  (run-cmd args cli-conf))
+
+  ;; (run-cmd args cli/conf))
+
+  (let [db-uri "asami:mem://profile"
+        conn #(d/connect db-uri)]
+    (do
+      (as-> (rdf/read-directory (io/file "resources/example_profile/")) v
+        @(d/transact conn {:tx-triples v}))
+      (mark-resources-as-entities conn))))
+
+
+
+
+(comment
+  (def db-uri "asami:mem://profile")
+  (d/create-database db-uri)
+  (d/delete-database db-uri)
+
+  (def conn (d/connect db-uri))
+
+  (def model
+    (rdf/read-directory (io/file "resources/example_profile/")))
+
+  (take 2 model)
+
+  @(d/transact conn {:tx-triples model})
+
+  (mark-resources-as-entities conn)
+
+
+  (def start-node (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true))
+;;  (def a-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#AShape true))
+;;  (def d-shape (d/entity conn :https://w3id.org/schematransform/ExampleShape#DShape true))
+;;  (def root-node start-node)
+;;  (map #(get-in % [:sh/path]) (get-inherited-props a-shape))
+
+  (def a (avro-schema start-node))
+  (l/edn a)
+
+;;  (spit "testBShape.json" (l/json a))
+  )
