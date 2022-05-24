@@ -1,6 +1,7 @@
 (ns schema-transformer.rdf
   (:require [clojure.java.io :as io]
             [clojure.set :as set]
+            [ont-app.vocabulary.core :as vocab]
             [clojure.spec.alpha :as s]
             [schema-transformer.utils :as utils])
   (:import (org.eclipse.rdf4j.rio Rio)
@@ -11,55 +12,62 @@
 
 (def supported-files #{"ttl", "rdf", "jsonld"})
 
-(defn- simple-statement->map
-  "Creates a triple-map from an rdf4j `SimpleStatement.`"
+(defn- simple-statement->triple
+  "Creates a triple from an rdf4j `SimpleStatement.`"
 
   [st]
-  (let [ctx (.getContext st)]
-    (as-> #:rdf{:subject (.getSubject st)
-                :predicate (.getPredicate st)
-                :object (.getObject st)} v
-      (conj v (when ctx [:rdf/context (str ctx)]))
-      (utils/map-values str v))))
+
+  (let [subject (.getSubject st)
+        predicate (.getPredicate st)
+        object (.getObject st)]
+    [(if (.isIRI subject)
+       (vocab/keyword-for (str subject))
+       (keyword (str subject)))
+
+     (vocab/keyword-for (str predicate))
+
+     (cond
+       (.isLiteral object) (str object)
+       (.isIRI object) (vocab/keyword-for (str object))
+       :else (keyword (str object)))]))
+
 
 (defn read-file
   "Reads RDF file."
 
-  [path ctx-fn]
-  {:pre [(.isFile path) (fn? ctx-fn)]
-   :post [(s/valid? (s/coll-of :rdf/triple) %)]}
+  [path]
+  {:pre [(.isFile path)]}
 
   ;; TODO: Make context function optional. Using `let`?
-  ;; TODO: Get the RDF format instead of hard-coded turtle.
   (with-open [rdr (clojure.java.io/reader path)]
     (into (hash-set)
-          (map simple-statement->map
-               (Rio/parse rdr RDFFormat/TURTLE (ctx-fn path))))))
+          (map simple-statement->triple
+               (Rio/parse rdr RDFFormat/TURTLE (into-array IRI []))))))
 
 (defn read-directory
   "Reads all RDF files found in `path` and returns a set of all
-   statements. The `ctx-fn` is used to generate a context dependent
-   on the filename."
+   statements."
 
-  [path ctx-fn]
-  {:pre [(.isDirectory path) (fn? ctx-fn)]
-   :post [(s/valid? (s/coll-of :rdf/triple) %)]}
+  [path]
+  {:pre [(.isDirectory path)]}
 
   (->> (file-seq path)
        (filter #(supported-files (utils/file-ext %)))
-       (map #(read-file % ctx-fn))
+       (map read-file)
        (reduce set/union)))
 
-(read-directory (io/file "resources/example-profile/")
-                (fn [path] (into-array IRI [(utils/iri-from-filename path)])))
+(read-directory (io/file "resources/example-profile/"))
 
 ;; TODO: Improve this call... See below for a start, although that too seems sub-optimal.
-(read-file (io/file "resources/example-profile/Profile.ttl")
-           (fn [path] (into-array IRI [(utils/iri-from-filename path)
-                                       (Values/iri "http://some-other-iri")])))
+(read-file (io/file "resources/example-profile/Profile.ttl"))
 
 ;; (utils/apply-fns-to-arg [#(utils/iri-from-filename %)
 ;;                          #(Values/iri "http://some-other-iri")]
 ;;                         (io/file "resources/example-profile/Profile.ttl"))
 
 ;; (utils/apply-fns-to-arg [+ *] 1 2)
+
+(vocab/put-ns-meta!
+ 'ont-app.vocabulary.prof
+ {:vann/preferredNamespacePrefix "prof"
+  :vann/preferredNamespaceUri "http://www.w3.org/ns/dx/prof/"})

@@ -12,6 +12,9 @@
 #################################################################
 #    Object Properties
 #################################################################
+vocab:id rdf:type owl:DatatypeProperty ;
+         rdfs:comment "Identificatie" ;
+         rdfs:label "Sleutel"@nl .
 
 ###  https://w3id.org/schematransform/ExampleVocabulary#FromAToC
 vocab:FromAtoC rdf:type owl:ObjectProperty ;

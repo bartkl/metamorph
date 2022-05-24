@@ -26,6 +26,7 @@ shape:AShape
 
 shape:BShape
     a sh:NodeShape ;
+    sh:and (shape:AShape) ;
     rdfs:comment "RootObject" ;
     sh:targetClass vocab:B ;
     sh:property shape:idShape ;
@@ -50,12 +51,12 @@ shape:BShape
 shape:CShape
     a sh:NodeShape ;
     sh:targetClass vocab:C ;
+    sh:property shape:idShape ;
     sh:in (
           vocab:individual1
           vocab:individual2
           vocab:Individual3
       ).
-
 
 shape:DShape
     a sh:NodeShape ;
@@ -63,12 +64,12 @@ shape:DShape
     sh:property shape:idShape ;
     sh:property [
           sh:path vocab:def ;
-          sh:datatype xsd:int ;
+          sh:datatype xsd:float ;
           sh:minCount 0 ;
-          sh:maxCount 1 ;
-      ];
+          sh:maxCount 3 ;
+      ] ;
     sh:property [
-          sh:path vocab:fromDtoB ;
+          sh:path vocab:FromDtoB ;
           sh:node shape:BShape ;
           sh:minCount 1 ;
           sh:maxCount 3 ;
@@ -76,7 +77,9 @@ shape:DShape
 
 shape:EShape
     a sh:NodeShape ;
-    sh:TargetClass vocab:E ;
+    sh:and () ;
+    sh:property shape:idShape ;
+    sh:targetClass vocab:E ;
     sh:property [
           sh:path vocab:fromEtoC ;
           sh:node shape:CShape ;
