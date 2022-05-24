@@ -1,9 +1,10 @@
 (ns schema-transformer.schemas.avro.schema
   (:require [deercreeklabs.lancaster :as l]
+            [schema-transformer.graph.db :as graph.db]
+            [schema-transformer.graph.shacl :as shacl]
             [schema-transformer.schemas.avro.cardinality :refer [cardinality->schema-fn]]
             [schema-transformer.schemas.avro.datatype :refer [xsd->avro]]
-            [schema-transformer.graph.shacl :as shacl]
-            [schema-transformer.utils.datatype :refer [count->int rdf-list->seq]]
+            [schema-transformer.utils.datatype :refer [rdf-list->seq]]
             [schema-transformer.utils.uri :as utils.uri]))
 
 (declare property->record-field)
@@ -54,8 +55,8 @@
   (get-in property [:sh/path :rdfs/comment] ""))
 
 (defn- record-field-schema [node type]
-  (let [min-count (count->int (:sh/minCount node "0"))
-        max-count (count->int (:sh/maxCount node "99"))]
+  (let [min-count (:sh/minCount node 0)
+        max-count (:sh/maxCount node 99)]
     ((cardinality->schema-fn [(min min-count 1)
                               (if (> max-count 1) :* max-count)])
      type)))
@@ -63,7 +64,7 @@
 (defn- property->record-field [prop]
   (let [type (condp #(get %2 %1) prop  ;; TODO: Improve
                :sh/datatype :>> xsd->avro
-               :sh/node :>> #(when (not= (keys %) '(:id)) (avro-schema %))
+               :sh/node :>> #(when (not (graph.db/node-ref? %)) (avro-schema %))
                nil)]
     [(record-field-name prop)
      (record-field-doc prop)

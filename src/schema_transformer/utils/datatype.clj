@@ -8,9 +8,3 @@
         (if (= l :rdf/nil)
           s
           (recur (l :rdf/rest) (conj s (l :rdf/first)))))))
-
-(defn count->int [s]
-  (-> (string/split s #"\^\^")
-      (first)
-      (string/replace #"\"" "")
-      Integer/parseInt))

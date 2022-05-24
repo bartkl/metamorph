@@ -47,13 +47,13 @@
          (def model
            (rdf/read-directory (io/file "resources/example_profile/")))
 
-         (take 2 model)
+         (take 20 model)
 
          @(d/transact conn {:tx-triples model})
 
          (mark-resources-as-entities conn)
 
-         (def a-shape (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#AShape") true))
+         (def a-shape (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true))
          (def s (avro-schema a-shape))
          (l/edn s)
 
