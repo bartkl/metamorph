@@ -1,9 +1,8 @@
 (ns schema-transformer.schemas.avro.schema
   (:require [deercreeklabs.lancaster :as l]
-            [schema-transformer.graph.db :as graph.db]
-            [schema-transformer.graph.shacl :as shacl]
             [schema-transformer.schemas.avro.cardinality :refer [cardinality->schema-fn]]
             [schema-transformer.schemas.avro.datatype :refer [xsd->avro]]
+            [schema-transformer.graph.shacl :as shacl]
             [schema-transformer.utils.datatype :refer [rdf-list->seq]]
             [schema-transformer.utils.uri :as utils.uri]))
 
@@ -56,7 +55,7 @@
 
 (defn- record-field-schema [node type]
   (let [min-count (:sh/minCount node 0)
-        max-count (:sh/maxCount node 99)]
+        max-count (:sh/maxCount node ##Inf)]
     ((cardinality->schema-fn [(min min-count 1)
                               (if (> max-count 1) :* max-count)])
      type)))
