@@ -171,7 +171,7 @@
   (def conn (d/connect db-uri))
 
   (def model
-    (rdf/read-directory (io/file "resources/example-profile/")))
+    (rdf/read-directory (io/file "resources/example_profile/")))
 
   (take 2 model)
 
