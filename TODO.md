@@ -1,7 +1,7 @@
 # TODO
-[ ] supported-file-exts als fn param maken
 [ ] strip ^^stuff: count->int generaliseren in utils hiervoor
-[ ] iri-local-name moet iri-for gebruiken
+[x] iri-local-name moet iri-for gebruiken
+[ ] supported-file-exts als fn param maken
 [ ] nil checking / error handling / spec / expound?
 [ ] `required` hack
 [ ] cardinality verbetering
