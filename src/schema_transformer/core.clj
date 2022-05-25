@@ -8,6 +8,7 @@
             [schema-transformer.schemas.avro.schema :refer [avro-schema]]
             [schema-transformer.graph.db :as graph.db]
             [schema-transformer.vocabs.prof :as prof]
+            [schema-transformer.vocabs.role :as role]
             [schema-transformer.cli :as cli]))
 
 (defn mark-resources-as-entities [conn]
