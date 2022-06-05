@@ -54,8 +54,8 @@
 
          (mark-resources-as-entities conn)
 
-         (def a-shape (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true))
-         (def s (avro-schema a-shape))
+         (def b-shape (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true))
+         (def s (avro-schema b-shape))
          (l/edn s)
 
          (spit "testBShape.json" (l/json s)))

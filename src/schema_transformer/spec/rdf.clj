@@ -1,22 +1,34 @@
 (ns schema-transformer.spec.rdf
   (:require [clojure.spec.alpha :as s]
-            [clojure.string :as string]))
+            [clojure.string :as string])
+  (:import (java.net URI URISyntaxException)))
 
 (defn file? [f] (.isFile f))
-(defn has-namespace? [kw] (some? (namespace kw)))
+
+(defn iri? [kw]
+  (and (keyword? kw)
+       (some? (try (uri? (URI. (name kw)))
+                   (catch URISyntaxException e)))))
 
 ;; (s/fdef schema-transformer.rdf.reading/read-file
 ;;   :args [file?]  ;; TODO: Must be sequence?
 ;;   :ret string?)
 
-(s/def ::iri (s/and keyword? has-namespace?))
-(s/def ::blank-node (s/and keyword? #(string/starts-with? (name %) "_:")))
-(s/def ::literal some?)
+(s/def :rdf/blank-node #(string/starts-with? (name %) "_:"))
+(s/def :rdf/literal some?)
 
-(s/def ::subject (s/or :iri ::iri :blank-node ::blank-node))
-(s/def ::predicate ::iri)
-(s/def ::object ::literal)
+;; TODO: Fix RDF list spec.
+(s/def ::aa (s/keys :req [:rdf/first :rdf/rest]))
 
-(s/def ::statement (s/tuple ::subject ::predicate ::object))
+(s/def :rdf/nil #{:rdf/nil})
+(s/def :rdf/rest (s/or :rdf/nil :rdf/List))
+(s/def :rdf/List
+  (s/or :nil :rdf/nil
+        :map ::aa))
+;;
 
-;; (s/explain ::statement [:a :b :c])
+(s/def :rdf/subject (s/or :iri iri? :blank-node ::blank-node))
+(s/def :rdf/predicate iri?)
+(s/def :rdf/object :rdf/literal)
+
+(s/def :rdf/statement (s/tuple :rdf/subject :rdf/predicate :rdf/object))

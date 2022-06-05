@@ -3,10 +3,6 @@
             [schema-transformer.graph.db :as graph.db]
             [clojure.string :as string]))
 
-;; TODO: Delete:
-(defn blak-node? [kw]
-  (string/starts-with? (str kw) ":_:"))
-
 (declare properties)
 
 (defn- inherited-properties [node-shape]
