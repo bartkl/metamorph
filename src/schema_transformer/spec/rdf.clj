@@ -17,18 +17,20 @@
 (s/def :rdf/blank-node #(string/starts-with? (name %) "_:"))
 (s/def :rdf/literal some?)
 
-;; TODO: Fix RDF list spec.
-(s/def ::aa (s/keys :req [:rdf/first :rdf/rest]))
+(s/def :rdf/List (s/or
+                  :list (s/keys :req [:rdf/rest]
+                                :opt [:rdf/first])
+                  :nil :rdf/nil))
 
 (s/def :rdf/nil #{:rdf/nil})
-(s/def :rdf/rest (s/or :rdf/nil :rdf/List))
-(s/def :rdf/List
-  (s/or :nil :rdf/nil
-        :map ::aa))
-;;
+(s/def :rdf/rest :rdf/List)
 
 (s/def :rdf/subject (s/or :iri iri? :blank-node ::blank-node))
 (s/def :rdf/predicate iri?)
 (s/def :rdf/object :rdf/literal)
 
 (s/def :rdf/statement (s/tuple :rdf/subject :rdf/predicate :rdf/object))
+
+(comment
+  (def r {:rdf/first 1 :rdf/rest :rdf/nil})
+  (s/explain :rdf/List r))
