@@ -17,14 +17,9 @@
     (not (set/subset? kws
                       (into #{} (keys m))))))
 
-;; (defn require-one-key-of)
-
 (s/def :sh/targetClass :owl/Class)
 ;; (s/def :sh/and (s/* (s/alt :node-shape :sh/nodeShape
 ;;                            :property-shape :sh/propertyShape)))
-
-(s/def :rdf/List any?)  ;; TODO: Remove, temporary workaround until RDF list spec works.
-
 (s/def :sh/and :rdf/List)
 (s/def :rdfs/comment string?)
 (s/def :rdfs/label string?)
@@ -58,7 +53,3 @@
                 :rdfs/label
                 :sh/in
                 :sh/and]))
-
-(comment
-  (def test-prop #:sh{:path :def, :node :BShape})
-  (s/explain :sh/propertyShape test-prop))
