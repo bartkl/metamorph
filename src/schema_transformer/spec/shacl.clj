@@ -12,10 +12,11 @@
 ;;         (filter #(= (namespace (first %)) ns')
 ;;                 (s/registry))))
 
-(defn only-one-key-of [kws & req]
+(defn one-key-of [kws]
   (fn [m]
-    (not (set/subset? kws
-                      (into #{} (keys m))))))
+    (= (count (set/intersection (into #{} kws)
+                                (into #{} (keys m))))
+       1)))
 
 (s/def :sh/targetClass :owl/Class)
 ;; (s/def :sh/and (s/* (s/alt :node-shape :sh/nodeShape
@@ -44,7 +45,7 @@
                  :sh/label
                  :sh/comment
                  :sh/in])
-   (only-one-key-of [:sh/node :sh/datatype])))  ;; TODO: Need to *require* one of both.
+   (one-key-of [:sh/node :sh/datatype])))
 
 (s/def :sh/nodeShape
   (s/keys :req [:sh/targetClass]
