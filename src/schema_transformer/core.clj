@@ -20,6 +20,10 @@
                   :option "manifest"
                   :short  "m"
                   :type :string}
+                 {:as "Manifest file which describes the changed files since last run"
+                  :option "profile"
+                  :short  "p"
+                  :type :string}
                  {:as "Base path for the relative file paths in the manifest file"
                   :option "base-path"
                   :short "b"
