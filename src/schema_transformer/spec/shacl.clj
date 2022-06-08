@@ -45,7 +45,11 @@
                  :sh/label
                  :sh/comment
                  :sh/in])
-   (one-key-of [:sh/node :sh/datatype])))
+   (one-key-of [:sh/node :sh/datatype])
+   #(if (every? some? [:sh/minCount :sh/maxCount])
+      (<= (:sh/minCount %) (:sh/maxCount %))
+      true)))
+
 
 (s/def :sh/nodeShape
   (s/keys :req [:sh/targetClass]
