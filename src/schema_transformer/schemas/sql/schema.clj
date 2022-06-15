@@ -40,12 +40,8 @@
     [name type]))
 
 (defn table [node-shape]
-  (let [target-class (utils.uri/iri-local-name
-                      (get-in node-shape
-                              [:sh/targetClass :id :id]))]
-
     (h/create-table
-     target-class
+     (class-name (node-shape :sh/targetClass))
      (h/with-columns (cons
                       (id-column)
-                      (map column (graph.shacl/properties node-shape)))))))
+                      (map column (graph.shacl/properties node-shape))))))
