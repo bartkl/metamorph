@@ -28,9 +28,13 @@
     [name type]))
 
 (defn table [node-shape]
-    (h/create-table
-     (class-name (node-shape :sh/targetClass))
-     (h/with-columns (cons
-                      (id-column)
-                      (map column (graph.shacl/properties node-shape))))))
+  (h/create-table
+   (class-name (node-shape :sh/targetClass))
+   (h/with-columns (cons
+                    (id-column)
+                    (map column (graph.shacl/properties node-shape))))))
 
+(defn schema [node-shape]
+  (loop [tbl (table node-shape)
+         tables {}]
+    (:with-columns (second (tbl :create-table)))))
