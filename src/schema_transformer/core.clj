@@ -1,5 +1,6 @@
 (ns schema-transformer.core
   (:require [cli-matic.core :refer [run-cmd]]
+            [honey.sql :as sql]
             [clojure.spec.alpha :as spec]
             [expound.alpha :as expound]
             [deercreeklabs.lancaster :as l]
@@ -8,6 +9,8 @@
             [schema-transformer.rdf.reading :as rdf]
             [ont-app.vocabulary.core :as vocab]
             [schema-transformer.schemas.avro.schema :refer [avro-schema]]
+            [schema-transformer.schemas.sql.schema :as sql.schema]
+            [schema-transformer.graph.shacl :as graph.shacl]
             [schema-transformer.graph.db :as graph.db]
             [schema-transformer.vocabs.prof :as prof]
             [schema-transformer.vocabs.role :as role]
@@ -81,24 +84,36 @@
            (avro-schema)
            (l/edn)))))
 
-(comment "Playground."
-         (def db-uri "asami:mem://profile")
-         (d/create-database db-uri)
-         (d/delete-database db-uri)
+(comment
+  (def db-uri "asami:mem://profile")
+  (d/create-database db-uri)
+  (d/delete-database db-uri)
 
-         (def conn (d/connect db-uri))
+  (def conn (d/connect db-uri))
 
-         (def model
-           (rdf/read-directory (io/file "resources/example_profile/")))
+  (def model
+    (rdf/read-directory (io/file "/home/bartkl/Programming/alliander-opensource/SchemaTransformer/app/src/test/resources/rdfs")))
 
-         (take 20 model)
+  (take 20 model)
 
-         @(d/transact conn {:tx-triples model})
+  @(d/transact conn {:tx-triples model})
 
-         (mark-resources-as-entities conn)
+  (mark-resources-as-entities conn)
 
-         (def a-shape (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true))
-         (def s (avro-schema a-shape))
-         (l/edn s)
+  (def b-shape
+    (d/entity conn (vocab/keyword-for
+                    "https://w3id.org/schematransform/ExampleShape#BShape") true))
+  (def s (avro-schema b-shape))
+  (l/edn s)
 
-         (spit "testBShape.json" (l/json s)))
+  (def node-shapes
+    (graph.shacl/get-node-shapes conn))
+
+  ;; (sql.schema/schema node-shapes)
+
+  (def b-shape-sql (sql.schema/table b-shape))
+  (sql/format b-shape-sql)
+
+  (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
+
+  (spit "testBShape.json" (l/json s)))
