@@ -1,12 +1,22 @@
 (ns schema-transformer.graph.shacl
   (:require [schema-transformer.rdf.datatype :as datatype]
             [schema-transformer.graph.db :as graph.db]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [asami.core :as d]
+            [schema-transformer.utils.uri :as utils.uri]))
 
-(defn blak-node? [kw]
+(defn blank-node? [kw]
   (string/starts-with? (str kw) ":_:"))
 
+(defn class-name [class]
+  (utils.uri/iri-local-name (get-in class [:id :id])))
+
 (declare properties)
+
+(defn get-node-shapes [conn]
+  (d/q '[:find ?nodeShape
+         :where [?nodeShape :rdf/type :sh/NodeShape]]
+       conn))
 
 (defn- inherited-properties [node-shape]
   (let [other-shapes (datatype/rdf-list->seq (node-shape :sh/and))]
@@ -20,8 +30,7 @@
      (if (map? prop) (list prop) prop)
      (filter #(not (graph.db/node-ref? (:sh/node %)))))))
 
-(defn properties [node-shape & {:keys [inherit]
-                                :or {inherit true}}]
+(defn properties [node-shape]
   (into #{} (concat
              (own-properties node-shape)
-             (when (true? :inherit) (inherited-properties node-shape)))))
+             (inherited-properties node-shape))))
