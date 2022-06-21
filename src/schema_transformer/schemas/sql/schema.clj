@@ -18,7 +18,8 @@
   (= (property-shape :rdfs/comment) "PrimaryKey"))
 
 (defn- fkey? [property-shape]
-  (contains? property-shape :sh/node))
+  (> (count (get-in property-shape [:sh/node :sh/property]))
+     0))
 
 (defn pkey [node-shape]
   (some->> (get node-shape :sh/property)
@@ -39,7 +40,6 @@
                                    [:references
                                     (shacl/class-name (get-in property-shape [:sh/node :sh/targetClass]))
                                     (or (pkey (property-shape :sh/node)) :none)]))))
-
 
 (defn table [node-shape]
   (h/create-table
