@@ -103,6 +103,11 @@
   (def b-shape
     (d/entity conn (vocab/keyword-for
                     "https://w3id.org/schematransform/ExampleShape#BShape") true))
+
+  (def c-shape
+    (d/entity conn (vocab/keyword-for
+                    "https://w3id.org/schematransform/ExampleShape#CShape") true))
+
   (def s (avro-schema b-shape))
   (l/edn s)
 
@@ -111,9 +116,14 @@
 
   ;; (sql.schema/schema node-shapes)
 
-  (def b-shape-sql (sql.schema/table b-shape))
+  (def b-shape-sql (sql.schema/->sql b-shape))
   (sql/format b-shape-sql)
 
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
+
+  (->>
+   (sql.schema/enum c-shape)
+   (map sql/format))
+
 
   (spit "testBShape.json" (l/json s)))

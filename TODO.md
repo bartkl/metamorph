@@ -12,9 +12,12 @@
 
 ## SQL
 [ ] Focus first on getting one input node shape converted to DDL.
-    [ ] Primitives, primary keys, foreign keys
+    [x] Primitives, primary keys, foreign keys
     [ ] Derivations using `sh:and`
     [ ] Cardinality: many-many
     [ ] Enums
 [ ] Then, make sure all the tables are done and reduce it to a single DDL script.
     - Only create tables for those node shapes which aren't referenced in any `sh:and`.
+
+- Questions
+    - fkey that references a node shape without pkey? error?
