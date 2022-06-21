@@ -120,14 +120,14 @@
        (map #(d/entity conn % true))
        sql.schema/->schema))
 
-  (def shape-sql (sql.schema/->sql a-shape))
-  (sql/format shape-sql)
+(def shape-sql (sql.schema/->sql a-shape))
+(sql/format shape-sql)
 
-  (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
+(map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
 
-  (->>
-   (sql.schema/enum c-shape)
-   (map sql/format))
+(->>
+ (sql.schema/enum c-shape)
+ (map sql/format))
 
 
-  (spit "testBShape.json" (l/json s))
+(spit "testBShape.json" (l/json s))
