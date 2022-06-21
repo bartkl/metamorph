@@ -62,17 +62,11 @@
     (->enum node-shape)
     (->table node-shape)))
 
-;; (defn schema [node-shapes]
-;;   ;; (reduce (partial string/join ";") (->> node-shapes
-;;   ;;                                        (map table)
-;;   ;;                                        (sql/format)))
-
-;;   (->> node-shapes
-;;        (map table)
-;;        (sql/format)
-;;        (reduce #(string/join ";" %))))
-
-  ;; (loop [tbl (table node-shape)
-  ;;        tables {}]
-  ;;   ((second (tbl :create-table)) :with-columns)
-  ;;   ))
+(defn ->schema [node-shapes]
+  (str
+   (->> node-shapes
+        (map ->sql)
+        flatten
+        (map #(first (sql/format % {:pretty true})))
+        (string/join ";"))
+   ";"))

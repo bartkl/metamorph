@@ -100,10 +100,12 @@
 
   (mark-resources-as-entities conn)
 
+  (def a-shape
+    (d/entity conn (vocab/keyword-for
+                    "https://w3id.org/schematransform/ExampleShape#AShape") true))
   (def b-shape
     (d/entity conn (vocab/keyword-for
                     "https://w3id.org/schematransform/ExampleShape#BShape") true))
-
   (def c-shape
     (d/entity conn (vocab/keyword-for
                     "https://w3id.org/schematransform/ExampleShape#CShape") true))
@@ -112,12 +114,14 @@
   (l/edn s)
 
   (def node-shapes
-    (graph.shacl/get-node-shapes conn))
+    (flatten (graph.shacl/get-node-shapes conn)))
 
-  ;; (sql.schema/schema node-shapes)
+  (->> node-shapes
+       (map #(d/entity conn % true))
+       sql.schema/->schema))
 
-  (def b-shape-sql (sql.schema/->sql b-shape))
-  (sql/format b-shape-sql)
+  (def shape-sql (sql.schema/->sql a-shape))
+  (sql/format shape-sql)
 
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
 
@@ -126,4 +130,4 @@
    (map sql/format))
 
 
-  (spit "testBShape.json" (l/json s)))
+  (spit "testBShape.json" (l/json s))
