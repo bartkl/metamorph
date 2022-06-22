@@ -125,7 +125,7 @@
   (sql/format shape-sql)
 
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
-  (sql.schema2/->table b-shape)
+  (sql/format (sql.schema2/->table b-shape))
 
   (->>
    (sql.schema/enum c-shape)
