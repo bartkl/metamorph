@@ -10,10 +10,7 @@
   (min 1 (p :sh/minCount 0)))
 
 (defn normalized-max-count [p]
-  (let [max-count (p :sh/maxCount ##Inf)]
-    (if (> 1 max-count)
-      :*
-      max-count)))
+  (if (= 1 (p :sh/maxCount)) 1 ##Inf))
 
 (defn table-name [n]
   (shacl/class-name (n :sh/targetClass)))
@@ -71,15 +68,30 @@
                                        (filter #(= 1 (normalized-max-count %))
                                                (shacl/properties n))))))
 
-(defn ->link-table [n] [(h/create-table (table-name n))])
+(defn ->link-table [parent-node p]
+  (let [parent-name (name (table-name parent-node))
+        table (str parent-name "_" (cond
+                                     (contains? p :sh/datatype) (name (property-name p))
+                                     (contains? p :sh/node) (name (table-name (p :sh/node)))))]
+    (h/create-table (keyword table)
+                    (h/with-columns [[(keyword (str parent-name "_" (name (property-name (pkey parent-node)))))
+                                      (xsd->sql ((pkey parent-node) :sh/datatype))]
+                                     (if (contains? p :sh/datatype)
+                                       [:value (xsd->sql (p :sh/datatype))]
+                                       [(keyword (str (name (table-name (p :sh/node))) "_" (name (property-name (fkey p))))) (xsd->sql ((fkey p) :sh/datatype))]
+                                       )]))))
+
+(defn ->link-tables [n]
+  (reduce conj (map #(->link-table n %)
+                    (filter #(> (normalized-max-count %) 1)
+                            (shacl/properties n)))))
+
 
 (defn ->ddl [ns]
   (reduce conj (map #(if (enum? %) (->enum %)
-                         ((juxt ->table ->link-table) %))
+                         ((juxt ->table
+                                ->link-tables) %))
                     ns)))
-
-;; tables (nodeshapes filteren op `not enum?`)
-;; link tables (props met maxCount > 1)
 
 (defn ->schema [node-shapes]
   (str

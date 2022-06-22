@@ -126,12 +126,11 @@
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
   (sql/format (sql.schema2/->table b-shape))
   ;; (sql.schema2/->ddl b-shape c-shape)
-  (def sq (sql.schema2/->schema node-shapes))
+  (->> (sql.schema2/->schema node-shapes) (spit "testSql.sql"))
 
   (->>
    (sql.schema/->enum c-shape)
    (map sql/format))
 
 
-  (spit "testSql.sql" sq)
   (spit "testBShape.json" (l/json s)))
