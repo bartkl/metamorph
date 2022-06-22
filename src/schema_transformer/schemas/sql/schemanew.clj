@@ -58,8 +58,12 @@
     (contains? p :sh/node) (conj (if (enum? (p :sh/node))
                                    [:varchar 255]
                                    (xsd->sql ((fkey p) :sh/datatype)))
-                                 [:foreign-key] [:references (table-name (p :sh/node)) (if (fkey? p) (property-name (fkey p)) :value)])
-    (= 0 (normalized-min-count p)) (conj [:null])))
+                                 [:foreign-key] [:references
+                                                 (table-name (p :sh/node))
+                                                 (if (fkey? p)
+                                                   (property-name (fkey p))
+                                                   :value)])
+    (= 0 (normalized-min-count p)) (conj nil)))
 
 (defn ->table [n]
   (h/create-table (table-name n)
