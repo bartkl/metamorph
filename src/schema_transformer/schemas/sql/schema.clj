@@ -6,66 +6,120 @@
             [schema-transformer.graph.shacl :as shacl]
             [schema-transformer.schemas.sql.datatype :refer [xsd->sql]]))
 
-(declare table-name)
+(defn table-name [n]
+  (shacl/class-name (n :sh/targetClass)))
+
+(defn property-name [p]
+  (shacl/class-name (p :sh/path)))
+
+(defn pkey-name [p] (property-name p))
 
 ;; (defn key-ref [t]
 ;;   (keyword (str (name t) "-" "id")))
 
-(defn column-pkey? [property-shape]
-  (= (property-shape :rdfs/comment) "PrimaryKey"))
+(defn pkey? [p]
+  (= (p :rdfs/comment) "PrimaryKey"))
 
-(defn column-fkey? [property-shape]
-  (let [node (or (property-shape :sh/node) {})]
+(defn fkey? [p]
+  (let [node (or (p :sh/node) {})]
     (and (> (count (node :sh/property)) 0)
-         (some column-pkey? (node :sh/property)))))
+         (some pkey? (node :sh/property)))))
 
-(defn pkey [node-shape]
-  (some->> (get node-shape :sh/property)
-           (filter column-pkey?)
-           first
-           :sh/path
-           shacl/class-name))
+(defn pkey [n]
+  (some->> (n :sh/property)
+           (filter pkey?)
+           first))
 
-(defn column [property-shape]
-  (let [name (shacl/class-name (:sh/path property-shape))
-        type (condp #(%1 %2) property-shape
+(defn fkey [p]
+  (pkey (p :sh/node)))
+
+(defn- pkey-col [p]
+  (let [name (pkey-name p)
+        type (xsd->sql (p :sh/datatype))]
+    [name type [:primary-key]]))
+
+(defn ->column [p]
+  (let [type (condp #(%1 %2) p
                :sh/datatype :>> xsd->sql
                :sh/node :>> (fn [_] [:varchar 255])
                nil)]
-    (cond-> [name type]
-      (column-pkey? property-shape) (conj [:primary-key])
-      (column-fkey? property-shape) (conj [:foreign-key]
-                                          [:references
-                                           (table-name (property-shape :sh/node))
-                                           (or (pkey (property-shape :sh/node)) :none)]))))
+    (cond-> [(pkey-name p) type]
+      (pkey? p) (conj [:primary-key])
+      (fkey? p) (conj [:foreign-key]
+                      [:references
+                       (table-name (p :sh/node))
+                       (or (pkey (p :sh/node)) :none)]))))
 
-(defn ->table [node-shape]
+(defn ->table [n]
   (h/create-table
-   (table-name node-shape)
-   (h/with-columns (map column (shacl/properties node-shape)))))
+   (table-name n)
+   (h/with-columns [(pkey-col (pkey n))])))
 
-(defn table-name [node-shape]
-  (shacl/class-name (node-shape :sh/targetClass)))
-
-(defn ->enum [node-shape]
-  (let [name (table-name node-shape)
-        enum-members (map shacl/class-name (rdf-list->seq (:sh/in node-shape)))
+(defn ->enum-table [n]
+  (let [name (table-name n)
+        enum-members (map shacl/class-name (rdf-list->seq (:sh/in n)))
         create-ddl (h/create-table name [:value [:varchar 255] [:primary-key]])
         insert-ddl (-> (h/insert-into name)
                        (h/values [(into [] enum-members)]))]
     [create-ddl insert-ddl]))
 
-(defn enum? [node-shape] (contains? node-shape :sh/in))
+(defn enum? [n] (contains? n :sh/in))
 
-(defn ->sql [node-shape]
-  (if (enum? node-shape)
-    (->enum node-shape)
-    (->table node-shape)))
+(defn process-node-shape [n]
+  (if (enum? n)
+    (->enum-table n)
+    (->table n)))
+
+(defn normalized-min-count [p]
+  (min 1 (p :sh/minCount 0)))
+
+(defn normalized-max-count [p]
+  (let [max-count (p :sh/maxCount ##Inf)]
+    (if (> 1 max-count)
+      :*
+      max-count)))
+
+(defn ->link-table [table-name p])
+
+(defn add-col [tbl-name p nullable?]
+  (-> (h/alter-table tbl-name)
+      (map h/add-column )))
+
+(defn process-property-shape [n p]
+  (let [min-count (normalized-min-count p)
+        max-count (normalized-max-count p)
+        tbl (table-name n)
+        type []]
+    (case [min-count max-count type]
+      [0  1] (add-col tbl p true)
+      [1  1] (add-col tbl p false)
+      [0 :*] (->link-table tbl p)
+      [1 :*] (->link-table tbl p))))
+      ;; [0  1 :sh/datatype] (add-col tbl p nil true)  
+      ;; [1  1 :sh/datatype] (add-col tbl p nil false)   
+      ;; [0 :* :sh/datatype] (->link-table tbl p nil)
+      ;; [1 :* :sh/datatype (->link-table tbl p nil)])))
+
+
+
+
+
+
+
+
+
+
+(defn schema-reducer [ddl n]
+  (flatten
+   (conj ddl
+         (process-node-shape n)
+         (map #(process-property-shape n %)
+              (filter #(not (pkey? %)) (shacl/properties n))))))
 
 (defn ->schema [node-shapes]
   (str
    (->> node-shapes
-        (map ->sql)
+        (map ->table)
         flatten
         (map #(first (sql/format % {:pretty true})))
         (string/join ";"))
