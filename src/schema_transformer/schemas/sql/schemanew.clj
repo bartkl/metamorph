@@ -71,8 +71,20 @@
                                        (filter #(= 1 (normalized-max-count %))
                                                (shacl/properties n))))))
 
-(defn ->ddl [& ns]
-;; enums
+(defn ->link-table [n] [(h/create-table (table-name n))])
+
+(defn ->ddl [ns]
+  (reduce conj (map #(if (enum? %) (->enum %)
+                         ((juxt ->table ->link-table) %))
+                    ns)))
+
 ;; tables (nodeshapes filteren op `not enum?`)
 ;; link tables (props met maxCount > 1)
-  )
+
+(defn ->schema [node-shapes]
+  (str
+   (->> (->ddl node-shapes)
+        flatten
+        (map #(first (sql/format % {:pretty true})))
+        (string/join ";"))
+   ";"))

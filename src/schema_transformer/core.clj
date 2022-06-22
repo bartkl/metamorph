@@ -114,23 +114,24 @@
   (def s (avro-schema b-shape))
   (l/edn s)
 
-  (def node-shapes
+  (def node-shapes-names
     (flatten (graph.shacl/get-node-shapes conn)))
 
-  (->> node-shapes
-       (map #(d/entity conn % true))
-       sql.schema/->schema)
+  (def node-shapes (->> node-shapes-names
+                        (map #(d/entity conn % true))))
 
   (def shape-sql (sql.schema/->sql a-shape))
   (sql/format shape-sql)
 
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
   (sql/format (sql.schema2/->table b-shape))
+  ;; (sql.schema2/->ddl b-shape c-shape)
+  (def sq (sql.schema2/->schema node-shapes))
 
   (->>
-   (sql.schema/enum c-shape)
+   (sql.schema/->enum c-shape)
    (map sql/format))
 
 
-  (spit "testBShape.json" (l/json s))
-  )
+  (spit "testSql.sql" sq)
+  (spit "testBShape.json" (l/json s)))
