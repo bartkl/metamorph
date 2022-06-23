@@ -6,10 +6,10 @@
             [schema-transformer.graph.shacl :as shacl]
             [schema-transformer.schemas.sql.datatype :refer [xsd->sql]]))
 
-(defn normalized-min-count [p]
+(defn min-count [p]
   (min 1 (p :sh/minCount 0)))
 
-(defn normalized-max-count [p]
+(defn max-count [p]
   (if (= 1 (p :sh/maxCount)) 1 ##Inf))
 
 (defn table-name [n]
@@ -60,12 +60,12 @@
                                                  (if (fkey? p)
                                                    (property-name (fkey p))
                                                    :value)])
-    (= 0 (normalized-min-count p)) (conj nil)))
+    (= 0 (min-count p)) (conj nil)))
 
 (defn ->table [n]
   (h/create-table (table-name n)
                   (h/with-columns (map ->column
-                                       (filter #(= 1 (normalized-max-count %))
+                                       (filter #(= 1 (max-count %))
                                                (shacl/properties n))))))
 
 (defn ->link-table [left-node p]
@@ -93,7 +93,7 @@
 
 (defn ->link-tables [n]
   (reduce conj [] (map #(->link-table n %)
-                       (filter #(> (normalized-max-count %) 1)
+                       (filter #(> (max-count %) 1)
                                (shacl/properties n)))))
 
 (defn ->ddl [ns]
@@ -111,4 +111,4 @@
         flatten
         (map #(first (sql/format % {:pretty true})))
         (string/join ";"))
-   ";"))
+        ";"))
