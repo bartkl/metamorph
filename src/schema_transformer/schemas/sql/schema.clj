@@ -49,18 +49,23 @@
     [create-ddl insert-ddl]))
 
 (defn property-shape->column [p]
-  (cond-> [(property-name p)]
-    (contains? p :sh/datatype) (conj (xsd->sql (p :sh/datatype)))
-    (primary-key? p) (conj [:primary-key])
-    (contains? p :sh/node) (conj (if (enum? (p :sh/node))
-                                   [:varchar 255]
-                                   (xsd->sql ((foreign-key p) :sh/datatype)))
-                                 [:foreign-key] [:references
-                                                 (node-name (p :sh/node))
-                                                 (if (foreign-key? p)
-                                                   (property-name (foreign-key p))
-                                                   :value)])
-    (= 0 (min-count p)) (conj nil)))
+  (letfn [(primitive-type [p] (xsd->sql (p :sh/datatype)))]
+    (cond-> [(property-name p)]
+      (contains? p :sh/datatype) (conj (primitive-type p))
+      (primary-key? p) (conj [:primary-key])
+      (contains? p :sh/node) (conj
+                              (if (enum? (p :sh/node))
+                                [:varchar 255]
+                                (primitive-type (foreign-key p)))
+
+                              [:foreign-key] [:references (node-name (p :sh/node))
+                                              (if (foreign-key? p)
+                                                (property-name (foreign-key p))
+                                                :value)])
+      :always (conj (if (= 0 (min-count p))
+                      nil
+                      [:not nil])))))
+
 
 (defn node-shape->table [n]
   (h/create-table (node-name n)
@@ -86,9 +91,9 @@
     (-> (h/create-table (property-name p))
         (h/with-columns
           [[left-col left-datatype [:foreign-key] [:references (keyword left-table) (keyword left-primary-key)]]
-           [right-col right-datatype (when (some? right-primary-key)
-                                       [:foreign-key]
-                                       [:references (keyword right) (keyword right-primary-key)])]
+           [right-col right-datatype
+            (when (some? right-primary-key) [:foreign-key])  ;; TODO: Fix, very ugly repetition.
+            (when (some? right-primary-key) [:references (keyword right) (keyword right-primary-key)])]
            [[:constraint (keyword (str (name (property-name p)) "_" "pkey"))] [:primary-key left-col right-col]]]))))
 
 (defn node-shape->link-tables [n]
