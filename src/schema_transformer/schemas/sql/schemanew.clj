@@ -68,18 +68,21 @@
                                        (filter #(= 1 (normalized-max-count %))
                                                (shacl/properties n))))))
 
+;; TODO: Clean-up!
 (defn ->link-table [parent-node p]
   (let [parent-name (name (table-name parent-node))
         table (str parent-name "_" (cond
                                      (contains? p :sh/datatype) (name (property-name p))
                                      (contains? p :sh/node) (name (table-name (p :sh/node)))))]
-    (h/create-table (keyword table)
-                    (h/with-columns [[(keyword (str parent-name "_" (name (property-name (pkey parent-node)))))
-                                      (xsd->sql ((pkey parent-node) :sh/datatype))]
-                                     (if (contains? p :sh/datatype)
-                                       [:value (xsd->sql (p :sh/datatype))]
-                                       [(keyword (str (name (table-name (p :sh/node))) "_" (name (property-name (fkey p))))) (xsd->sql ((fkey p) :sh/datatype))]
-                                       )]))))
+    (-> (h/create-table (keyword table))
+        (h/with-columns [[(keyword (str parent-name "_" (name (property-name (pkey parent-node)))))
+                          (xsd->sql ((pkey parent-node) :sh/datatype))
+                          [:foreign-key] [:references (keyword parent-name) (property-name (pkey parent-node))]]
+                         (if (contains? p :sh/datatype)
+                           [:value (xsd->sql (p :sh/datatype))]
+                           [(keyword (str (name (table-name (p :sh/node))) "_" (name (property-name (fkey p))))) (xsd->sql ((fkey p) :sh/datatype))
+                            [:foreign-key] [:references (table-name (p :sh/node)) (keyword (property-name (pkey (p :sh/node))))]])
+                         [[:constraint (keyword (str table "_" "pkey"))] [:primary-key :left :right]]]))))
 
 (defn ->link-tables [n]
   (reduce conj (map #(->link-table n %)
