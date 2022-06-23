@@ -62,10 +62,9 @@
                                               (if (foreign-key? p)
                                                 (property-name (foreign-key p))
                                                 :value)])
-      :always (conj (if (= 0 (min-count p))
-                      nil
-                      [:not nil])))))
-
+      (= 0 (min-count p)) (conj :null)
+      (and (not (primary-key? p))
+           (> (min-count p) 0)) (conj [:not nil]))))
 
 (defn node-shape->table [n]
   (h/create-table (node-name n)
