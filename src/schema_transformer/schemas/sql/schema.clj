@@ -97,7 +97,6 @@
                     (filter #(> (normalized-max-count %) 1)
                             (shacl/properties n)))))
 
-
 (defn ->ddl [ns]
   (reduce conj (map #(if (enum? %) (->enum %)
                          ((juxt ->table

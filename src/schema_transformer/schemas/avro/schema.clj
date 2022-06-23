@@ -39,7 +39,7 @@
     (target-class :rdfs/comment)))
 
 (defn- shape->record [shape]
-  (let [properties (shacl/properties shape)]
+  (let [properties (remove shacl/property-node-ref? (shacl/properties shape))]
     (l/record-schema
      (record-name shape)
      (record-doc shape)
@@ -64,7 +64,7 @@
 (defn- property->record-field [prop]
   (let [type (condp #(get %2 %1) prop  ;; TODO: Improve
                :sh/datatype :>> xsd->avro
-               :sh/node :>> #(when (not (graph.db/node-ref? %)) (avro-schema %))
+               :sh/node :>> avro-schema
                nil)]
     [(record-field-name prop)
      (record-field-doc prop)

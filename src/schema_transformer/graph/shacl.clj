@@ -26,9 +26,10 @@
 
 (defn- own-properties [node-shape]
   (let [prop (:sh/property node-shape)]
-    (->>
-     (if (map? prop) (list prop) prop)
-     (filter #(not (graph.db/node-ref? (:sh/node %)))))))
+    (if (map? prop) (list prop) prop)))
+
+(defn property-node-ref? [property-shape]
+  (graph.db/node-ref? (:sh/node property-shape)))
 
 (defn properties [node-shape]
   (into #{} (concat
