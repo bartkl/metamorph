@@ -6,7 +6,7 @@
             [schema-transformer.utils.uri :as utils.uri]))
 
 (defn blank-node? [kw]
-  (string/starts-with? (str kw) ":_:"))
+  (string/starts-with? (name kw) "_:"))
 
 (defn class-name [class]
   (utils.uri/iri-local-name (get-in class [:id :id])))
