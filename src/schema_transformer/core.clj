@@ -122,7 +122,9 @@
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
   (sql/format (sql.schema/->table b-shape))
   ;; (sql.schema/->ddl b-shape c-shape)
+  ;; (->> (sql.schema/->schema [b-shape]) (spit "testSql.sql"))
   (->> (sql.schema/->schema node-shapes) (spit "testSql.sql"))
+  (map #(get % :create-table) (sql.schema/->schema node-shapes))
 
   (->>
    (sql.schema/->enum c-shape)

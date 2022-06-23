@@ -81,27 +81,29 @@
         right-pkey (when (contains? p :sh/node) (name (property-name (fkey p))))
         right-col (cond
                     (contains? p :sh/datatype) :value
-                    (contains? p :sh/node) (keyword (str right "_" right-pkey)))
-        tbl (str left-table "_" right)]
+                    (contains? p :sh/node) (keyword (str right "_" right-pkey)))]
 
-    (-> (h/create-table (keyword tbl))
+    (-> (h/create-table (property-name p))
         (h/with-columns
           [[left-col left-datatype [:foreign-key] [:references (keyword left-table) (keyword left-pkey)]]
            [right-col right-datatype (when (some? right-pkey)
                                        [:foreign-key]
                                        [:references (keyword right) (keyword right-pkey)])]
-           [[:constraint (keyword (str tbl "_" "pkey"))] [:primary-key left-col right-col]]]))))
+           [[:constraint (keyword (str (name (property-name p)) "_" "pkey"))] [:primary-key left-col right-col]]]))))
 
 (defn ->link-tables [n]
-  (reduce conj (map #(->link-table n %)
-                    (filter #(> (normalized-max-count %) 1)
-                            (shacl/properties n)))))
+  (reduce conj [] (map #(->link-table n %)
+                       (filter #(> (normalized-max-count %) 1)
+                               (shacl/properties n)))))
 
 (defn ->ddl [ns]
-  (reduce conj (map #(if (enum? %) (->enum %)
-                         ((juxt ->table
-                                ->link-tables) %))
-                    ns)))
+  (reduce conj [] (map #(if (enum? %) (->enum %)
+                            ((juxt ->table
+                                   ->link-tables) %))
+                       ns)))
+
+
+
 
 (defn ->schema [node-shapes]
   (str
