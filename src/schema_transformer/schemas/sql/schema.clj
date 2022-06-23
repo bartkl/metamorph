@@ -37,10 +37,12 @@
 (defn enum? [n]
   (contains? n :sh/in))
 
+(defn enum-members [n]
+  (map shacl/class-name
+       (rdf-list->seq (:sh/in n))))
+
 (defn node-shape->enum [n]
-  (let [enum-members (fn [n] (map shacl/class-name
-                                  (rdf-list->seq (:sh/in n))))
-        create-ddl (h/create-table (node-name n)
+  (let [create-ddl (h/create-table (node-name n)
                                    [:value [:varchar 255] [:primary-key]])
         insert-ddl (-> (h/insert-into (node-name n))
                        (h/values [(into [] (enum-members n))]))]
