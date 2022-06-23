@@ -39,7 +39,7 @@
 
 (defn node-shape->enum [n]
   (let [enum-members (fn [n] (map shacl/class-name
-                          (rdf-list->seq (:sh/in n))))
+                                  (rdf-list->seq (:sh/in n))))
         create-ddl (h/create-table (node-name n)
                                    [:value [:varchar 255] [:primary-key]])
         insert-ddl (-> (h/insert-into (node-name n))
@@ -94,18 +94,16 @@
                        (filter #(> (max-count %) 1)
                                (shacl/properties n)))))
 
-(defn ->ddl [ns]
-  (reduce conj [] (map #(if (enum? %) (node-shape->enum %)
-                            ((juxt node-shape->table
-                                   node-shape->link-tables) %))
-                       ns)))
+(defn node-shapes->ddl [ns]
+  (reduce conj []
+          (map #(if (enum? %) (node-shape->enum %)
+                    ((juxt node-shape->table
+                           node-shape->link-tables) %))
+               ns)))
 
-
-
-
-(defn ->schema [node-shapes]
+(defn node-shapes->schema [ns]
   (str
-   (->> (->ddl node-shapes)
+   (->> (node-shapes->ddl ns)
         flatten
         (map #(first (sql/format % {:pretty true})))
         (string/join ";"))
