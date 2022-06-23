@@ -119,9 +119,6 @@
   (def node-shapes (->> node-shapes-names
                         (map #(d/entity conn % true))))
 
-  (def shape-sql (sql.schema/->sql a-shape))
-  (sql/format shape-sql)
-
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
   (sql/format (sql.schema/->table b-shape))
   ;; (sql.schema/->ddl b-shape c-shape)
