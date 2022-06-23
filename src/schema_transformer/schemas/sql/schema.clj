@@ -90,9 +90,9 @@
     (-> (h/create-table (property-name p))
         (h/with-columns
           [[left-col left-datatype [:foreign-key] [:references (keyword left-table) (keyword left-primary-key)]]
-           [right-col right-datatype
-            (when (some? right-primary-key) [:foreign-key])  ;; TODO: Fix, very ugly repetition.
-            (when (some? right-primary-key) [:references (keyword right) (keyword right-primary-key)])]
+           (if (some? right-primary-key)
+              [right-col right-datatype [:foreign-key] [:references (keyword right) (keyword right-primary-key)]]
+              [right-col right-datatype])
            [[:constraint (keyword (str (name (property-name p)) "_" "pkey"))] [:primary-key left-col right-col]]]))))
 
 (defn node-shape->link-tables [n]
