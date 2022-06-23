@@ -10,7 +10,6 @@
             [ont-app.vocabulary.core :as vocab]
             [schema-transformer.schemas.avro.schema :refer [avro-schema]]
             [schema-transformer.schemas.sql.schema :as sql.schema]
-            [schema-transformer.schemas.sql.schemanew :as sql.schema2]
             [schema-transformer.graph.shacl :as graph.shacl]
             [schema-transformer.graph.db :as graph.db]
             [schema-transformer.vocabs.prof :as prof]
@@ -124,9 +123,9 @@
   (sql/format shape-sql)
 
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
-  (sql/format (sql.schema2/->table b-shape))
-  ;; (sql.schema2/->ddl b-shape c-shape)
-  (->> (sql.schema2/->schema node-shapes) (spit "testSql.sql"))
+  (sql/format (sql.schema/->table b-shape))
+  ;; (sql.schema/->ddl b-shape c-shape)
+  (->> (sql.schema/->schema node-shapes) (spit "testSql.sql"))
 
   (->>
    (sql.schema/->enum c-shape)
