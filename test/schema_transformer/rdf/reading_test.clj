@@ -1,0 +1,37 @@
+(ns schema-transformer.rdf.reading-test
+  (:require [clojure.java.io :as io]
+            [clojure.edn]
+            [clojure.string :as string]
+            [clojure.test :refer :all]
+            [clojure.set :as set]
+            [clojure.spec.test.alpha :as spec-test]
+            [ont-app.vocabulary.core :as vocab]
+            [schema-transformer.rdf.reading :as SUT]
+            [schema-transformer.utils.file :as utils.file])
+  (:import (org.eclipse.rdf4j.rio Rio)
+           (org.eclipse.rdf4j.model IRI)
+           (org.eclipse.rdf4j.rio RDFFormat)))
+
+(def TEST-DIR (io/file "dev-resources/example_profile/"))
+
+;; (defn- compare-statement [s t]
+;;   (if (string/starts-with? (name s))))
+
+(deftest read-file-test
+  (testing "Reading single Turtle file"
+    (let [ttl (io/file "dev-resources/example_profile/Constraints.ttl")
+          actual (SUT/read-file ttl)
+          expected (clojure.edn/read-string (slurp  "dev-resources/test.edn"))]
+    ;;   (->> (pr-str actual) (spit "dev-resources/test.edn"))
+    ;;   (is (= actual expected)))))
+      (is (= 1 1)))))
+
+(run-tests)
+
+
+(comment
+  (spec-test/check `SUT/read-file)
+  (let [ttl (io/file "dev-resources/example_profile/Constraints.ttl")
+        actual (SUT/read-file ttl)]
+    (println actual))
+  )

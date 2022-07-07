@@ -9,4 +9,5 @@
                  [deercreeklabs/lancaster "0.9.17"]
                  [ont-app/vocabulary "0.1.7"]
                  [cli-matic "0.5.3"]
+                 [org.clojure/test.check "1.1.1"]
                  [org.clojars.quoll/asami "2.3.1-SNAPSHOT"]])

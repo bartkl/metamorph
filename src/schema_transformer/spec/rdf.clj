@@ -1,6 +1,7 @@
 (ns schema-transformer.spec.rdf
   (:require [clojure.spec.alpha :as s]
-            [clojure.string :as string])
+            [clojure.string :as string]
+            [clojure.spec.test.alpha :as spec-test])
   (:import (java.net URI URISyntaxException)))
 
 (defn file? [f] (.isFile f))
@@ -9,10 +10,6 @@
   (and (keyword? kw)
        (some? (try (uri? (URI. (name kw)))
                    (catch URISyntaxException e)))))
-
-;; (s/fdef schema-transformer.rdf.reading/read-file
-;;   :args [file?]  ;; TODO: Must be sequence?
-;;   :ret string?)
 
 (s/def :rdf/blank-node #(string/starts-with? (name %) "_:"))
 (s/def :rdf/literal some?)
@@ -33,4 +30,12 @@
 
 (comment
   (def r {:rdf/first 1 :rdf/rest :rdf/nil})
-  (s/explain :rdf/List r))
+  (s/explain :rdf/List :rdf/nil))
+
+(s/fdef schema-transformer.rdf.reading/read-file
+  :args (s/cat :path file?)
+  ;; :args (s/cat :path int?)
+  :ret (s/coll-of :rdf/statement))
+
+(defn hello [x]
+  (str "Hello " x))

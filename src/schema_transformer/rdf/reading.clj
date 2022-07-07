@@ -32,7 +32,7 @@
   "Reads RDF file."
   [path]
 
-  {:pre [(.isFile path)]}
+  ;; {:pre [(.isFile path)]}
 
   (with-open [rdr (clojure.java.io/reader path)]
     (let [ctxs (into-array IRI [])]

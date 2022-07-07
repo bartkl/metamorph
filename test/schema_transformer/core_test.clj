@@ -1,6 +1,6 @@
 (ns schema-transformer.core-test
   (:require [clojure.test :refer :all]
-            [schema-transformer.core :refer :all]))
+            [schema-transformer.core :as SUT]))
 
 (deftest a-test
   (testing "FIXME, I fail."
