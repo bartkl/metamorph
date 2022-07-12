@@ -1,3 +1,7 @@
+; SPDX-FileCopyrightText: 2022 Alliander N.V.
+;
+; SPDX-License-Identifier: Apache-2.0
+
 (defproject schema-transformer "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"

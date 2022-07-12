@@ -1,3 +1,7 @@
+; SPDX-FileCopyrightText: 2022 Alliander N.V.
+;
+; SPDX-License-Identifier: Apache-2.0
+
 (ns schema-transformer.core
   (:require [cli-matic.core :refer [run-cmd]]
             [clojure.spec.alpha :as spec]
