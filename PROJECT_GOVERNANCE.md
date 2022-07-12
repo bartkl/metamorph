@@ -18,11 +18,8 @@ The Technical Steering Committee (TSC) is responsible for:
 
 The community council consists of the following members:
 1. [Joep van Genuchten](https://github.com/JoepvanGenuchten) Product Owner - Team 
-<!---(1. Solution Architect - Team X
-1. Lead Developer  - Team X
-1. Lead Developer - Team Y)
--->
-Product Owner - Team X will chair the TSC.
+
+Joep van Genuchten will chair the TSC.
 
 ## Maintainers
 
