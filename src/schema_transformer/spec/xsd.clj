@@ -1,3 +1,7 @@
+; SPDX-FileCopyrightText: 2022 Alliander N.V.
+;
+; SPDX-License-Identifier: Apache-2.0
+
 (ns schema-transformer.spec.xsd
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as string]))
