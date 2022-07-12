@@ -1,3 +1,7 @@
+; SPDX-FileCopyrightText: 2022 Alliander N.V.
+;
+; SPDX-License-Identifier: Apache-2.0
+
 (defproject schema-transformer "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
@@ -10,4 +14,4 @@
                  [ont-app/vocabulary "0.1.7"]
                  [cli-matic "0.5.3"]
                  [org.clojure/test.check "1.1.1"]
-                 [org.clojars.quoll/asami "2.3.1-SNAPSHOT"]])
+                 [org.clojars.quoll/asami "2.3.2"]])

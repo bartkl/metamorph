@@ -1,5 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2021 Alliander N.V.
+SPDX-FileCopyrightText: 2022 Alliander N.V.
+
 SPDX-License-Identifier: Apache-2.0
 -->
 
@@ -27,7 +28,7 @@ doesn't comply with the license.)
 
 Apache 2.0 header:
 
-    SPDX-FileCopyrightText: 2021 Alliander N.V.
+    SPDX-FileCopyrightText: <YEAR> Alliander N.V.
     SPDX-License-Identifier: Apache-2.0
 
 ## Git branching

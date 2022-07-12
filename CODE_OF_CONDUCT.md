@@ -1,6 +1,7 @@
 <!--
-SPDX-FileCopyrightText: 2021 Alliander N.V.
-SPDX-License-Identifier: Apache-2.0
+SPDX-FileCopyrightText: 2014 Coraline Ada Ehmke
+
+SPDX-License-Identifier: CC-BY-4.0
 -->
 
 # Code of Conduct
