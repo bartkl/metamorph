@@ -1,3 +1,7 @@
+; SPDX-FileCopyrightText: 2022 Alliander N.V.
+;
+; SPDX-License-Identifier: Apache-2.0
+
 (ns schema-transformer.rdf.datatype
   (:require [clojure.string :as string])
   (:import (org.eclipse.rdf4j.model.base CoreDatatype$XSD CoreDatatype$RDF)))

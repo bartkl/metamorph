@@ -1,3 +1,7 @@
+; SPDX-FileCopyrightText: 2022 Alliander N.V.
+;
+; SPDX-License-Identifier: Apache-2.0
+
 (ns schema-transformer.core
   (:require [cli-matic.core :refer [run-cmd]]
             [honey.sql :as sql]
@@ -100,6 +104,7 @@
 
   (mark-resources-as-entities conn)
 
+<<<<<<< HEAD
   (def a-shape
     (d/entity conn (vocab/keyword-for
                     "https://w3id.org/schematransform/ExampleShape#AShape") true))

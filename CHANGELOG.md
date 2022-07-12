@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2022 Alliander N.V.
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 

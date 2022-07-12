@@ -1,22 +1,28 @@
-# schema-transformer
+<!--
+SPDX-FileCopyrightText: 2022 Alliander N.V.
 
-A Clojure library designed to ... well, that part is up to you.
+SPDX-License-Identifier: Apache-2.0
+-->
 
-## Usage
+Schema Transformer
+==================
 
-FIXME
+Schema Transformer is a Clojure libary that allows the generation of a variety of schemas from a semantic information model in the form of a DX-PROF profile.
 
-## License
+# License
+This project is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
 
-Copyright © 2022 FIXME
+## Third-party libraries
+This project includes third-party libraries, 
+which are licensed under their own respective Open-Source licenses.
+SPDX-License-Identifier headers are used to show which license applies. 
+The concerning license files can be found in the LICENSES directory.
 
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
+# Contributing
+Please read [CONTRIBUTING](./CONTRIBUTING.md) and [CODE OF CONDUCT](./CODE_OF_CONDUCT.md) if you're interested in contributing to the project.
 
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+# More information
+Please check out the [wiki](https://github.com/alliander-opensource/schema-transformer/wiki).
+
+# Contact
+Please read [SUPPORT](SUPPORT.md) for how to connect and get into contact with the Schema Transformer project.
