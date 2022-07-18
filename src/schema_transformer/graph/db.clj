@@ -14,5 +14,14 @@
               :where [?subj _ _]]
             conn)))
 
-(def mark-entity #(vector % :a/entity true))
-(def add-id #(vector % :id %))
+(defn store [statements conn])
+
+(defn- mark-entity [n] (vector n :a/entity true))
+(defn- add-id [n] (vector n :id n))
+
+(defn mark-resources-as-entities [conn]
+  @(d/transact conn {:tx-triples
+                     (mapcat #(list
+                               (mark-entity %)
+                               (add-id %))
+                             (get-resources conn))}))

@@ -58,13 +58,6 @@
 
                :runs transform-schema}]})
 
-(defn mark-resources-as-entities [conn]
-  @(d/transact conn {:tx-triples
-                     (mapcat #(list
-                               (graph.db/mark-entity %)
-                               (graph.db/add-id %))
-                             (graph.db/get-resources conn))}))
-
 (defn -main
   "This is our entry point.
   Just pass parameters and configuration.
@@ -79,7 +72,7 @@
     (let [conn (d/connect db-uri)]
       data
       @(d/transact conn {:tx-triples data})
-      (mark-resources-as-entities conn)
+      (graph.db/mark-resources-as-entities conn)
 
       (->> (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true)
            (avro-schema)
@@ -99,10 +92,11 @@
 
          @(d/transact conn {:tx-triples model})
 
-         (mark-resources-as-entities conn)
+         (graph.db/mark-resources-as-entities conn)
 
          (def b-shape (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true))
          (def s (avro-schema b-shape))
          (l/edn s)
 
-         (spit "testBShape.json" (l/json s)))
+         (spit "testBShape.json" (l/json s))
+         )
