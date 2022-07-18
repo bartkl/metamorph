@@ -9,6 +9,7 @@
             [deercreeklabs.lancaster :as l]
             [asami.core :as d]
             [clojure.java.io :as io]
+            [ont-app.vocabulary.core :as vocab]
             [schema-transformer.rdf.reading :as rdf]
             [schema-transformer.schemas.avro.schema :refer [avro-schema]]
             [schema-transformer.graph.db :as graph.db]
@@ -91,7 +92,7 @@
         ;;  (take 20 model)
 
          (graph.db/store-resources! conn model)
-         (def b-shape (graph.db/resource conn "https://w3id.org/schematransform/ExampleShape#BShape"))
+         (def b-shape (graph.db/resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape")))
          (def s (avro-schema b-shape))
          (l/edn s)
 

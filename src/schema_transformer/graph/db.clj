@@ -34,4 +34,4 @@
     (store! conn metadata)))
 
 (defn resource [conn iri]
-  (d/entity conn (vocab/keyword-for iri) true))
+  (d/entity conn iri true))
