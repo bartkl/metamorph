@@ -7,7 +7,7 @@
             [schema-transformer.graph.db :as graph.db]
             [clojure.string :as string]))
 
-(defn blak-node? [kw]
+(defn blank-node? [kw]
   (string/starts-with? (str kw) ":_:"))
 
 (declare properties)
@@ -24,8 +24,7 @@
      (if (map? prop) (list prop) prop)
      (filter #(not (graph.db/node-ref? (:sh/node %)))))))
 
-(defn properties [node-shape & {:keys [inherit]
-                                :or {inherit true}}]
+(defn properties [node-shape]
   (into #{} (concat
              (own-properties node-shape)
-             (when (true? :inherit) (inherited-properties node-shape)))))
+             (inherited-properties node-shape))))

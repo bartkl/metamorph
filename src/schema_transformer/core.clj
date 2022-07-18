@@ -10,7 +10,6 @@
             [asami.core :as d]
             [clojure.java.io :as io]
             [schema-transformer.rdf.reading :as rdf]
-            [ont-app.vocabulary.core :as vocab]
             [schema-transformer.schemas.avro.schema :refer [avro-schema]]
             [schema-transformer.graph.db :as graph.db]
             [schema-transformer.vocabs.prof :as prof]
@@ -65,18 +64,18 @@
   [& args]
 
   ;; (run-cmd args cli/conf))
-  (let [db-uri "asami:mem://profile"
-        data (rdf/read-directory (io/file "resources/example_profile/"))]
-    (d/create-database db-uri)
+  ;; (let [db-uri "asami:mem://profile"
+  ;;       data (rdf/read-directory (io/file "resources/example_profile/"))]
+  ;;   (d/create-database db-uri)
 
-    (let [conn (d/connect db-uri)]
-      data
-      @(d/transact conn {:tx-triples data})
-      (graph.db/mark-resources-as-entities conn)
+  ;;   (let [conn (d/connect db-uri)]
+  ;;     data
+  ;;     @(d/transact conn {:tx-triples data})
+  ;;     (graph.db/mark-resources-as-entities conn)
 
-      (->> (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true)
-           (avro-schema)
-           (l/edn)))))
+  ;;     (->> (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true)
+  ;;          (avro-schema)
+  ;;          (l/edn)))))
 
 (comment "Playground."
          (def db-uri "asami:mem://profile")
@@ -88,13 +87,10 @@
          (def model
            (rdf/read-directory (io/file "resources/example_profile/")))
 
-         (take 20 model)
+        ;;  (take 20 model)
 
-         @(d/transact conn {:tx-triples model})
-
-         (graph.db/mark-resources-as-entities conn)
-
-         (def b-shape (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true))
+         (graph.db/store-resources! conn model)
+         (def b-shape (graph.db/resource conn "https://w3id.org/schematransform/ExampleShape#BShape"))
          (def s (avro-schema b-shape))
          (l/edn s)
 
