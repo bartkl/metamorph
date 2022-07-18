@@ -18,14 +18,18 @@
 (defn store! [conn statements]
   @(d/transact conn {:tx-triples statements}))
 
+(defn mark-entity [resource]
+  [resource :a/entity true])
+
+(defn add-id [resource]
+  [resource :id resource])
+
 (defn store-resources! [conn statements]
   (store! conn statements)
   (let [resources (resource-iris conn)
-        entity-for (fn [resource] [resource :a/entity true])
-        id-for (fn [resource] [resource :id resource])
         metadata (mapcat #(list
-                           (entity-for %)
-                           (id-for %))
+                           (mark-entity %)
+                           (add-id %))
                          resources)]
     (store! conn metadata)))
 
