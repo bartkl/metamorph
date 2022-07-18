@@ -3,8 +3,8 @@
 ; SPDX-License-Identifier: Apache-2.0
 
 (ns schema-transformer.graph.db
-  (:require [asami.core :as d]
-            [ont-app.vocabulary.core :as vocab]))
+  (:require [asami.core :as d]))
+            
 
 (defn node-ref? [m]
   (= (keys m) '(:id)))
