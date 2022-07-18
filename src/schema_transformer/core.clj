@@ -62,6 +62,7 @@
   Just pass parameters and configuration.
   Commands (functions) will be invoked as appropriate."
   [& args]
+  identity)
 
   ;; (run-cmd args cli/conf))
   ;; (let [db-uri "asami:mem://profile"
@@ -94,5 +95,4 @@
          (def s (avro-schema b-shape))
          (l/edn s)
 
-         (spit "testBShape.json" (l/json s))
-         )
+         (spit "testBShape.json" (l/json s)))
