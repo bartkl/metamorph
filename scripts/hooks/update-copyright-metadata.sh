@@ -22,6 +22,5 @@ reuse addheader \
     --license "$LICENSE" \
     --skip-unrecognised \
     --merge-copyrights \
-    . \
 | grep -v -e '^Skipped ' \
           -e '^Successfully changed header '
