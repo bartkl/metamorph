@@ -6,7 +6,9 @@
   (:require [asami.core :as d]))
             
 
-(defn node-ref? [m]
+(defn node-ref?
+  "Checks if the provided hash-map is an Asami node reference."
+  [m]
   (= (keys m) '(:id)))
 
 (defn- resource-iris [conn]
