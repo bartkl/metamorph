@@ -17,9 +17,6 @@
             [schema-transformer.vocabs.role :as role]
             [schema-transformer.cli :as cli]))
 
-;; To run this, try from the project root:
-;; ./toycalc-nosub.clj -a 1 -b 80
-
 (defn transform-schema [& args]
   (println args))
 
