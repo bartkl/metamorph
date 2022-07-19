@@ -17,7 +17,7 @@ git ls-files \
 | grep -v -e CODE_OF_CONDUCT.md \
 | xargs \
 reuse addheader \
-    --copyright "$OWNER" \
+    --copyright "$COPYRIGHT" \
     --year "$YEAR" \
     --license "$LICENSE" \
     --skip-unrecognised \
