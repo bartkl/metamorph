@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2022 
+# SPDX-FileCopyrightText: 2022 Alliander N.V.
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -21,6 +21,6 @@ reuse addheader \
     --year "$YEAR" \
     --license "$LICENSE" \
     --skip-unrecognised \
-    --merge-copyrights \
-| grep -v -e '^Skipped ' \
-          -e '^Successfully changed header '
+    --merge-copyrights
+# | grep -v -e '^Skipped ' \
+        #   -e '^Successfully changed header '
