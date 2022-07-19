@@ -68,7 +68,7 @@
 (defn- property->record-field [prop]
   (let [type (condp #(get %2 %1) prop  ;; TODO: Improve
                :sh/datatype :>> xsd->avro
-               :sh/node :>> #(when (not (graph.db/node-ref? %)) (avro-schema %))
+               :sh/node :>> #(when-not (graph.db/node-ref? %) (avro-schema %))
                nil)]
     [(record-field-name prop)
      (record-field-doc prop)
