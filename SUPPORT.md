@@ -5,13 +5,13 @@ SPDX-License-Identifier: Apache-2.0
 -->
 
 # Getting and providing support
-There are a few ways to connect with the Schema Transformer project:
+There are a few ways to connect with the Metamorph project:
 
 * Submit an issue on GitHub.
 * Send an e-mail to the Technical Steering Committee: <joep.van.genuchten@alliander.com>.
 
 ## How to ask for help, suggest a feature, or give recommendations
-If you have trouble installing, building, or using the Schema Transformer, 
+If you have trouble installing, building, or using Metamorph, 
 but there's not yet reason to suspect you've encountered a genuine bug,
 you can ask a question in the issues tab of the repository.
 
