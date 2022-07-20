@@ -29,7 +29,6 @@
   (let [actual (node-ref? (get-in (d/entity *conn* 1) [:colleague :colleague]))]
     (is (= true actual))))
 
-
 (deftest test-store-resources!)
 
 (deftest test-resource)

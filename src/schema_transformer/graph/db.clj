@@ -4,7 +4,7 @@
 
 (ns schema-transformer.graph.db
   (:require [asami.core :as d]))
-            
+
 (defn node-ref?
   "Checks if the provided hash-map is an Asami node reference."
   [m]
