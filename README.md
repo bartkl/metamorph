@@ -4,25 +4,19 @@ SPDX-FileCopyrightText: 2022 Alliander N.V.
 SPDX-License-Identifier: Apache-2.0
 -->
 
-Schema Transformer
+Metamorph
 ==================
 
-Schema Transformer is a Clojure libary that allows the generation of a variety of schemas from a semantic information model in the form of a DX-PROF profile.
+_Metamorph_ is a Clojure libary that allows the generation of a variety of schemas from a DX-PROF profile.
 
-# License
-This project is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
+## License
+This project is licensed under the [Apache License, Version 2.0](LICENSE).
 
-## Third-party libraries
-This project includes third-party libraries, 
-which are licensed under their own respective Open-Source licenses.
-SPDX-License-Identifier headers are used to show which license applies. 
-The concerning license files can be found in the LICENSES directory.
+### Third-party libraries and files
+This project includes third-party libraries and files which are licensed under their own respective Open-Source licenses. SPDX-License-Identifier headers are used to show which license applies. The concerning license files can be found in the LICENSES directory.
 
-# Contributing
-Please read [CONTRIBUTING](./CONTRIBUTING.md) and [CODE OF CONDUCT](./CODE_OF_CONDUCT.md) if you're interested in contributing to the project.
+## Contributing
+Please read [Contributing](./CONTRIBUTING.md) if you're interested in contributing to the project.
 
-# More information
-Please check out the [wiki](https://github.com/alliander-opensource/schema-transformer/wiki).
-
-# Contact
-Please read [SUPPORT](SUPPORT.md) for how to connect and get into contact with the Schema Transformer project.
+## Contact
+Please refer to [Support](SUPPORT.md).
