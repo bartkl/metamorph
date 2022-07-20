@@ -4,38 +4,107 @@ SPDX-FileCopyrightText: 2022 Alliander N.V.
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# How to Contribute
+# Contributing
 This document describes what you can do to contribute to the project, how to go about it, and what is expected of you.
 
 Please also refer to our [Code of Conduct](CODE_OF_CONDUCT.md).
 
-## What you can do
-There are several ways you can contribute to the project:
+*Note*: the project is currently at an early stage, so it's generally advisable to [contact us](SUPPORT.md) before you contribute.
+
+
+## Things you could do
+There are several ways you can contribute to the project. To give you a quick idea:
 
 * **Development**
-    * Implement or enhance features
-    * Increase test coverage
-    * Perform small refactors
-* **Documentation**
-    * Improve our documentation, particularly the Wiki and the documents in the project root
-* **Engage**
-    * Report bugs
-    * Share your thoughts on discussions and issues
-    * Submit requests for new features or enhancements
-    * Help us promote the project and find new users and contributors
+    * Implement or enhance features.
+    * Increase test coverage.
+    * Perform small refactors.
 * **Transformation specification**
-    * Help us map highly expressive semantic models to technical models
+    * Help us map highly expressive semantic models onto technical models.
+* **Documentation**
+    * Improve the Wiki and project documents.
+* **Engage**
+    * Report bugs.
+    * Submit requests for new features or enhancements.
+    * Share your thoughts on discussions and issues.
+    * Help us promote the project and find new users and contributors.
 
-We have a way of working and guidelines one needs to conform to. These will be laid out shortly.
+## How to contribute
+First, make sure you're familiar with our [Way of Working](wiki), most notably how we use GitHub's *Issues*, *Discussions* and *Projects*.
+
+The follow steps will then guide you through the process.
+
+1. **Check out the currently existing issues and discussions.**<br />See []
+    * 
+2. **Make sure what you (plan to) do is described in an issue or discussion.**<br />If none exists yet, create one.<br />
+    * We maintain an overview of our work inventory and planning.
+    * It will encourage you to think well about what it is you wish to contribute, and enable others to refine and discuss this.
+    * If for some reason you wish to deviate from this way of working, you are free to do so *at own risk* of rejection.
+
+2. 
+
+
+<!-- Furthermore, we have a way of working and guidelines one needs to conform to. These will be explained below as it becomes relevant. -->
+
+
+
+
+
+
+
+
+## How to contribute
+## Places to Look
+The following places give insight in what work is currently inventorized and planned.
+
+* [**Issues**](https://github.com/alliander-opensource/schema-transformer/issues)
+    * This is where all issues are maintained, including where new ones should be submitted.
+* [**Kanban board**](https://github.com/orgs/alliander-opensource/projects/3)
+    * Provides a view of planned issues, their progress and assignees.
+* [**Discussions**](https://github.com/alliander-opensource/schema-transformer/discussions)
+    * Here discussions take place.
+
+Go about it as follows:
+
+1. **Make sure what you plan to do is described in an issue.** If no issue or discussion exists yet, create one.
+    * 
+
+This way we can maintain an overview of our work inventory and planning. Furthermore it will encourage you to think well about what it is you wish to contribute, and enable others to refine and discuss this. The last thing we want is for you to waste your time.  If for some reason, however, you do wish to deviate from this way of working, you are free to do so *at own risk*.
+    * If no issue exists yet, create one.
+    * 
+
+To contribute, make sure there is an issue or discussion to which the contribution applies, or create one in case none exists. This way we can maintain an overview of our work inventory and planning. Furthermore it will encourage you to think well about what it is you wish to contribute, and enable others to refine and discuss this. The last thing we want is for you to waste your time.  If for some reason, however, you do wish to deviate from this way of working, you are free to do so *at own risk*.
+
+
+
+
+Furthermore, we have a way of working and guidelines one needs to conform to. These will be explained below as it becomes relevant.
+
+*Note*: the project is currently at an early stage, so it's generally advisable to [contact us](SUPPORT.md) before you contribute.
+
+
+
 
 ### Development
-If you are interested in contributing as a developer, 
+When the project reaches a higher level of maturity, we will update this section.
+If you like to contribute as a developer, please [contact us](SUPPORT.md).
 
-#### Quality guidelines
 
-
+For more information, refer to the wiki at [Development].
+<!-- - copyright/license metadata
+- linting set-up
+- git workflow (don't refer to Git flow unless we know exactly where we do and don't adhere to it)
+- code review requirements -->
 
 ## Engage
+There are plenty of non-technical ways in which you can contribute. You may want to look at these places to get started:
+
+* https://github.com/alliander-opensource/schema-transformer/issues
+* Discussions
+* The [Support](SUPPORT.md) document
+
+
+
 
 
 You can file bugs against and change requests for the project via github issues. Consult [GitHub Help](https://docs.github.com/en/free-pro-team@latest/github/managing-your-work-on-github/creating-an-issue) for more
