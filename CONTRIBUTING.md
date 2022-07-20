@@ -5,19 +5,44 @@ SPDX-License-Identifier: Apache-2.0
 -->
 
 # How to Contribute
+This document describes what you can do to contribute to the project, how to go about it, and what is expected of you.
 
-We'd love to accept your patches and contributions to this project. There are
-just a few small guidelines you need to follow.
+Please also refer to our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## What you can do
+There are several ways you can contribute to the project:
+
+* **Development**
+    * Implement or enhance features
+    * Increase test coverage
+    * Perform small refactors
+* **Documentation**
+    * Improve our documentation, particularly the Wiki and the documents in the project root
+* **Engage**
+    * Report bugs
+    * Share your thoughts on discussions and issues
+    * Submit requests for new features or enhancements
+    * Help us promote the project and find new users and contributors
+* **Transformation specification**
+    * Help us map highly expressive semantic models to technical models
+
+We have a way of working and guidelines one needs to conform to. These will be laid out shortly.
+
+### Development
+If you are interested in contributing as a developer, 
+
+#### Quality guidelines
 
 
-## Filing Bugs and change requests
+
+## Engage
+
 
 You can file bugs against and change requests for the project via github issues. Consult [GitHub Help](https://docs.github.com/en/free-pro-team@latest/github/managing-your-work-on-github/creating-an-issue) for more
 information on using github issues.
 
-## Community Guidelines
 
-This project follows the following [Code of Conduct](CODE_OF_CONDUCT.md).
+## 
 
 ## Source Code Headers
 
