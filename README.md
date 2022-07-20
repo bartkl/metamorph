@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 Metamorph
 ==================
 
-_Metamorph_ is a Clojure libary that allows the generation of a variety of schemas from a DX-PROF profile.
+_Metamorph_ is a Clojure libary that allows the generation of a variety of schemas from a [DX-PROF](https://www.w3.org/TR/dx-prof/) profile.
 
 ## License
 This project is licensed under the [Apache License, Version 2.0](LICENSE).
