@@ -3,7 +3,7 @@
 ; SPDX-License-Identifier: Apache-2.0
 
 (ns schema-transformer.rdf.reading
-  (:require [clojure.java.io :as io]
+  (:require [clojure.java.io :as jio]
             [clojure.set :as set]
             [ont-app.vocabulary.core :as vocab]
             [schema-transformer.rdf.datatype :as datatype]
@@ -32,26 +32,25 @@
        (.isIRI object) (vocab/keyword-for (str object))
        :else (vocab/keyword-for (str object)))]))  ;;  Blank node
 
-(defn read-file
-  "Reads RDF file."
+(defn- triples [rdr]
+  (eduction (map simple-statement->triple) rdr))
+
+(defmulti read-triples
+  "Reads triples from RDF files."
+  {:arglists '([path])}
+  utils.file/type :default :invalid-type)
+
+(defmethod read-triples :directory
   [path]
-
-  ;; {:pre [(.isFile path)]}
-
-  (with-open [rdr (clojure.java.io/reader path)]
-    (let [ctxs (into-array IRI [])]
-      (into (hash-set)
-            (map simple-statement->triple
-                 (Rio/parse rdr RDFFormat/TURTLE ctxs))))))
-
-(defn read-directory
-  "Reads all RDF files found in `path` and returns a set of all
-   statements."
-  [path]
-
-  {:pre [(.isDirectory path)]}
-
   (->> (file-seq path)
        (filter #(supported-file-exts (utils.file/ext %)))
-       (map read-file)
+       (map read-triples)
        (reduce set/union)))
+
+(defmethod read-triples :file
+  [path]
+  (with-open [rdr (jio/reader path)]
+    (let [ctxs (into-array IRI [])]
+      (reduce conj '() (triples (Rio/parse rdr RDFFormat/TURTLE ctxs))))))
+
+(defmethod read-triples :invalid-type [_] "je moeder")
