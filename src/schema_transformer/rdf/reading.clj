@@ -32,9 +32,6 @@
        (.isIRI object) (vocab/keyword-for (str object))
        :else (vocab/keyword-for (str object)))]))  ;;  Blank node
 
-(defn- triples [rdr]
-  (eduction (map simple-statement->triple) rdr))
-
 (defmulti read-triples
   "Reads triples from RDF files."
   {:arglists '([path])}
@@ -51,6 +48,7 @@
   [path]
   (with-open [rdr (jio/reader path)]
     (let [ctxs (into-array IRI [])]
-      (reduce conj '() (triples (Rio/parse rdr RDFFormat/TURTLE ctxs))))))
+      (->> (Rio/parse rdr RDFFormat/TURTLE ctxs)
+           (map simple-statement->triple)))))
 
 (defmethod read-triples :invalid-type [_] "je moeder")
