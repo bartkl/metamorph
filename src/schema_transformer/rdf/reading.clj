@@ -34,13 +34,14 @@
 
 (defmulti read-triples
   "Reads triples from RDF files."
+
   {:arglists '([path])}
   utils.file/type :default :invalid-type)
 
 (defmethod read-triples :directory
   [path]
   (->> (file-seq path)
-       (filter #(supported-file-exts (utils.file/ext %)))
+       (filter (comp supported-file-exts utils.file/ext))
        (map read-triples)
        (reduce set/union)))
 
