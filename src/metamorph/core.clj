@@ -108,5 +108,6 @@
 
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
   (sql/format (sql.schema/node-shape->table b-shape))
+
   (->> (sql.schema/sql-schema node-shapes)
        (spit "testSql.sql")))
