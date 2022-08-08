@@ -2,9 +2,9 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.graph.shacl
-  (:require [schema-transformer.rdf.datatype :as datatype]
-            [schema-transformer.graph.db :as graph.db]
+(ns metamorph.graph.shacl
+  (:require [metamorph.rdf.datatype :as datatype]
+            [metamorph.graph.db :as graph.db]
             [clojure.string :as string]))
 
 (defn blank-node? [kw]

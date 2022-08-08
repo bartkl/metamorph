@@ -2,6 +2,6 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.vocabs.role
+(ns metamorph.vocabs.role
   {:vann/preferredNamespacePrefix "role"
    :vann/preferredNamespaceUri "http://www.w3.org/ns/dx/prof/role/"})

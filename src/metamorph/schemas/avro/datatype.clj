@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.schemas.avro.datatype
+(ns metamorph.schemas.avro.datatype
   (:require [deercreeklabs.lancaster :as l]))
 
 (def xsd->avro

@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.schemas.avro.cardinality
+(ns metamorph.schemas.avro.cardinality
   (:require [deercreeklabs.lancaster :as l]))
 
 (def cardinality->schema-fn
