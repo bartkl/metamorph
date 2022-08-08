@@ -30,16 +30,8 @@
 (s/def :rdf/predicate iri?)
 (s/def :rdf/object :rdf/literal)
 
-(s/def :rdf/statement (s/tuple :rdf/subject :rdf/predicate :rdf/object))
+(s/def :rdf/triple (s/tuple :rdf/subject :rdf/predicate :rdf/object))
 
 (comment
   (def r {:rdf/first 1 :rdf/rest :rdf/nil})
   (s/explain :rdf/List :rdf/nil))
-
-(s/fdef schema-transformer.rdf.reading/read-file
-  :args (s/cat :path file?)
-  ;; :args (s/cat :path int?)
-  :ret (s/coll-of :rdf/statement))
-
-(defn hello [x]
-  (str "Hello " x))
