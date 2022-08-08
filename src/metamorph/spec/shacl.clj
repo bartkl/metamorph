@@ -54,7 +54,6 @@
       (<= (:sh/minCount %) (:sh/maxCount %))
       true)))
 
-
 (s/def :sh/nodeShape
   (s/keys :req [:sh/targetClass]
           :opt [:sh/property

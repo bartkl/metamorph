@@ -8,7 +8,7 @@
 
 ;; TODO: Look into ways of doing this programmatically,
 ;;  perhaps using `specs-for-ns`.
-(s/def :xsd/datatype  
+(s/def :xsd/datatype
   (s/or
    :string string?
    :double double?

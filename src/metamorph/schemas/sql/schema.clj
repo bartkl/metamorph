@@ -95,8 +95,8 @@
         (h/with-columns
           [[left-col left-datatype [:foreign-key] [:references (keyword left-table) (keyword left-primary-key)]]
            (if (some? right-primary-key)
-              [right-col right-datatype [:foreign-key] [:references (keyword right) (keyword right-primary-key)]]
-              [right-col right-datatype])
+             [right-col right-datatype [:foreign-key] [:references (keyword right) (keyword right-primary-key)]]
+             [right-col right-datatype])
            [[:constraint (keyword (str (name (property-name p)) "_" "pkey"))] [:primary-key left-col right-col]]]))))
 
 (defn node-shape->link-tables [n]

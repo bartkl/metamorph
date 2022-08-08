@@ -32,10 +32,8 @@
 
 (run-tests)
 
-
 (comment
   (spec-test/check `SUT/read-file)
   (let [ttl (io/file "dev-resources/example_profile/Constraints.ttl")
         actual (SUT/read-file ttl)]
-    (println actual))
-  )
+    (println actual)))
