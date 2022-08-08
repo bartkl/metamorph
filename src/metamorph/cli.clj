@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.cli
+(ns metamorph.cli
   (:require [clojure.spec.alpha :as spec]
             [expound.alpha :as expound]))
 
@@ -13,7 +13,7 @@
   (fn [& args] false) "Erreur args to avro")
 
 (def conf
-  {:app {:command "schema-transformer"
+  {:app {:command "metamorph"
          :description "Tool to transform dx-prof/CIM501 profiles to a variety of schema"
          :version "0.0.1"}
    :global-opts [{:as "Manifest file which describes the changed files since last run"
