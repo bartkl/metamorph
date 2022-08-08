@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.spec.rdf
+(ns metamorph.spec.rdf
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as string]
             [clojure.spec.test.alpha :as spec-test])

@@ -2,13 +2,13 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.spec.shacl
+(ns metamorph.spec.shacl
   (:require [clojure.spec.alpha :as s]
             [clojure.string :as string]
             [clojure.set :as set]
-            [schema-transformer.graph.db :refer [node-ref?]]
-            [schema-transformer.spec.xsd]
-            [schema-transformer.spec.owl])
+            [metamorph.graph.db :refer [node-ref?]]
+            [metamorph.spec.xsd]
+            [metamorph.spec.owl])
   (:import (java.net URI URISyntaxException)))
 
 ;; (defn specs-for-ns [ns']

@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.spec.owl
+(ns metamorph.spec.owl
   (:require [clojure.spec.alpha :as s]))
 
 ;; TODO: Implement?

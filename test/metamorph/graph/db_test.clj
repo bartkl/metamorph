@@ -2,9 +2,9 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.graph.db-test
+(ns metamorph.graph.db-test
   (:require [clojure.test :refer :all]
-            [schema-transformer.graph.db :as SUT]))
+            [metamorph.graph.db :as SUT]))
 
 (defn asami-db [test-run]
   ;; Setup
