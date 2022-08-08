@@ -2,12 +2,12 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.rdf.reading
-  (:require [clojure.java.io :as jio]
+(ns metamorph.rdf.reading
+  (:require [clojure.java.io :as io]
             [clojure.set :as set]
             [ont-app.vocabulary.core :as vocab]
-            [schema-transformer.rdf.datatype :as datatype]
-            [schema-transformer.utils.file :as utils.file])
+            [metamorph.rdf.datatype :as datatype]
+            [metamorph.utils.file :as utils.file])
   (:import (org.eclipse.rdf4j.rio Rio)
            (org.eclipse.rdf4j.model IRI)
            (org.eclipse.rdf4j.rio RDFFormat)))

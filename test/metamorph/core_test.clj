@@ -2,9 +2,9 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.core-test
+(ns metamorph.core-test
   (:require [clojure.test :refer :all]
-            [schema-transformer.core :as SUT]))
+            [metamorph.core :as SUT]))
 
 (deftest a-test
   (testing "FIXME, I fail."

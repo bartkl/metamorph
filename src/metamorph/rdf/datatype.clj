@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.rdf.datatype
+(ns metamorph.rdf.datatype
   (:require [clojure.string :as string])
   (:import (org.eclipse.rdf4j.model.base CoreDatatype$XSD CoreDatatype$RDF)))
 

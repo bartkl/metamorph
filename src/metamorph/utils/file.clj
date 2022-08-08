@@ -2,8 +2,8 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.utils.file
-  (:require [clojure.java.io :as jio])
+(ns metamorph.utils.file
+  (:require [clojure.java.io :as io])
   (:import (java.io File)))
 
 (defn ext [f]
