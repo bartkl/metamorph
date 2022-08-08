@@ -100,13 +100,14 @@
   (spit "testBShape.json" (l/json s)))
 
   ;; SQL.
-  (def node-shapes-names
-    (flatten (graph.shacl/get-node-shapes conn)))
+(def node-shapes-names
+  (flatten (graph.shacl/get-node-shapes conn)))
 
-  (def node-shapes (->> node-shapes-names
-                        (map #(d/entity conn % true))))
+(def node-shapes (->> node-shapes-names
+                      (map #(d/entity conn % true))))
 
-  (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
-  (sql/format (sql.schema/node-shape->table b-shape))
-  (->> (sql.schema/node-shapes->schema node-shapes) (spit "testSql.sql"))
+(map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
+(sql/format (sql.schema/node-shape->table b-shape))
+(->> (sql.schema/node-shapes->schema node-shapes)
+     (spit "testSql.sql"))
 
