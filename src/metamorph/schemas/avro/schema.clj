@@ -11,72 +11,71 @@
             [metamorph.schemas.avro.datatype :refer [xsd->avro]]
             [metamorph.utils.uri :as utils.uri]))
 
-(declare property->record-field)
-(declare avro-schema)
+(declare property->record-field
+         avro-schema)
 
 ;; Enum
-(defn- enum-name [shape]
+(defn- enum-name [n]
   (utils.uri/iri-local-name
-   (get-in shape [:sh/targetClass :id :id])))
+   (get-in n [:sh/targetClass :id :id])))
 
-(defn- enum-doc [shape]
-  (let [target-class (get shape :sh/targetClass)]
+(defn- enum-doc [n]
+  (let [target-class (get n :sh/targetClass)]
     (target-class :rdfs/comment)))
 
 (defn- enum-symbol [node]
   (utils.uri/iri-local-name
    (get-in node [:id :id])))
 
-(defn- shape->enum [shape]
+(defn- node-shape->enum [n]
   (l/enum-schema
-   (enum-name shape)
-   (enum-doc shape)
-   (map enum-symbol (rdf-list->seq (:sh/in shape)))))
+   (enum-name n)
+   (enum-doc n)
+   (map enum-symbol (rdf-list->seq (:sh/in n)))))
 
 ;; Record
-(defn- record-name [shape]
+(defn- record-name [n]
   (utils.uri/iri-local-name
-   (get-in shape [:sh/targetClass :id :id])))
+   (get-in n [:sh/targetClass :id :id])))
 
-(defn- record-doc [shape]
-  (let [target-class (get shape :sh/targetClass)]
-    (target-class :rdfs/comment)))
+(defn- record-doc [n]
+  (get-in n [:sh/targetClass :rdfs/comment]))
 
-(defn- shape->record [shape]
-  (let [properties (remove shacl/property-node-ref? (shacl/properties shape))]
+(defn- node-shape->record [n]
+  (let [properties (remove shacl/property-node-ref? (shacl/properties n))]
     (l/record-schema
-     (record-name shape)
-     (record-doc shape)
+     (record-name n)
+     (record-doc n)
      (if (some? properties)
        (map property->record-field properties)
        (vector)))))
 
 ;; Record field
-(defn- record-field-name [property]
-  (utils.uri/iri-local-name (get-in property [:sh/path :id :id])))
+(defn- record-field-name [p]
+  (utils.uri/iri-local-name (get-in p [:sh/path :id :id])))
 
-(defn- record-field-doc [property]
-  (get-in property [:sh/path :rdfs/comment] ""))
+(defn- record-field-doc [p]
+  (get-in p [:sh/path :rdfs/comment] ""))
 
-(defn- record-field-schema [node type]
-  (let [min-count (:sh/minCount node 0)
-        max-count (:sh/maxCount node ##Inf)]
+(defn- record-field-schema [n type]
+  (let [min-count (:sh/minCount n 0)
+        max-count (:sh/maxCount n ##Inf)]
     ((cardinality->schema-fn [(min min-count 1)
                               (if (> max-count 1) :* max-count)])
      type)))
 
-(defn- property->record-field [prop]
-  (let [type (condp #(get %2 %1) prop  ;; TODO: Improve
+(defn- property->record-field [p]
+  (let [type (condp #(get %2 %1) p  ;; TODO: Improve
                :sh/datatype :>> xsd->avro
                :sh/node :>> avro-schema
                nil)]
-    [(record-field-name prop)
-     (record-field-doc prop)
+    [(record-field-name p)
+     (record-field-doc p)
      :required   ;; Hack required to disable optionality. Maybe schemes and such do work though.
-     (record-field-schema prop type)]))
+     (record-field-schema p type)]))
 
 ;; Schema build entry point
-(defn avro-schema [shape]
-  (if (contains? shape :sh/in)
-    (shape->enum shape)
-    (shape->record shape)))
+(defn avro-schema [n]
+  (if (contains? n :sh/in)
+    (node-shape->enum n)
+    (node-shape->record n)))

@@ -111,7 +111,7 @@
                            node-shape->link-tables) %))
                ns)))
 
-(defn node-shapes->schema [ns]
+(defn sql-schema [ns]
   (str
    (->> (node-shapes->ddl ns)
         flatten
