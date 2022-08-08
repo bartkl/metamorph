@@ -2,10 +2,10 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.graph.db-test
+(ns metamorph.graph.db-test
   (:require [clojure.test :refer :all]
             [asami.core :as d]
-            [schema-transformer.graph.db :refer :all]))
+            [metamorph.graph.db :refer :all]))
 
 (def db-uri "asami:mem://test-db")
 (def ^:dynamic *conn* nil)

@@ -39,7 +39,7 @@ First, some preliminary reading:
 ### Steps to take
 Then, follow these steps to guide you through the process.
 
-1. **Check out currently existing issues and discussions.** Look at [Issues](https://github.com/alliander-opensource/schema-transformer/issues), [Kanban board](https://github.com/orgs/alliander-opensource/projects/3) and [Discussions](https://github.com/alliander-opensource/schema-transformer/discussions).
+1. **Check out currently existing issues and discussions.** Look at [Issues](https://github.com/alliander-opensource/metamorph/issues), [Kanban board](https://github.com/orgs/alliander-opensource/projects/3) and [Discussions](https://github.com/alliander-opensource/metamorph/discussions).
     * Maybe what you consider doing is already being worked on, or at least there might be an issue for it.
     * It may inspire or influence you to gain new ideas, or to revise your current one(s).
 2. **Create an issue or discussion where you describe your idea.** If a suitable issue/discussion exists already, carry on from there.<br />
