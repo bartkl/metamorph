@@ -34,26 +34,22 @@
        (.isIRI object) (vocab/keyword-for (str object))
        :else (vocab/keyword-for (str object)))]))  ;;  Blank node
 
-(defn read-triples-from-file
-  [path]
-  (with-open [rdr (jio/reader path)]
-    (let [ctxs (into-array IRI [])]
-      (->> (Rio/parse rdr RDFFormat/TURTLE ctxs)
-           (map simple-statement->triple)))))
-
-(defn read-triples-from-directory
-  [path]
-  (->> (file-seq path)
-       (filter file-supported?)
-       (map read-triples-from-directory)
-       (reduce set/union)))
-
 (defmulti read-triples
   "Reads triples from RDF files."
 
   {:arglists '([path])}
   utils.file/type :default :invalid-type)
 
-(defmethod read-triples :directory [path] (read-triples-from-directory path))
-(defmethod read-triples :file [path] (read-triples-from-file path))
-(defmethod read-triples :invalid-type [_] "je moeder")
+(defmethod read-triples :directory [path]
+  (->> (file-seq path)
+       (filter file-supported?)
+       (map read-triples)
+       (reduce set/union)))
+
+(defmethod read-triples :file [path]
+  (with-open [rdr (jio/reader path)]
+    (let [ctxs (into-array IRI [])]
+      (->> (Rio/parse rdr RDFFormat/TURTLE ctxs)
+           (map simple-statement->triple)))))
+
+(defmethod read-triples :invalid-type [_] "Please provide a path to a directory or file to read.")
