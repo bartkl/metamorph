@@ -10,12 +10,12 @@
             [asami.core :as d]
             [clojure.java.io :as io]
             [ont-app.vocabulary.core :as vocab]
-            [schema-transformer.rdf.reading :as rdf]
-            [schema-transformer.schemas.avro.schema :refer [avro-schema]]
-            [schema-transformer.graph.db :as graph.db]
-            [schema-transformer.vocabs.prof :as prof]
-            [schema-transformer.vocabs.role :as role]
-            [schema-transformer.cli :as cli]))
+            [metamorph.rdf.reading :as rdf]
+            [metamorph.schemas.avro.schema :refer [avro-schema]]
+            [metamorph.graph.db :as graph.db]
+            [metamorph.vocabs.prof :as prof]
+            [metamorph.vocabs.role :as role]
+            [metamorph.cli :as cli]))
 
 (defn transform-schema [& args]
   (println args))
