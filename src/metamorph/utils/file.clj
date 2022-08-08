@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.utils.file)
+(ns metamorph.utils.file)
 
 (defn ext [f]
   (last
