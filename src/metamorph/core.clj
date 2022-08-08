@@ -4,6 +4,7 @@
 
 (ns metamorph.core
   (:require [cli-matic.core :refer [run-cmd]]
+            [honey.sql :as sql]
             [clojure.spec.alpha :as spec]
             [expound.alpha :as expound]
             [deercreeklabs.lancaster :as l]
@@ -12,6 +13,8 @@
             [metamorph.rdf.reading :as rdf]
             [ont-app.vocabulary.core :as vocab]
             [metamorph.schemas.avro.schema :refer [avro-schema]]
+            [metamorph.schemas.sql.schema :as sql.schema]
+            [metamorph.graph.shacl :as graph.shacl]
             [metamorph.graph.db :as graph.db]
             [metamorph.vocabs.prof :as prof]
             [metamorph.vocabs.role :as role]
@@ -85,24 +88,51 @@
            (avro-schema)
            (l/edn)))))
 
-(comment "Playground."
-         (def db-uri "asami:mem://profile")
-         (d/create-database db-uri)
-         (d/delete-database db-uri)
+(comment
+  (def db-uri "asami:mem://profile")
+  (d/create-database db-uri)
+  (d/delete-database db-uri)
 
-         (def conn (d/connect db-uri))
+  (def conn (d/connect db-uri))
 
-         (def model
-           (rdf/read-directory (io/file "resources/example_profile/")))
+  (def model
+    (rdf/read-directory (io/file "/home/bartkl/Programming/alliander-opensource/SchemaTransformer/app/src/test/resources/rdfs")))
 
-         (take 20 model)
+  (take 20 model)
 
-         @(d/transact conn {:tx-triples model})
+  @(d/transact conn {:tx-triples model})
 
-         (mark-resources-as-entities conn)
+  (mark-resources-as-entities conn)
 
-         (def b-shape (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true))
-         (def s (avro-schema b-shape))
-         (l/edn s)
+  (def a-shape
+    (d/entity conn (vocab/keyword-for
+                    "https://w3id.org/schematransform/ExampleShape#AShape") true))
+  (def b-shape
+    (d/entity conn (vocab/keyword-for
+                    "https://w3id.org/schematransform/ExampleShape#BShape") true))
+  (def c-shape
+    (d/entity conn (vocab/keyword-for
+                    "https://w3id.org/schematransform/ExampleShape#CShape") true))
 
-         (spit "testBShape.json" (l/json s)))
+  (def s (avro-schema b-shape))
+  (l/edn s)
+
+  (def node-shapes-names
+    (flatten (graph.shacl/get-node-shapes conn)))
+
+  (def node-shapes (->> node-shapes-names
+                        (map #(d/entity conn % true))))
+
+  (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
+  (sql/format (sql.schema/->table b-shape))
+  ;; (sql.schema/->ddl b-shape c-shape)
+  ;; (->> (sql.schema/->schema [b-shape]) (spit "testSql.sql"))
+  (->> (sql.schema/node-shapes->schema node-shapes) (spit "testSql.sql"))
+  (map #(get % :create-table) (sql.schema/->schema node-shapes))
+
+  (->>
+   (sql.schema/->enum c-shape)
+   (map sql/format))
+
+
+  (spit "testBShape.json" (l/json s)))

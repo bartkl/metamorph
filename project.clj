@@ -13,4 +13,5 @@
                  [deercreeklabs/lancaster "0.9.17"]
                  [ont-app/vocabulary "0.1.7"]
                  [cli-matic "0.5.3"]
-                 [org.clojars.quoll/asami "2.3.2"]])
+                 [org.clojars.quoll/asami "2.3.2"]
+                 [com.github.seancorfield/honeysql "2.2.891"]])
