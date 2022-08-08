@@ -3,7 +3,7 @@
 ; SPDX-License-Identifier: Apache-2.0
 
 (ns metamorph.rdf.reading
-  (:require [clojure.java.io :as io]
+  (:require [clojure.java.io :as jio]
             [clojure.set :as set]
             [ont-app.vocabulary.core :as vocab]
             [metamorph.rdf.datatype :as datatype]
