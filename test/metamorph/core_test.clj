@@ -4,7 +4,7 @@
 
 (ns metamorph.core-test
   (:require [clojure.test :refer :all]
-            [metamorph.core :refer :all]))
+            [metamorph.core :as SUT]))
 
 (deftest a-test
   (testing "FIXME, I fail."

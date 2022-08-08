@@ -12,7 +12,9 @@
            (org.eclipse.rdf4j.model IRI)
            (org.eclipse.rdf4j.rio RDFFormat)))
 
-(def supported-file-exts #{"ttl", "rdf", "jsonld"})
+(defn file-supported? [path]
+  (let [supported-exts #{"ttl"}]
+    (contains? supported-exts (utils.file/ext path))))
 
 (defn- simple-statement->triple
   "Creates a triple from an RDF4j `SimpleStatement.`"
@@ -32,26 +34,26 @@
        (.isIRI object) (vocab/keyword-for (str object))
        :else (vocab/keyword-for (str object)))]))  ;;  Blank node
 
-(defn read-file
-  "Reads RDF file."
+(defn read-triples-from-file
   [path]
-
-  {:pre [(.isFile path)]}
-
-  (with-open [rdr (clojure.java.io/reader path)]
+  (with-open [rdr (jio/reader path)]
     (let [ctxs (into-array IRI [])]
-      (into (hash-set)
-            (map simple-statement->triple
-                 (Rio/parse rdr RDFFormat/TURTLE ctxs))))))
+      (->> (Rio/parse rdr RDFFormat/TURTLE ctxs)
+           (map simple-statement->triple)))))
 
-(defn read-directory
-  "Reads all RDF files found in `path` and returns a set of all
-   statements."
+(defn read-triples-from-directory
   [path]
-
-  {:pre [(.isDirectory path)]}
-
   (->> (file-seq path)
-       (filter #(supported-file-exts (utils.file/ext %)))
-       (map read-file)
+       (filter file-supported?)
+       (map read-triples-from-directory)
        (reduce set/union)))
+
+(defmulti read-triples
+  "Reads triples from RDF files."
+
+  {:arglists '([path])}
+  utils.file/type :default :invalid-type)
+
+(defmethod read-triples :directory [path] (read-triples-from-directory path))
+(defmethod read-triples :file [path] (read-triples-from-file path))
+(defmethod read-triples :invalid-type [_] "je moeder")
