@@ -12,9 +12,6 @@
 (defn blank-node? [kw]
   (string/starts-with? (name kw) "_:"))
 
-(defn class-name [class]
-  (utils.uri/iri-local-name (get-in class [:id :id])))
-
 (declare properties)
 
 (defn get-node-shapes [conn]

@@ -6,8 +6,11 @@
   (:require [ont-app.vocabulary.core :as vocab])
   (:import (java.net URI)))
 
-(defn iri-local-name [kw]
-  (->> (vocab/uri-for kw)
+(defn fragment [iri]
+  {:pre [(keyword? iri)]
+   :post [keyword? %]}
+
+  (->> (vocab/uri-for iri)
        URI.
        .getFragment
        keyword))

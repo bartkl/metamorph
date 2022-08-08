@@ -16,7 +16,7 @@
 
 ;; Enum
 (defn- enum-name [n]
-  (utils.uri/iri-local-name
+  (utils.uri/fragment
    (get-in n [:sh/targetClass :id :id])))
 
 (defn- enum-doc [n]
@@ -24,7 +24,7 @@
     (target-class :rdfs/comment)))
 
 (defn- enum-symbol [node]
-  (utils.uri/iri-local-name
+  (utils.uri/fragment
    (get-in node [:id :id])))
 
 (defn- node-shape->enum [n]
@@ -35,7 +35,7 @@
 
 ;; Record
 (defn- record-name [n]
-  (utils.uri/iri-local-name
+  (utils.uri/fragment
    (get-in n [:sh/targetClass :id :id])))
 
 (defn- record-doc [n]
@@ -52,7 +52,7 @@
 
 ;; Record field
 (defn- record-field-name [p]
-  (utils.uri/iri-local-name (get-in p [:sh/path :id :id])))
+  (utils.uri/fragment (get-in p [:sh/path :id :id])))
 
 (defn- record-field-doc [p]
   (get-in p [:sh/path :rdfs/comment] ""))

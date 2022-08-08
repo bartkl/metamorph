@@ -36,3 +36,5 @@
 
 (defn resource [conn iri]
   (d/entity conn iri true))
+
+(defn entity-id [node] (get-in node [:id :id]))

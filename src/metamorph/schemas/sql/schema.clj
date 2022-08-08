@@ -5,10 +5,12 @@
 (ns metamorph.schemas.sql.schema
   (:require [clojure.string :as string]
             [honey.sql :as sql]
-            [metamorph.rdf.datatype :refer [rdf-list->seq]]
             [honey.sql.helpers :as h]
+            [metamorph.graph.db :as graph.db]
             [metamorph.graph.shacl :as shacl]
-            [metamorph.schemas.sql.datatype :refer [xsd->sql]]))
+            [metamorph.rdf.datatype :refer [rdf-list->seq]]
+            [metamorph.schemas.sql.datatype :refer [xsd->sql]]
+            [metamorph.utils.uri :as utils.uri]))
 
 (defn min-count [p]
   (min 1 (p :sh/minCount 0)))
@@ -17,10 +19,12 @@
   (if (= 1 (p :sh/maxCount)) 1 ##Inf))
 
 (defn node-shape-name [n]
-  (shacl/class-name (n :sh/targetClass)))
+  (utils.uri/fragment
+   (graph.db/entity-id (:sh/targetClass n))))
 
 (defn property-shape-name [p]
-  (shacl/class-name (p :sh/path)))
+  (utils.uri/fragment
+   (graph.db/entity-id (:sh/path p))))
 
 (defn primary-key? [p]
   (= (p :rdfs/comment) "PrimaryKey"))
@@ -42,7 +46,8 @@
   (contains? n :sh/in))
 
 (defn enum-members [n]
-  (map shacl/class-name
+  (map (comp utils.uri/fragment
+             graph.db/entity-id)
        (rdf-list->seq (:sh/in n))))
 
 (defn node-shape->enum [n]
