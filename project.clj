@@ -7,6 +7,7 @@
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
+  :plugins [[lein-cljfmt "0.8.2"]]
   :main ^:skip-aot metamorph.core
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [org.eclipse.rdf4j/rdf4j-rio-turtle "4.0.0"]

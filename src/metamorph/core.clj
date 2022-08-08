@@ -10,8 +10,8 @@
             [deercreeklabs.lancaster :as l]
             [asami.core :as d]
             [clojure.java.io :as io]
-            [metamorph.rdf.reading :as rdf]
             [ont-app.vocabulary.core :as vocab]
+            [metamorph.rdf.reading :as rdf]
             [metamorph.schemas.avro.schema :refer [avro-schema]]
             [metamorph.schemas.sql.schema :as sql.schema]
             [metamorph.graph.shacl :as graph.shacl]
@@ -19,9 +19,6 @@
             [metamorph.vocabs.prof :as prof]
             [metamorph.vocabs.role :as role]
             [metamorph.cli :as cli]))
-
-;; To run this, try from the project root:
-;; ./toycalc-nosub.clj -a 1 -b 80
 
 (defn transform-schema [& args]
   (println args))
@@ -61,32 +58,26 @@
 
                :runs transform-schema}]})
 
-(defn mark-resources-as-entities [conn]
-  @(d/transact conn {:tx-triples
-                     (mapcat #(list
-                               (graph.db/mark-entity %)
-                               (graph.db/add-id %))
-                             (graph.db/get-resources conn))}))
-
 (defn -main
   "This is our entry point.
   Just pass parameters and configuration.
   Commands (functions) will be invoked as appropriate."
   [& args]
+  identity)
 
   ;; (run-cmd args cli/conf))
-  (let [db-uri "asami:mem://profile"
-        data (rdf/read-directory (io/file "resources/example_profile/"))]
-    (d/create-database db-uri)
+  ;; (let [db-uri "asami:mem://profile"
+  ;;       data (rdf/read-directory (io/file "resources/example_profile/"))]
+  ;;   (d/create-database db-uri)
 
-    (let [conn (d/connect db-uri)]
-      data
-      @(d/transact conn {:tx-triples data})
-      (mark-resources-as-entities conn)
+  ;;   (let [conn (d/connect db-uri)]
+  ;;     data
+  ;;     @(d/transact conn {:tx-triples data})
+  ;;     (graph.db/mark-resources-as-entities conn)
 
-      (->> (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true)
-           (avro-schema)
-           (l/edn)))))
+  ;;     (->> (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true)
+  ;;          (avro-schema)
+  ;;          (l/edn)))))
 
 (comment
   (def db-uri "asami:mem://profile")
@@ -100,20 +91,10 @@
 
   (take 20 model)
 
-  @(d/transact conn {:tx-triples model})
+  (graph.db/store-resources! conn model)
 
-  (mark-resources-as-entities conn)
-
-  (def a-shape
-    (d/entity conn (vocab/keyword-for
-                    "https://w3id.org/schematransform/ExampleShape#AShape") true))
-  (def b-shape
-    (d/entity conn (vocab/keyword-for
-                    "https://w3id.org/schematransform/ExampleShape#BShape") true))
-  (def c-shape
-    (d/entity conn (vocab/keyword-for
-                    "https://w3id.org/schematransform/ExampleShape#CShape") true))
-
+  (def b-shape (graph.db/resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape")))
+  (def c-shape (graph.db/resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#CShape")))
   (def s (avro-schema b-shape))
   (l/edn s)
 
