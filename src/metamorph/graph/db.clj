@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.graph.db
+(ns metamorph.graph.db
   (:require [asami.core :as d]))
 
 (defn node-ref? [m]

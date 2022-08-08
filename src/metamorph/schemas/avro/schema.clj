@@ -2,14 +2,14 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.schemas.avro.schema
+(ns metamorph.schemas.avro.schema
   (:require [deercreeklabs.lancaster :as l]
-            [schema-transformer.graph.db :as graph.db]
-            [schema-transformer.graph.shacl :as shacl]
-            [schema-transformer.rdf.datatype :refer [rdf-list->seq]]
-            [schema-transformer.schemas.avro.cardinality :refer [cardinality->schema-fn]]
-            [schema-transformer.schemas.avro.datatype :refer [xsd->avro]]
-            [schema-transformer.utils.uri :as utils.uri]))
+            [metamorph.graph.db :as graph.db]
+            [metamorph.graph.shacl :as shacl]
+            [metamorph.rdf.datatype :refer [rdf-list->seq]]
+            [metamorph.schemas.avro.cardinality :refer [cardinality->schema-fn]]
+            [metamorph.schemas.avro.datatype :refer [xsd->avro]]
+            [metamorph.utils.uri :as utils.uri]))
 
 (declare property->record-field)
 (declare avro-schema)

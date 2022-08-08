@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.schemas.sql.datatype)
+(ns metamorph.schemas.sql.datatype)
 
 (def xsd->sql
   #:xsd{:string [:varchar 255]

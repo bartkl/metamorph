@@ -26,5 +26,5 @@ All notable changes to this project will be documented in this file. This change
 - Files from the new template.
 - Widget maker public API - `make-widget-sync`.
 
-[Unreleased]: https://sourcehost.site/your-name/schema-transformer/compare/0.1.1...HEAD
-[0.1.1]: https://sourcehost.site/your-name/schema-transformer/compare/0.1.0...0.1.1
+[Unreleased]: https://sourcehost.site/your-name/metamorph/compare/0.1.1...HEAD
+[0.1.1]: https://sourcehost.site/your-name/metamorph/compare/0.1.0...0.1.1

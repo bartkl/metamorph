@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.core
+(ns metamorph.core
   (:require [cli-matic.core :refer [run-cmd]]
             [honey.sql :as sql]
             [clojure.spec.alpha :as spec]
@@ -10,15 +10,15 @@
             [deercreeklabs.lancaster :as l]
             [asami.core :as d]
             [clojure.java.io :as io]
-            [schema-transformer.rdf.reading :as rdf]
+            [metamorph.rdf.reading :as rdf]
             [ont-app.vocabulary.core :as vocab]
-            [schema-transformer.schemas.avro.schema :refer [avro-schema]]
-            [schema-transformer.schemas.sql.schema :as sql.schema]
-            [schema-transformer.graph.shacl :as graph.shacl]
-            [schema-transformer.graph.db :as graph.db]
-            [schema-transformer.vocabs.prof :as prof]
-            [schema-transformer.vocabs.role :as role]
-            [schema-transformer.cli :as cli]))
+            [metamorph.schemas.avro.schema :refer [avro-schema]]
+            [metamorph.schemas.sql.schema :as sql.schema]
+            [metamorph.graph.shacl :as graph.shacl]
+            [metamorph.graph.db :as graph.db]
+            [metamorph.vocabs.prof :as prof]
+            [metamorph.vocabs.role :as role]
+            [metamorph.cli :as cli]))
 
 ;; To run this, try from the project root:
 ;; ./toycalc-nosub.clj -a 1 -b 80
@@ -30,7 +30,7 @@
   (fn [&args] false) "Erreur args to avro")
 
 (def cli-conf
-  {:app {:command "schema-transformer"
+  {:app {:command "metamorph"
          :description "Tool to transform dx-prof/CIM501 profiles to a variety of schema"
          :version "0.0.1"}
    :global-opts [{:as "Manifest file which describes the changed files since last run"
@@ -104,7 +104,6 @@
 
   (mark-resources-as-entities conn)
 
-<<<<<<< HEAD
   (def a-shape
     (d/entity conn (vocab/keyword-for
                     "https://w3id.org/schematransform/ExampleShape#AShape") true))

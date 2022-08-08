@@ -2,6 +2,6 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.vocabs.prof
+(ns metamorph.vocabs.prof
   {:vann/preferredNamespacePrefix "prof"
    :vann/preferredNamespaceUri "http://www.w3.org/ns/dx/prof/"})

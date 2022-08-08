@@ -2,13 +2,13 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(ns schema-transformer.schemas.sql.schema
+(ns metamorph.schemas.sql.schema
   (:require [clojure.string :as string]
             [honey.sql :as sql]
-            [schema-transformer.rdf.datatype :refer [rdf-list->seq]]
+            [metamorph.rdf.datatype :refer [rdf-list->seq]]
             [honey.sql.helpers :as h]
-            [schema-transformer.graph.shacl :as shacl]
-            [schema-transformer.schemas.sql.datatype :refer [xsd->sql]]))
+            [metamorph.graph.shacl :as shacl]
+            [metamorph.schemas.sql.datatype :refer [xsd->sql]]))
 
 (defn min-count [p]
   (min 1 (p :sh/minCount 0)))
