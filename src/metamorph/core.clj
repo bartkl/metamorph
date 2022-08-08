@@ -67,7 +67,7 @@
 
   ;; (run-cmd args cli/conf))
   ;; (let [db-uri "asami:mem://profile"
-  ;;       data (rdf/read-directory (io/file "resources/example_profile/"))]
+  ;;       data (rdf/read-triples (io/file "resources/example_profile/"))]
   ;;   (d/create-database db-uri)
 
   ;;   (let [conn (d/connect db-uri)]
@@ -87,17 +87,19 @@
   (def conn (d/connect db-uri))
 
   (def model
-    (rdf/read-directory (io/file "/home/bartkl/Programming/alliander-opensource/SchemaTransformer/app/src/test/resources/rdfs")))
+    (rdf/read-triples (io/file "/home/bartkl/Programming/alliander-opensource/SchemaTransformer/app/src/test/resources/rdfs")))
 
   (take 20 model)
-
   (graph.db/store-resources! conn model)
 
   (def b-shape (graph.db/resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape")))
-  (def c-shape (graph.db/resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#CShape")))
+
+  ;; Avro  .
   (def s (avro-schema b-shape))
   (l/edn s)
+  (spit "testBShape.json" (l/json s)))
 
+  ;; SQL.
   (def node-shapes-names
     (flatten (graph.shacl/get-node-shapes conn)))
 
@@ -105,15 +107,6 @@
                         (map #(d/entity conn % true))))
 
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
-  (sql/format (sql.schema/->table b-shape))
-  ;; (sql.schema/->ddl b-shape c-shape)
-  ;; (->> (sql.schema/->schema [b-shape]) (spit "testSql.sql"))
+  (sql/format (sql.schema/node-shape->table b-shape))
   (->> (sql.schema/node-shapes->schema node-shapes) (spit "testSql.sql"))
-  (map #(get % :create-table) (sql.schema/->schema node-shapes))
 
-  (->>
-   (sql.schema/->enum c-shape)
-   (map sql/format))
-
-
-  (spit "testBShape.json" (l/json s)))
