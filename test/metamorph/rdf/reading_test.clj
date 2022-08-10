@@ -24,7 +24,7 @@
 (deftest read-file-test
   (testing "Reading single Turtle file"
     (let [ttl (io/file "dev-resources/example_profile/Constraints.ttl")
-          actual (SUT/read-file ttl)
+          actual (SUT/read-triples ttl)
           expected (clojure.edn/read-string (slurp  "dev-resources/test.edn"))]
     ;;   (->> (pr-str actual) (spit "dev-resources/test.edn"))
     ;;   (is (= actual expected)))))
@@ -33,7 +33,7 @@
 (run-tests)
 
 (comment
-  (spec-test/check `SUT/read-file)
+  (spec-test/check `SUT/read-triples)
   (let [ttl (io/file "dev-resources/example_profile/Constraints.ttl")
-        actual (SUT/read-file ttl)]
+        actual (SUT/read-triples ttl)]
     (println actual)))
