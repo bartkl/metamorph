@@ -90,11 +90,11 @@
     (rdf/read-triples (io/file "/home/bartkl/Programming/alliander-opensource/SchemaTransformer/app/src/test/resources/rdfs")))
 
   (take 20 model)
-  (graph.db/store-resources! conn model)
+  (graph.db/add! conn model)
 
-  (def b-shape (graph.db/resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape")))
+  (def b-shape (graph.db/get-resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape")))
 
-  ;; Avro  .
+  ;; Avro
   (def s (avro-schema b-shape))
   (l/edn s)
   (spit "testBShape.json" (l/json s))

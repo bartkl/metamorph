@@ -8,33 +8,41 @@
 (defn node-ref?
   "Checks if the provided hash-map is an Asami node reference."
   [m]
+
   (= (keys m) '(:id)))
 
-(defn- resource-iris [conn]
+(defn get-resource-iris
+  "Gets the IRIs of all resources store in the database."
+  [conn]
+
   (map first
        (d/q '[:find ?subj
               :where [?subj _ _]]
             conn)))
 
-(defn store! [conn statements]
-  @(d/transact conn {:tx-triples statements}))
+(defn add!
+  "Adds the provided triples to the database, and then adds the
+  necessary metadata for working with them, i.e. an entity mark and
+  node ID. 
 
-(defn mark-entity [resource]
-  [resource :a/entity true])
+  This operation is blocking."
+  [conn triples]
 
-(defn add-id [resource]
-  [resource :id resource])
+  (letfn [(transact-sync [conn triples]
+            @(d/transact conn {:tx-triples triples}))
+          (node-id [resource] [resource :id resource])
+          (entity-mark [resource] [resource :a/entity true])]
 
-(defn store-resources! [conn statements]
-  (store! conn statements)
-  (let [resources (resource-iris conn)
-        metadata (mapcat #(list
-                           (mark-entity %)
-                           (add-id %))
-                         resources)]
-    (store! conn metadata)))
+    (transact-sync conn triples)
+    (let [resources (get-resource-iris conn)
+          metadata (mapcat #(list
+                             (entity-mark %)
+                             (node-id %))
+                           resources)]
+      (transact-sync conn metadata))))
 
-(defn resource [conn iri]
+
+(defn get-resource [conn iri]
   (d/entity conn iri true))
 
 (defn entity-id [node]
