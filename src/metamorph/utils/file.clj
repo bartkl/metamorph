@@ -3,6 +3,7 @@
 ; SPDX-License-Identifier: Apache-2.0
 
 (ns metamorph.utils.file
+  (:refer-clojure :exclude [type])
   (:require [clojure.java.io :as io])
   (:import (java.io File)))
 
