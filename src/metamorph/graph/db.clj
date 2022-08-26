@@ -20,6 +20,15 @@
               :where [?subj _ _]]
             conn)))
 
+(defn get-resource
+  "Gets the resource node identified by the provided IRI."
+  [conn iri]
+
+  (d/entity conn iri true))
+
+(defn node-id [node]
+  (get-in node [:id :id]))
+
 (defn add!
   "Adds the provided triples to the database, and then adds the
   necessary metadata for working with them, i.e. an entity mark and
@@ -28,22 +37,11 @@
   This operation is blocking."
   [conn triples]
 
-  (letfn [(transact-sync [conn triples]
-            @(d/transact conn {:tx-triples triples}))
-          (node-id [resource] [resource :id resource])
-          (entity-mark [resource] [resource :a/entity true])]
-
+  (letfn [(transact-sync [conn triples] @(d/transact conn {:tx-triples triples}))]
     (transact-sync conn triples)
     (let [resources (get-resource-iris conn)
-          metadata (mapcat #(list
-                             (entity-mark %)
-                             (node-id %))
-                           resources)]
+          metadata (mapcat (fn [resource] (list
+                                           [resource :a/entity true]
+                                           [resource :id resource])
+                             resources))]
       (transact-sync conn metadata))))
-
-
-(defn get-resource [conn iri]
-  (d/entity conn iri true))
-
-(defn entity-id [node]
-  (get-in node [:id :id]))
