@@ -57,9 +57,9 @@
 (defn- record-field-doc [p]
   (get-in p [:sh/path :rdfs/comment] ""))
 
-(defn- record-field-schema [n type]
-  (let [min-count (:sh/minCount n 0)
-        max-count (:sh/maxCount n ##Inf)]
+(defn- record-field-schema [p type]
+  (let [min-count (:sh/minCount p 0)
+        max-count (:sh/maxCount p ##Inf)]
     ((cardinality->schema-fn [(min min-count 1)
                               (if (> max-count 1) :* max-count)])
      type)))
