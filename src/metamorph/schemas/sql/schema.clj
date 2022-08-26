@@ -20,11 +20,11 @@
 
 (defn node-shape-name [n]
   (utils.uri/fragment
-   (graph.db/entity-id (:sh/targetClass n))))
+   (graph.db/node-id (:sh/targetClass n))))
 
 (defn property-shape-name [p]
   (utils.uri/fragment
-   (graph.db/entity-id (:sh/path p))))
+   (graph.db/node-id (:sh/path p))))
 
 (defn primary-key? [p]
   (= (p :rdfs/comment) "PrimaryKey"))
@@ -47,7 +47,7 @@
 
 (defn enum-members [n]
   (map (comp utils.uri/fragment
-             graph.db/entity-id)
+             graph.db/node-id)
        (rdf-list->seq (:sh/in n))))
 
 (defn node-shape->enum [n]
