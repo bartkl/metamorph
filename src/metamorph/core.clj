@@ -17,8 +17,45 @@
             [metamorph.graph.shacl :as graph.shacl]
             [metamorph.graph.db :as graph.db]
             [metamorph.vocabs.prof :as prof]
-            [metamorph.vocabs.role :as role]
-            [metamorph.cli :as cli]))
+            [metamorph.vocabs.role :as role]))
+
+(defn transform-schema [& args]
+  (println args))
+
+(expound/def ::avro-args
+  (fn [& args] false) "Erreur args to avro")
+
+(def cli-schema
+  {:app {:command "metamorph"
+         :description "Tool to transform dx-prof/CIM501 profiles to a variety of schema"
+         :version "0.0.1"}
+   :global-opts [{:as "Input profile directory"
+                  :option "profile"
+                  :short  "p"
+                  :type :string}
+                 {:as "Input manifest file (for CI/CD pipeline)"
+                  :option "manifest"
+                  :short  "m"
+                  :type :string}
+                 {:as "Base path for the relative file paths in the manifest file"
+                  :option "base-path"
+                  :short "b"
+                  :type :string}]
+   :commands [{:command "avro"
+               :spec ::avro-args
+               :description "Apache Avro schema"
+               :opts [{:as "Serialization format"
+                       :default :json
+                       :option "format"
+                       :short  "f"
+                       :type #{:edn :json}}
+                      {:as "Output file"
+                       :default "./avro.json"
+                       :option "output"
+                       :short  "o"
+                       :type #{:edn :json}}]
+
+               :runs transform-schema}]})
 
 
 (defn -main
@@ -28,7 +65,7 @@
   [& args]
 
   (println args)  ;; NOTE: Remove when done with developing.
-  (run-cmd args cli/conf))
+  (run-cmd args cli-schema))
 
   ;; TODO: Implement logic that, dependent on the CLI args, performs the schema generation.
   ;; Example for Avro:
