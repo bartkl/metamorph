@@ -18,41 +18,6 @@
             [metamorph.vocabs.prof :as prof]
             [metamorph.vocabs.role :as role]))
 
-;; (expound/defmsg ::avro-args "Erreur args to avro")
-
-;; (def cli-schema
-;;   {:app {:command "metamorph"
-;;          :description "Tool to transform dx-prof/CIM501 profiles to a variety of schema"
-;;          :version "0.0.1"}
-;;    :global-opts [{:as "Input profile directory"
-;;                   :option "profile"
-;;                   :short  "p"
-;;                   :type :string}
-;;                  {:as "Input manifest file (for CI/CD pipeline)"
-;;                   :option "manifest"
-;;                   :short  "m"
-;;                   :type :string}
-;;                  {:as "Base path for the relative file paths in the manifest file"
-;;                   :option "base-path"
-;;                   :short "b"
-;;                   :type :string}]
-;;    :commands [{:command "avro"
-;;                :spec ::avro-args
-;;                :description "Apache Avro schema"
-;;                :opts [{:as "Serialization format"
-;;                        :default :json
-;;                        :option "format"
-;;                        :short  "f"
-;;                        :type #{:edn :json}}
-;;                       {:as "Output file"
-;;                        :default "./avro.json"
-;;                        :option "output"
-;;                        :short  "o"
-;;                        :type #{:edn :json}}]
-
-;;                :runs transform-schema}]})
-
-
 (defn -main
   "This is our entry point.
   Just pass parameters and configuration.
