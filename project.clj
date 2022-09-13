@@ -7,12 +7,17 @@
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
-  :plugins [[lein-cljfmt "0.8.2"]]
-  :main ^:skip-aot metamorph.core
+  :plugins [[lein-cljfmt "0.8.2"]
+            [io.taylorwood/lein-native-image "0.3.1"]]
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [org.eclipse.rdf4j/rdf4j-rio-turtle "4.0.0"]
                  [deercreeklabs/lancaster "0.9.17"]
                  [ont-app/vocabulary "0.1.7"]
                  [cli-matic "0.5.3"]
                  [org.clojars.quoll/asami "2.3.2"]
-                 [com.github.seancorfield/honeysql "2.2.891"]])
+                 [com.github.seancorfield/honeysql "2.2.891"]]
+  :native-image {:name "metamorph"                 ;; name of output image, optional
+                 :graal-bin "/path/to/graalvm/home/bin/" ;; path to GraalVM home, optional
+                 :opts ["--verbose" "--no-fallback"]}           ;; pass-thru args to GraalVM native-image, optional
+  :main ^:skip-aot metamorph.core
+  :profiles {:uberjar {:aot :all}})

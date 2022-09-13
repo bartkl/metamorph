@@ -18,7 +18,8 @@
             [metamorph.graph.db :as graph.db]
             [metamorph.vocabs.prof :as prof]
             [metamorph.vocabs.role :as role]
-            [metamorph.cli :as cli]))
+            [metamorph.cli :as cli])
+  (:gen-class))
 
 
 (defn -main
