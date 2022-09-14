@@ -1,45 +1,47 @@
-; SPDX-FileCopyrightText: 2022 Alliander N.V.
-;
-; SPDX-License-Identifier: Apache-2.0
-
 (ns metamorph.cli
-  (:require [clojure.spec.alpha :as spec]
-            [expound.alpha :as expound]))
+  (:require [cli-matic.core :refer [run-cmd]]
+            [clojure.string :as str]
+            [clojure.spec.alpha :as spec]
+            [expound.alpha :as expound]
+            [metamorph.utils.spec :refer [one-key-of]]))
 
 (defn transform-schema [& args]
   (println args))
 
-(expound/def ::avro-args
-  (fn [& args] false) "Erreur args to avro")
+(def input-sources #{:shacl-file :dx-profile})
 
-(def conf
-  {:app {:command "metamorph"
-         :description "Tool to transform dx-prof/CIM501 profiles to a variety of schema"
-         :version "0.0.1"}
-   :global-opts [{:as "Manifest file which describes the changed files since last run"
-                  :option "manifest"
-                  :short  "m"
-                  :type :string}
-                 {:as "Manifest file which describes the changed files since last run"
-                  :option "profile"
-                  :short  "p"
-                  :type :string}
-                 {:as "Base path for the relative file paths in the manifest file"
-                  :option "base-path"
-                  :short "b"
-                  :type :string}]
-   :commands [{:command "avro"
-               :spec ::avro-args
-               :description "Apache AVRO schema"
-               :opts [{:as "Serialization format"
-                       :default :json
-                       :option "format"
-                       :short  "f"
-                       :type #{:edn :json}}
-                      {:as "Output file"
-                       :default "./avro.json"
-                       :option "output"
-                       :short  "o"
-                       :type #{:edn :json}}]
+(spec/def ::command-args
+  (one-key-of (vec input-sources)))
 
-               :runs transform-schema}]})
+(expound/defmsg ::command-args
+  (str
+   "Please provide exactly one input.\n"
+   "Choices:\n\t"
+   (str/join "\n\t" (map #(str "--" (name %)) input-sources))))
+
+(def command-spec
+  {:command "metamorph"
+   :description "Generate a schema of a variety of formats from a DX Profile or SHACL model."
+   :version "0.0.1"
+   :opts [{:as "Input: DX Profile directory"
+           :option "dx-profile"
+           :type :string}
+          {:as "Input: SHACL file"
+           :option "shacl-file"
+           :type :string}]
+   :subcommands [{:command "avro"
+                  :spec ::avro-args
+                  :description "Apache Avro schema"
+                  :opts [{:as "Serialization format"
+                          :default :json
+                          :option "format"
+                          :short  "f"
+                          :type #{:edn :json}}
+                         {:as "Output file"
+                          :default "./avro.json"
+                          :option "output"
+                          :short  "o"
+                          :type #{:edn :json}}]
+
+                  :runs transform-schema}]
+   :spec ::command-args})

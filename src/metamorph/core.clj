@@ -5,12 +5,11 @@
 (ns metamorph.core
   (:require [cli-matic.core :refer [run-cmd]]
             [honey.sql :as sql]
-            [clojure.spec.alpha :as spec]
-            [expound.alpha :as expound]
             [deercreeklabs.lancaster :as l]
             [asami.core :as d]
             [clojure.java.io :as io]
             [ont-app.vocabulary.core :as vocab]
+            [metamorph.cli :as cli]
             [metamorph.rdf.reading :as rdf]
             [metamorph.schemas.avro.schema :refer [avro-schema]]
             [metamorph.schemas.sql.schema :as sql.schema]
@@ -29,7 +28,7 @@
   [& args]
 
   (println args)  ;; NOTE: Remove when done with developing.
-  (run-cmd args cli/conf))
+  (run-cmd args cli/command-spec))
 
   ;; TODO: Implement logic that, dependent on the CLI args, performs the schema generation.
   ;; Example for Avro:

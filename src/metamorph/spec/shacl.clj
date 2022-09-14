@@ -8,19 +8,14 @@
             [clojure.set :as set]
             [metamorph.graph.db :refer [node-ref?]]
             [metamorph.spec.xsd]
-            [metamorph.spec.owl])
+            [metamorph.spec.owl]
+            [metamorph.utils.spec :refer [one-key-of]])
   (:import (java.net URI URISyntaxException)))
 
 ;; (defn specs-for-ns [ns']
 ;;   (into {}
 ;;         (filter #(= (namespace (first %)) ns')
 ;;                 (s/registry))))
-
-(defn one-key-of [kws]
-  (fn [m]
-    (= (count (set/intersection (into #{} kws)
-                                (into #{} (keys m))))
-       1)))
 
 (s/def :sh/targetClass :owl/Class)
 ;; (s/def :sh/and (s/* (s/alt :node-shape :sh/nodeShape
