@@ -9,10 +9,10 @@
 
 (defn ext [f]
   (last
-   (re-find #"\.([^.\\/:*\"?<>|\r\n]+)$" (.getName f))))
+   (re-find #"\.([^.\\/:*\"?<>|\r\n]+)$" (.getName ^java.io.File f))))
 
-(defn dir? [path] (.isDirectory path))
-(defn file? [path] (.isFile path))
+(defn dir? [path] (.isDirectory ^java.io.File path))
+(defn file? [path] (.isFile ^java.io.File path))
 
 (defn type [path]
   (when (instance? File path)
