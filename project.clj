@@ -17,7 +17,7 @@
                  [org.clojars.quoll/asami "2.3.2"]
                  [com.github.seancorfield/honeysql "2.2.891"]]
   :native-image {:name "metamorph"
-                 :opts ["--verbose" "--no-fallback"
+                 :opts ["--verbose" "--no-fallback" "-H:ReflectionConfigurationFiles=META-INF/native-image/reflect-config.json"
                         "--initialize-at-build-time=com.fasterxml.jackson.core,com.fasterxml.jackson.dataformat"]}
   :main ^:skip-aot metamorph.core
   :profiles {:uberjar {:aot :all}

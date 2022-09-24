@@ -89,6 +89,7 @@
                           :short  "o"
                           :type :string}]
                   :runs generate-schema-avro}]
+                  ;;:runs (generate-schema :avro)}]
    :spec ::command-args})
 
 (defn -main
