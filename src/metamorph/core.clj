@@ -54,17 +54,11 @@
          (spit (:output args)))))
 
 (defn generate-schema [schema]
-  (fn [conn args]
-    (case schema
-      :avro (generate-avro-schema conn args))))
-
-(defn run-generate-schema [schema]
   (fn [args]
-    (let [conn (->> (read-input args)
-                    store-in-db)
-          schema-fn (schema {:avro generate-avro-schema})]
-      (schema-fn conn args))))
-
+    (let [gen-schema (schema {:avro generate-avro-schema})
+          conn (->> (read-input args)
+                    store-in-db)]
+      (gen-schema conn args))))
 
 (def command-spec
   {:command "metamorph"
@@ -88,7 +82,7 @@
                           :option "output"
                           :short  "o"
                           :type :string}]
-                  :runs (run-generate-schema :avro)}]
+                  :runs (generate-schema :avro)}]
    :spec ::command-args})
 
 (defn -main
