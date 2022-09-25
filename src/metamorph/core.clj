@@ -46,20 +46,22 @@
       (graph.db/store-resources! conn data)
       conn)))
 
-(defn transform-schema [schema args]
-  (fn [conn]
+(defn generate-avro-schema [conn args]
     (let [root-uri (graph.avro/root-node-shape-uri conn)]
-      (case schema
-        :avro (->> (graph.db/resource conn root-uri)
-                   avro-schema
-                   l/json
-                   (spit (:output args)))))))
+      (->> (graph.db/resource conn root-uri)
+           avro-schema
+           l/json
+           (spit (:output args)))))
 
-(defn generate-schema [schema]
+(defn generate-schema [schema args conn]
+  (case schema
+    :avro (generate-avro-schema conn args)))
+
+(defn run-generate-schema [schema]
   (fn [args]
-    (-> (read-input args)
+    (->> (read-input args)
         store-in-db
-        ((transform-schema schema args)))))
+        (generate-schema schema args))))
 
 (def command-spec
   {:command "metamorph"
@@ -83,7 +85,7 @@
                           :option "output"
                           :short  "o"
                           :type :string}]
-                  :runs (generate-schema :avro)}]
+                  :runs (run-generate-schema :avro)}]
    :spec ::command-args})
 
 (defn -main
@@ -138,7 +140,8 @@
   (get-in x [:id :id])
   (avro-schema x)
 
-  (def args {:dx-profile "/home/bartkl/Programming/alliander-opensource/metamorph/dev-resources/example_profile", :format :json, :output "./avro.json", :_arguments []})
+  (def args {:dx-profile "/home/bartkl/Programming/alliander-opensource/metamorph/dev-resources/example_profile",
+    :format :json, :output "./avro.json", :_arguments []})
   ((generate-schema :avro) args)
 
   (run-cmd* command-spec args))
