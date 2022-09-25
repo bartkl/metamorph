@@ -35,20 +35,31 @@
    "Choices:\n\t"
    (str/join "\n\t" (map kw->opt input-sources))))
 
+(defn read-input [{:keys [dx-profile shacl]}]
+  (rdf/read-triples (io/file (or dx-profile shacl))))
+
+(defn store-in-db [data]
+  (let [db-uri "asami:mem://logical-model"]
+    (d/delete-database db-uri)  ;; Ensure clean state.
+    (d/create-database db-uri)
+    (let [conn (d/connect db-uri)]
+      (graph.db/store-resources! conn data)
+      conn)))
+
+(defn transform-schema [schema args]
+  (fn [conn]
+    (let [root-uri (graph.avro/root-node-shape-uri conn)]
+      (case schema
+        :avro (->> (graph.db/resource conn root-uri)
+                   avro-schema
+                   l/json
+                   (spit (:output args)))))))
+
 (defn generate-schema [schema]
-  (fn [{:keys [dx-profile shacl] :as args}]
-    (let [db-uri "asami:mem://logical-model"]
-      (d/delete-database db-uri)  ;; Ensure clean state.
-      (d/create-database db-uri)
-      (let [conn (d/connect db-uri)
-            logical-model (rdf/read-triples (io/file (or dx-profile shacl)))]
-        (graph.db/store-resources! conn logical-model)
-        (let [root-uri (graph.avro/root-node-shape-uri conn)]
-          (case schema
-            :avro (->> (graph.db/resource conn root-uri)
-                       avro-schema
-                       l/json
-                       (spit (:output args)))))))))
+  (fn [args]
+    (-> (read-input args)
+        store-in-db
+        ((transform-schema schema args)))))
 
 (def command-spec
   {:command "metamorph"
