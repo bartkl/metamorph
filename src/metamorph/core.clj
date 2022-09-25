@@ -4,25 +4,24 @@
 
 (ns metamorph.core
   (:require [cli-matic.core :refer [run-cmd run-cmd*]]
-    [clojure.spec.alpha :as spec]
-    [expound.alpha :as expound]
-    [metamorph.utils.spec :refer [one-key-of]]
-    [metamorph.utils.cli :refer [kw->opt]]
-    [clojure.tools.cli :refer [parse-opts]]
-    [honey.sql :as sql]
-    [deercreeklabs.lancaster :as l]
-    [clojure.string :as str]
-    [asami.core :as d]
-    [clojure.java.io :as io]
-    [ont-app.vocabulary.core :as vocab]
-    [metamorph.rdf.reading :as rdf]
-    [metamorph.schemas.avro.schema :refer [avro-schema]]
-    [metamorph.schemas.sql.schema :as sql.schema]
-    [metamorph.graph.shacl :as graph.shacl]
-    [metamorph.graph.avro :as graph.avro]
-    [metamorph.graph.db :as graph.db]
-    [metamorph.vocabs.prof :as prof]
-    [metamorph.vocabs.role :as role])
+            [clojure.spec.alpha :as spec]
+            [expound.alpha :as expound]
+            [metamorph.utils.spec :refer [one-key-of]]
+            [metamorph.utils.cli :refer [kw->opt]]
+            [honey.sql :as sql]
+            [deercreeklabs.lancaster :as l]
+            [clojure.string :as str]
+            [asami.core :as d]
+            [clojure.java.io :as io]
+            [ont-app.vocabulary.core :as vocab]
+            [metamorph.rdf.reading :as rdf]
+            [metamorph.schemas.avro.schema :refer [avro-schema]]
+            [metamorph.schemas.sql.schema :as sql.schema]
+            [metamorph.graph.shacl :as graph.shacl]
+            [metamorph.graph.avro :as graph.avro]
+            [metamorph.graph.db :as graph.db]
+            [metamorph.vocabs.prof :as prof]
+            [metamorph.vocabs.role :as role])
   (:gen-class))
 
 (def input-sources #{:shacl :dx-profile})
@@ -32,39 +31,24 @@
 
 (expound/defmsg ::command-args
   (str
-    "Please provide exactly one input.\n"
-    "Choices:\n\t"
-    (str/join "\n\t" (map kw->opt input-sources))))
+   "Please provide exactly one input.\n"
+   "Choices:\n\t"
+   (str/join "\n\t" (map kw->opt input-sources))))
 
-; (defn generate-schema [schema]
-;   (fn [{:keys [dx-profile shacl] :as args}]
-;     (let [db-uri "asami:mem://logical-model"]
-;       (d/delete-database db-uri)  ;; Avoid weird state issues during development.
-;       (d/create-database db-uri)
-;       (let [conn (d/connect db-uri)
-;             logical-model (rdf/read-triples (io/file (or dx-profile shacl)))]
-;         (graph.db/store-resources! conn logical-model)
-;         (let [root-uri (graph.avro/root-node-shape-uri conn)
-;               root (graph.db/resource conn root-uri)]
-;           (case schema
-;             :avro ((->> (graph.db/resource conn root-uri)
-;                      avro-schema
-;                      l/json
-;                      (spit (:output args))))))))))
-
-(defn generate-schema-avro [{:keys [dx-profile shacl] :as args}]
-  (let [db-uri "asami:mem://logical-model"]
-    (d/delete-database db-uri)  ;; Avoid weird state issues during development.
-    (d/create-database db-uri)
-    (let [conn (d/connect db-uri)
-          logical-model (rdf/read-triples (io/file (or dx-profile shacl)))]
-      (graph.db/store-resources! conn logical-model)
-      (let [root-uri (graph.avro/root-node-shape-uri conn)
-            root (graph.db/resource conn root-uri)]
-        (->> (graph.db/resource conn root-uri)
-          avro-schema
-          l/json
-          (spit (:output args)))))))
+(defn generate-schema [schema]
+  (fn [{:keys [dx-profile shacl] :as args}]
+    (let [db-uri "asami:mem://logical-model"]
+      (d/delete-database db-uri)  ;; Ensure clean state.
+      (d/create-database db-uri)
+      (let [conn (d/connect db-uri)
+            logical-model (rdf/read-triples (io/file (or dx-profile shacl)))]
+        (graph.db/store-resources! conn logical-model)
+        (let [root-uri (graph.avro/root-node-shape-uri conn)]
+          (case schema
+            :avro (->> (graph.db/resource conn root-uri)
+                       avro-schema
+                       l/json
+                       (spit (:output args)))))))))
 
 (def command-spec
   {:command "metamorph"
@@ -88,8 +72,7 @@
                           :option "output"
                           :short  "o"
                           :type :string}]
-                  :runs generate-schema-avro}]
-                  ;;:runs (generate-schema :avro)}]
+                  :runs (generate-schema :avro)}]
    :spec ::command-args})
 
 (defn -main
@@ -101,6 +84,7 @@
   (run-cmd args command-spec))
 
 (comment  ;; Playground.
+  ;; Reading from files into DB.
   (def db-uri "asami:mem://test-db")
   (d/create-database db-uri)
   (d/delete-database db-uri)
@@ -127,13 +111,13 @@
     (graph.shacl/get-node-shapes conn))
 
   (def node-shapes (->> node-shapes-names
-                     (map #(d/entity conn % true))))
+                        (map #(d/entity conn % true))))
 
   (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
   (sql/format (sql.schema/node-shape->table b-shape))
 
   (->> (sql.schema/sql-schema node-shapes)
-    (spit "testSql.sql"))
+       (spit "testSql.sql"))
 
   ;; CLI Playground.
   (def args ["--dx-profile" "/home/bartkl/Programming/alliander-opensource/metamorph/dev-resources/example_profile" "avro"])
