@@ -47,8 +47,8 @@
       conn)))
 
 (defn generate-avro-schema [conn args]
-  (let [root-uri (graph.avro/root-node-shape-uri conn)]
-    (->> (graph.db/resource conn root-uri)
+  (let [root-uri (graph.avro/get-root-node-shape-uri conn)]
+    (->> (graph.db/get-resource conn root-uri)
          avro-schema
          l/json
          (spit (:output args)))))
@@ -105,11 +105,11 @@
 
   (take 20 model)
   (graph.db/store-resources! conn model)
-  (graph.avro/root-node-shape-uri conn)
+  (graph.avro/get-root-node-shape-uri conn)
 
-  ;; (def b-shape (graph.db/resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape")))
-  (def b-shape-uri (graph.avro/root-node-shape-uri conn))
-  (def b-shape (graph.db/resource conn b-shape-uri))
+  ;; (def b-shape (graph.db/get-resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape")))
+  (def b-shape-uri (graph.avro/get-root-node-shape-uri conn))
+  (def b-shape (graph.db/get-resource conn b-shape-uri))
 
   ;; Avro.
   (def s (avro-schema b-shape))
@@ -132,7 +132,7 @@
   ;; CLI Playground.
   (def args ["--dx-profile" "/home/bartkl/Programming/alliander-opensource/metamorph/dev-resources/example_profile" "avro"])
 
-  (def x (graph.db/resource conn (graph.avro/root-node-shape-uri conn)))
+  (def x (graph.db/get-resource conn (graph.avro/get-root-node-shape-uri conn)))
 
   (get-in x [:id :id])
   (avro-schema x)
