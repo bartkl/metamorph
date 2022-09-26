@@ -12,7 +12,7 @@
     [metamorph.schemas.avro.datatype :refer [xsd->avro]]
     [metamorph.utils.uri :as utils.uri]))
 
-(defn root-node-shape-uri [conn]
+(defn get-root-node-shape-uri [conn]
   (first (first
           (d/q '[:find ?nodeShape
                  :where [?nodeShape :rdf/type :sh/NodeShape]

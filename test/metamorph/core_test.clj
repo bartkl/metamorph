@@ -6,6 +6,6 @@
   (:require [clojure.test :refer :all]
             [metamorph.core :as SUT]))
 
-(deftest a-test
+(deftest ^:wip a-test
   (testing "FIXME, I fail."
     (is (= 0 1))))

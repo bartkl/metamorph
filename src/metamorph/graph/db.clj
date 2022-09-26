@@ -10,7 +10,7 @@
   [m]
   (= (keys m) '(:id)))
 
-(defn- resource-iris [conn]
+(defn- get-resource-iris [conn]
   (map first
        (d/q '[:find ?subj
               :where [?subj _ _]]
@@ -27,14 +27,14 @@
 
 (defn store-resources! [conn statements]
   (store! conn statements)
-  (let [resources (resource-iris conn)
+  (let [resources (get-resource-iris conn)
         metadata (mapcat #(list
                            (mark-entity %)
                            (add-id %))
                          resources)]
     (store! conn metadata)))
 
-(defn resource [conn iri]
+(defn get-resource [conn iri]
   (d/entity conn iri true))
 
 (defn entity-id [node]

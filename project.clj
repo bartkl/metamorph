@@ -14,8 +14,10 @@
                  [deercreeklabs/lancaster "0.9.20"]
                  [ont-app/vocabulary "0.1.7"]
                  [cli-matic "0.5.3"]
+                 [org.slf4j/slf4j-nop "2.0.2"]
                  [org.clojars.quoll/asami "2.3.2"]
                  [com.github.seancorfield/honeysql "2.2.891"]]
+  :aliases {"kaocha" ["run" "-m" "kaocha.runner"]}
   :native-image {:name "metamorph"
                  :opts ["--verbose" "--no-fallback" "-H:ReflectionConfigurationFiles=META-INF/native-image/reflect-config.json"
                         "--initialize-at-build-time=com.fasterxml.jackson.core,com.fasterxml.jackson.dataformat"]}
