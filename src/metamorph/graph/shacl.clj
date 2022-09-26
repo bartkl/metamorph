@@ -4,10 +4,10 @@
 
 (ns metamorph.graph.shacl
   (:require [metamorph.rdf.datatype :as datatype]
-            [metamorph.graph.db :as graph.db]
-            [clojure.string :as string]
-            [asami.core :as d]
-            [metamorph.utils.uri :as utils.uri]))
+    [metamorph.graph.db :as graph.db]
+    [clojure.string :as string]
+    [asami.core :as d]
+    [metamorph.utils.uri :as utils.uri]))
 
 (defn blank-node? [kw]
   (string/starts-with? (name kw) "_:"))
@@ -15,9 +15,10 @@
 (declare properties)
 
 (defn get-node-shapes [conn]
-  (d/q '[:find ?nodeShape
-         :where [?nodeShape :rdf/type :sh/NodeShape]]
-       conn))
+  (flatten
+    (d/q '[:find ?nodeShape
+           :where [?nodeShape :rdf/type :sh/NodeShape]]
+      conn)))
 
 (defn- inherited-properties [node-shape]
   (let [other-shapes (datatype/rdf-list->seq (node-shape :sh/and))]
@@ -34,5 +35,5 @@
 
 (defn properties [node-shape]
   (into #{} (concat
-             (own-properties node-shape)
-             (inherited-properties node-shape))))
+              (own-properties node-shape)
+              (inherited-properties node-shape))))

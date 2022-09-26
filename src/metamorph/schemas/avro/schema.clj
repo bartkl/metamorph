@@ -4,7 +4,6 @@
 
 (ns metamorph.schemas.avro.schema
   (:require [deercreeklabs.lancaster :as l]
-            [metamorph.graph.db :as graph.db]
             [metamorph.graph.shacl :as shacl]
             [metamorph.rdf.datatype :refer [rdf-list->seq]]
             [metamorph.schemas.avro.cardinality :refer [cardinality->schema-fn]]
