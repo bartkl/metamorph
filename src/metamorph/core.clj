@@ -67,9 +67,9 @@
    :opts [{:as "Input: DX Profile directory"
            :option "dx-profile"
            :type :string}]
-          ; {:as "Input: SHACL file"
-          ;  :option "shacl"
-          ;  :type :string}]
+   ; {:as "Input: SHACL file"
+   ;  :option "shacl"
+   ;  :type :string}]
    :subcommands [{:command "avro"
                   :description "Apache Avro schema"
                   :opts [{:as "Serialization format"
@@ -100,14 +100,16 @@
   (d/delete-database db-uri)
 
   (def conn (d/connect db-uri))
+
   (def model
     (rdf/read-triples (io/file "/home/bartkl/Programming/alliander-opensource/metamorph/dev-resources/example_profile")))
 
   (take 20 model)
+
   (graph.db/store-resources! conn model)
   (graph.avro/get-root-node-shape-uri conn)
 
-  ;; (def b-shape (graph.db/get-resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape")))
+  ; (def b-shape (graph.db/get-resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape")))
   (def b-shape-uri (graph.avro/get-root-node-shape-uri conn))
   (def b-shape (graph.db/get-resource conn b-shape-uri))
 
@@ -115,6 +117,11 @@
   (def s (avro-schema b-shape))
   (l/edn s)
   (spit "testBShape.json" (l/json s))
+
+  (def root (graph.db/get-resource conn (graph.avro/get-root-node-shape-uri conn)))
+
+  (get-in root [:id :id])
+  (avro-schema root)
 
   ;; SQL.
   (def node-shapes-names
@@ -130,14 +137,11 @@
     (spit "testSql.sql"))
 
   ;; CLI Playground.
-  (def x (graph.db/get-resource conn (graph.avro/get-root-node-shape-uri conn)))
-
-  (get-in x [:id :id])
-  (avro-schema x)
+  (def args ["--dx-profile" "dev-resources/example_profile" "avro"])
+  (run-cmd* command-spec args)
 
   (def args {:dx-profile "dev-resources/example_profile",
              :format :json, :output "./avro.json", :_arguments []})
-  ((generate-schema :avro) args)
+  ((generate-schema :avro) args))  ; Debugging possible exceptions is easier this way than through `run-cmd*`.
 
-  (def args ["--dx-profile" "dev-resources/example_profile" "avro"])
-  (run-cmd* command-spec args))
+

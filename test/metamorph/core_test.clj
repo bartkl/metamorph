@@ -43,12 +43,5 @@
           (io/delete-file fname))))))
 
 (comment
-  "
-  1. Change PWD before running; or generate name using DTS so it cannot possibly exist
-  2. Delete files afterwards
-
-  "
-
-
 
   (k/run-all))
