@@ -17,11 +17,6 @@
 (defn- dts []
   (t/format "YYYYMMddHHmm" (t/zoned-date-time)))
 
-; (defn- read-avro-schema [path]
-;   (let [parser (Schema$Parser.)]
-;     (.parse parser (io/file path))))
-; ; (json/parse-stream (io/reader path)))
-
 (deftest avro-schema-generation
   (testing "Generation of Avro schema [CLI]"
     (testing "from DX Profile"
@@ -43,8 +38,8 @@
                 {:retval 0, :status :OK, :help nil, :subcmd [], :stderr []})
             )
           (is (=
-                (slurp "./test/metamorph/avro_success.json")
-                (slurp fname)))
+                (l/pcf (l/json->schema (slurp "./test/metamorph/avro_success.json")))
+                (l/pcf (l/json->schema (slurp fname)))))
           (io/delete-file fname))))))
 
 (comment
