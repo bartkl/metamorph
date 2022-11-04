@@ -40,7 +40,7 @@
 
 (defn store-in-db [data]
   (let [db-uri "asami:mem://logical-model"]
-    (d/delete-database db-uri)  ;; Ensure clean state.
+    (d/delete-database db-uri)  ; Ensure clean state.
     (d/create-database db-uri)
     (let [conn (d/connect db-uri)]
       (graph.db/store-resources! conn data)
