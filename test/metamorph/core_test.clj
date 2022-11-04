@@ -51,7 +51,8 @@
                                        :bcd [1.0 2.0]})
           decoded (l/deserialize schema schema encoded)
           expected (clojure.edn/read-string (slurp "test/metamorph/avro_message.edn"))]
-      (is (= expected decoded)))))
+      (is (= expected decoded))
+      (io/delete-file "avro.json"))))
 
 (comment
   (run-cmd* SUT/command-spec ["--dx-profile" "dev-resources/example_profile" "avro"])
