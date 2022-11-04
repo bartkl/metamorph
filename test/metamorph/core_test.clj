@@ -40,8 +40,29 @@
           (is (=
                 (l/pcf (l/json->schema (slurp "./test/metamorph/avro_success.json")))
                 (l/pcf (l/json->schema (slurp fname)))))
-          (io/delete-file fname))))))
+          (io/delete-file fname)))))
+
+  (testing "Schema functions properly"
+    (run-cmd* SUT/command-spec ["--dx-profile" "dev-resources/example_profile" "avro"])
+    (let [schema (l/json->schema (slurp "avro.json"))
+          encoded (l/serialize schema {:from-ato-c :individual-1
+                                       :from-bto-d-but-somehow-different {:id "D"}
+                                       :id "B"
+                                       :bcd [1.0 2.0]})
+          decoded (l/deserialize schema schema encoded)
+          expected (clojure.edn/read-string (slurp "test/metamorph/avro_message.edn"))]
+      (is (= expected decoded)))))
 
 (comment
+  (run-cmd* SUT/command-spec ["--dx-profile" "dev-resources/example_profile" "avro"])
+  (let [schema (l/json->schema (slurp "avro.json"))
+        message {:from-ato-c :individual-1
+                 :from-bto-d-but-somehow-different {:id "D"}
+                 :id "B"
+                 :bcd [1.0 2.0]}
+        encoded (l/serialize schema message)
+        decoded (l/deserialize schema schema encoded)]
+    (is (= message decoded))))
 
+(comment
   (k/run-all))
