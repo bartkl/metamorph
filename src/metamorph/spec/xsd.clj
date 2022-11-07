@@ -4,23 +4,23 @@
 
 (ns metamorph.spec.xsd
   (:require [clojure.spec.alpha :as s]
-            [clojure.string :as string]))
+    [clojure.string :as string]))
 
 ;; TODO: Look into ways of doing this programmatically,
 ;;  perhaps using `specs-for-ns`.
 (s/def :xsd/datatype
   (s/or
-   :string string?
-   :double double?
-   :boolean boolean
-   :int int?
-   :decimal decimal?
-   :float float?
-   :duration bytes?
-   :dateTime string?
-   :date string?
-   :time string?
-   :anyURI string?))
+    :string string?
+    :double double?
+    :boolean boolean
+    :int int?
+    :decimal decimal?
+    :float float?
+    :duration bytes?
+    :dateTime string?
+    :date string?
+    :time string?
+    :anyURI string?))
 
 (s/def :xsd/string string?)
 (s/def :xsd/double double?)

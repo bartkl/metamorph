@@ -14,6 +14,7 @@
                  [deercreeklabs/lancaster "0.9.20"]
                  [ont-app/vocabulary "0.1.7"]
                  [cli-matic "0.5.3"]
+                 [tick "0.5.0"]
                  [org.slf4j/slf4j-nop "2.0.2"]
                  [org.clojars.quoll/asami "2.3.2"]
                  [com.github.seancorfield/honeysql "2.2.891"]]
@@ -24,4 +25,6 @@
   :main ^:skip-aot metamorph.core
   :profiles {:uberjar {:aot :all}
              :dev {:dependencies [[lambdaisland/kaocha "1.69.1069"]
-                                  [com.github.clj-easy/graal-build-time "0.1.4"]]}})
+                                  [com.github.clj-easy/graal-build-time "0.1.4"]]}}
+  :cljfmt {:remove-consecutive-blank-lines? false  ;; Tonsky formatting.
+           :indents ^:replace {#"^[-*+!?_a-zA-Z]" [[:inner 0]]}})
