@@ -3,67 +3,87 @@
 ; SPDX-License-Identifier: Apache-2.0
 
 (ns metamorph.core
-  (:require [cli-matic.core :refer [run-cmd]]
-            [clojure.spec.alpha :as spec]
-            [expound.alpha :as expound]
-            [deercreeklabs.lancaster :as l]
-            [asami.core :as d]
-            [clojure.java.io :as io]
-            [metamorph.rdf.reading :as rdf]
-            [ont-app.vocabulary.core :as vocab]
-            [metamorph.schemas.avro.schema :refer [avro-schema]]
-            [metamorph.graph.db :as graph.db]
-            [metamorph.vocabs.prof :as prof]
-            [metamorph.vocabs.role :as role]
-            [metamorph.cli :as cli]))
+  (:require [cli-matic.core :refer [run-cmd run-cmd*]]
+    [clojure.spec.alpha :as spec]
+    [expound.alpha :as expound]
+    [metamorph.utils.spec :refer [one-key-of]]
+    [metamorph.utils.cli :refer [kw->opt]]
+    [honey.sql :as sql]
+    [deercreeklabs.lancaster :as l]
+    [clojure.string :as str]
+    [asami.core :as d]
+    [clojure.java.io :as io]
+    [ont-app.vocabulary.core :as vocab]
+    [metamorph.rdf.reading :as rdf]
+    [metamorph.schemas.avro.schema :refer [avro-schema]]
+    [metamorph.schemas.sql.schema :as sql.schema]
+    [metamorph.graph.shacl :as graph.shacl]
+    [metamorph.graph.avro :as graph.avro]
+    [metamorph.graph.db :as graph.db]
+    [metamorph.vocabs.prof :as prof]
+    [metamorph.vocabs.role :as role])
+  (:gen-class))
 
-;; To run this, try from the project root:
-;; ./toycalc-nosub.clj -a 1 -b 80
+(def input-sources #{:shacl :dx-profile})
+  
+(spec/def ::command-args
+  (one-key-of (vec input-sources)))
 
-(defn transform-schema [& args]
-  (println args))
+(expound/defmsg ::command-args
+  (str
+    "Please provide exactly one input.\n"
+    "Choices:\n\t"
+    (str/join "\n\t" (map kw->opt input-sources))))
 
-(expound/def ::avro-args
-  (fn [&args] false) "Erreur args to avro")
+(defn read-input [{:keys [dx-profile shacl]}]
+  (rdf/read-triples (io/file (or dx-profile shacl))))
 
-(def cli-conf
-  {:app {:command "metamorph"
-         :description "Tool to transform dx-prof/CIM501 profiles to a variety of schema"
-         :version "0.0.1"}
-   :global-opts [{:as "Manifest file which describes the changed files since last run"
-                  :option "manifest"
-                  :short  "m"
-                  :type :string}
-                 {:as "Manifest file which describes the changed files since last run"
-                  :option "profile"
-                  :short  "p"
-                  :type :string}
-                 {:as "Base path for the relative file paths in the manifest file"
-                  :option "base-path"
-                  :short "b"
-                  :type :string}]
-   :commands [{:command "avro"
-               :spec ::avro-args
-               :description "Apache AVRO schema"
-               :opts [{:as "Serialization format"
-                       :default :json
-                       :option "format"
-                       :short  "f"
-                       :type #{:edn :json}}
-                      {:as "Output file"
-                       :default "./avro.json"
-                       :option "output"
-                       :short  "o"
-                       :type #{:edn :json}}]
+(defn store-in-db [data]
+  (let [db-uri "asami:mem://logical-model"]
+    (d/delete-database db-uri)  ; Ensure clean state.
+    (d/create-database db-uri)
+    (let [conn (d/connect db-uri)]
+      (graph.db/store-resources! conn data)
+      conn)))
 
-               :runs transform-schema}]})
+(defn generate-avro-schema [conn args]
+  (let [root-uri (graph.avro/get-root-node-shape-uri conn)]
+    (->> (graph.db/get-resource conn root-uri)
+      avro-schema
+      l/json
+      (spit (:output args)))))
 
-(defn mark-resources-as-entities [conn]
-  @(d/transact conn {:tx-triples
-                     (mapcat #(list
-                               (graph.db/mark-entity %)
-                               (graph.db/add-id %))
-                             (graph.db/get-resources conn))}))
+(defn generate-schema [schema]
+  (fn [args]
+    (let [gen-schema (schema {:avro generate-avro-schema})
+          conn (->> (read-input args)
+                 store-in-db)]
+      (gen-schema conn args))))
+
+(def command-spec
+  {:command "metamorph"
+   :description "Generate a schema of a variety of formats, from a DX Profile or SHACL model."
+   :version "0.3.0"
+   :opts [{:as "Input: DX Profile directory"
+           :option "dx-profile"
+           :type :string}]
+   ; {:as "Input: SHACL file"
+   ;  :option "shacl"
+   ;  :type :string}]
+   :subcommands [{:command "avro"
+                  :description "Apache Avro schema"
+                  :opts [{:as "Serialization format"
+                          :default :json
+                          :option "format"
+                          :short  "f"
+                          :type #{:edn :json}}
+                         {:as "Output file"
+                          :default "./avro.json"
+                          :option "output"
+                          :short  "o"
+                          :type :string}]
+                  :runs (generate-schema :avro)}]
+   :spec ::command-args})
 
 (defn -main
   "This is our entry point.
@@ -71,38 +91,57 @@
   Commands (functions) will be invoked as appropriate."
   [& args]
 
-  ;; (run-cmd args cli/conf))
-  (let [db-uri "asami:mem://profile"
-        data (rdf/read-directory (io/file "resources/example_profile/"))]
-    (d/create-database db-uri)
+  (run-cmd args command-spec))
 
-    (let [conn (d/connect db-uri)]
-      data
-      @(d/transact conn {:tx-triples data})
-      (mark-resources-as-entities conn)
+(comment  ;; Playground.
+  ;; Reading from files into DB.
+  (def db-uri "asami:mem://test-db")
+  (d/create-database db-uri)
+  (d/delete-database db-uri)
 
-      (->> (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true)
-           (avro-schema)
-           (l/edn)))))
+  (def conn (d/connect db-uri))
 
-(comment "Playground."
-         (def db-uri "asami:mem://profile")
-         (d/create-database db-uri)
-         (d/delete-database db-uri)
+  (def model
+    (rdf/read-triples (io/file "/home/bartkl/Programming/alliander-opensource/metamorph/dev-resources/example_profile")))
 
-         (def conn (d/connect db-uri))
+  (take 20 model)
 
-         (def model
-           (rdf/read-directory (io/file "resources/example_profile/")))
+  (graph.db/store-resources! conn model)
+  (graph.avro/get-root-node-shape-uri conn)
 
-         (take 20 model)
+  ; (def b-shape (graph.db/get-resource conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape")))
+  (def b-shape-uri (graph.avro/get-root-node-shape-uri conn))
+  (def b-shape (graph.db/get-resource conn b-shape-uri))
 
-         @(d/transact conn {:tx-triples model})
+  ;; Avro.
+  (def s (avro-schema b-shape))
+  (l/edn s)
+  (spit "testBShape.json" (l/json s))
 
-         (mark-resources-as-entities conn)
+  (def root (graph.db/get-resource conn (graph.avro/get-root-node-shape-uri conn)))
 
-         (def b-shape (d/entity conn (vocab/keyword-for "https://w3id.org/schematransform/ExampleShape#BShape") true))
-         (def s (avro-schema b-shape))
-         (l/edn s)
+  (get-in root [:id :id])
+  (avro-schema root)
 
-         (spit "testBShape.json" (l/json s)))
+  ;; SQL.
+  (def node-shapes-names
+    (graph.shacl/get-node-shapes conn))
+
+  (def node-shapes (->> node-shapes-names
+                     (map #(d/entity conn % true))))
+
+  (map #(get-in % [:sh/path :id]) (graph.shacl/properties b-shape))
+  (sql/format (sql.schema/node-shape->table b-shape))
+
+  (->> (sql.schema/sql-schema node-shapes)
+    (spit "testSql.sql"))
+
+  ;; CLI Playground.
+  (def args ["--dx-profile" "dev-resources/example_profile" "avro"])
+  (run-cmd* command-spec args)
+
+  (def args {:dx-profile "dev-resources/example_profile",
+             :format :json, :output "./avro.json", :_arguments []})
+  ((generate-schema :avro) args))  ; Debugging possible exceptions is easier this way than through `run-cmd*`.
+
+

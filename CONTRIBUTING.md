@@ -4,64 +4,57 @@ SPDX-FileCopyrightText: 2022 Alliander N.V.
 SPDX-License-Identifier: Apache-2.0
 -->
 
-# How to Contribute
+# Contributing
+This document describes what you can do to contribute to the project, how to go about that, and what is expected of you.
 
-We'd love to accept your patches and contributions to this project. There are
-just a few small guidelines you need to follow.
+Please also refer to our [Code of Conduct](CODE_OF_CONDUCT.md).
 
-
-## Filing bugs and change requests
-
-You can file bugs against and change requests for the project via github issues. Consult [GitHub Help](https://docs.github.com/en/free-pro-team@latest/github/managing-your-work-on-github/creating-an-issue) for more
-information on using github issues.
-
-## Community Guidelines
-
-This project follows the following [Code of Conduct](CODE_OF_CONDUCT.md).
-
-## Source Code Headers
-
-Every file containing source code must include copyright and license
-information. This includes any JS/CSS files that you might be serving out to
-browsers. (This is to help well-intentioned people avoid accidental copying that
-doesn't comply with the license.)
-
-Apache 2.0 header:
-
-    SPDX-FileCopyrightText: <YEAR> Alliander N.V.
-    SPDX-License-Identifier: Apache-2.0
-
-## Git branching
-
-This project uses the [Gitflow Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) and branching model. The `master` branch always contains the latest release, after a release is made new feature branches are branched of `develop`. When a feature is finished it is merged back into `develop`. At the end of a sprint `develop` is merged back into `master` or (optional) into a `release` branch first before it is merged into `master`.
-
-![Gitflow](img/gitflow.svg)
-
-## Code reviews
-
-All patches and contributions, including patches and contributions by project members, require review by one of the maintainers of the project. We
-use GitHub pull requests for this purpose. Consult
-[GitHub Help](https://help.github.com/articles/about-pull-requests/) for more
-information on using pull requests.
-
-## Pull Request Process
-Contributions should be submitted as Github pull requests. See [Creating a pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) if you're unfamiliar with this concept.
-
-The process for a code change and pull request you should follow:
-
-1. Create a topic branch in your local repository, following the naming format
-"feature-[description]". For more information see the Git branching guideline.
-1. Make changes, compile, and test thoroughly. Ensure any install or build dependencies are removed before the end of the layer when doing a build. Code style should match existing style and conventions, and changes should be focused on the topic the pull request will be addressed. For more information see the style guide.
-1. Push commits to your fork.
-1. Create a Github pull request from your topic branch.
-1. Pull requests will be reviewed by one of the maintainers who may discuss, offer constructive feedback, request changes, or approve
-the work. For more information see the Code review guideline.
-1. Upon receiving the sign-off of one of the maintainers you may merge your changes, or if you
-   do not have permission to do that, you may request a maintainer to merge it for you.
+*Note*: the project is currently at an early stage, so it's generally advisable to [contact us](SUPPORT.md) before you contribute.
 
 
-## Attribution
+## Things you could do
+There are several ways you can contribute to the project. To give you a quick idea:
 
-This Contributing.md is adapted from Google
-available at
-https://github.com/google/new-project/blob/master/docs/contributing.md
+* **Development**
+    * Implement or enhance features.
+    * Increase test coverage.
+    * Perform small refactors.
+* **Transformation specification**
+    * Help us map highly expressive semantic models onto technical models.
+* **Documentation**
+    * Improve the Wiki and project documents.
+* **Engage**
+    * Report bugs.
+    * Submit requests for new features or enhancements.
+    * Share your thoughts on discussions and issues.
+    * Help us promote the project and find new users and contributors.
+
+## How to contribute
+
+### Preliminaries
+First, some preliminary reading:
+* Make sure you're familiar with our [Way of Working](wiki), most notably how we use GitHub's *Issues*, *Discussions* and *Projects*.
+* If you plan to make changes to code or documentation, read our [Guidelines](wiki) as well.
+
+### Steps to take
+Then, follow these steps to guide you through the process.
+
+1. **Check out currently existing issues and discussions.** Look at [Issues](https://github.com/alliander-opensource/metamorph/issues), [Kanban board](https://github.com/orgs/alliander-opensource/projects/3) and [Discussions](https://github.com/alliander-opensource/metamorph/discussions).
+    * Maybe what you consider doing is already being worked on, or at least there might be an issue for it.
+    * It may inspire or influence you to gain new ideas, or to revise your current one(s).
+2. **Create an issue or discussion where you describe your idea.** If a suitable issue/discussion exists already, carry on from there.<br />
+    * This way we maintain an overview of our work inventory and planning.
+    * It encourages you to think well about what it is you wish to contribute.
+    * Others can help you refine and discuss your idea.
+    * If for some reason you wish to deviate from this way of working, you are free to do so *at own risk* of rejection.
+
+If your contribution involves making actual changes to the code or documentation, please continue reading.
+
+3. **Make changes to the files on your own fork of the project.**
+    * Make sure your changes conform to our [Guidelines](wiki).
+    * Note that changes to the Wiki are a separate case. Please contact us if that's what you wish to do.
+4. **Submit a pull request when you feel confident the work is done.**
+    * The maintainers will review your code and request changes if necessary.
+    * As soon as the changes are approved, your code will be merged.
+5. **Close associated issues, discussions and pull requests.**
+    * Clean up after yourself!

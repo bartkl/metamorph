@@ -3,7 +3,7 @@
 ; SPDX-License-Identifier: Apache-2.0
 
 (ns metamorph.rdf.reading
-  (:require [clojure.java.io :as io]
+  (:require [clojure.java.io :as jio]
             [clojure.set :as set]
             [ont-app.vocabulary.core :as vocab]
             [metamorph.rdf.datatype :as datatype]
@@ -12,7 +12,9 @@
            (org.eclipse.rdf4j.model IRI)
            (org.eclipse.rdf4j.rio RDFFormat)))
 
-(def supported-file-exts #{"ttl", "rdf", "jsonld"})
+(defn file-supported? [path]
+  (let [supported-exts #{"ttl"}]
+    (contains? supported-exts (utils.file/ext path))))
 
 (defn- simple-statement->triple
   "Creates a triple from an RDF4j `SimpleStatement.`"
@@ -32,26 +34,22 @@
        (.isIRI object) (vocab/keyword-for (str object))
        :else (vocab/keyword-for (str object)))]))  ;;  Blank node
 
-(defn read-file
-  "Reads RDF file."
-  [path]
+(defmulti read-triples
+  "Reads triples from RDF files."
 
-  {:pre [(.isFile path)]}
+  {:arglists '([path])}
+  utils.file/type :default :invalid-type)
 
-  (with-open [rdr (clojure.java.io/reader path)]
-    (let [ctxs (into-array IRI [])]
-      (into (hash-set)
-            (map simple-statement->triple
-                 (Rio/parse rdr RDFFormat/TURTLE ctxs))))))
-
-(defn read-directory
-  "Reads all RDF files found in `path` and returns a set of all
-   statements."
-  [path]
-
-  {:pre [(.isDirectory path)]}
-
+(defmethod read-triples :directory [path]
   (->> (file-seq path)
-       (filter #(supported-file-exts (utils.file/ext %)))
-       (map read-file)
+       (filter file-supported?)
+       (map read-triples)
        (reduce set/union)))
+
+(defmethod read-triples :file [path]
+  (with-open [rdr (jio/reader path)]
+    (let [ctxs (into-array IRI [])]
+      (->> (Rio/parse rdr RDFFormat/TURTLE ctxs)
+           (map simple-statement->triple)))))
+
+(defmethod read-triples :invalid-type [_] "Please provide a path to a directory or file to read.")
