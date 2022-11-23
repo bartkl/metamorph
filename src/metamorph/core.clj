@@ -142,6 +142,8 @@
 
   (def args {:dx-profile "dev-resources/example_profile",
              :format :json, :output "./avro.json", :_arguments []})
+  ;; (def args {:dx-profile "dev-resources/MetamorphProfile",
+  ;;            :format :json, :output "./avro.json", :_arguments []})
+  ;; (def args {:dx-profile "dev-resources/joep",
+  ;;            :format :json, :output "./avro.json", :_arguments []})
   ((generate-schema :avro) args))  ; Debugging possible exceptions is easier this way than through `run-cmd*`.
-
-

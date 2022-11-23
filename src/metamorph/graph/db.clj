@@ -8,7 +8,8 @@
 (defn node-ref?
   "Checks if the provided hash-map is an Asami node reference."
   [m]
-  (= (keys m) '(:id)))
+  (and (map? m)
+       (= (keys m) '(:id))))
 
 (defn- get-resource-iris [conn]
   (map first
