@@ -50,7 +50,8 @@
   (let [root-uri (graph.avro/get-root-node-shape-uri conn)]
     (->> (graph.db/get-resource conn root-uri)
       avro-schema
-      l/pcf
+      l/json
+      ;; l/pcf
       (spit (:output args)))))
 
 (defn generate-schema [schema]
