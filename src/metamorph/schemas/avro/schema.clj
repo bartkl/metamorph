@@ -27,8 +27,12 @@
   (get-in n [:sh/targetClass :id :id :rdfs/comment] ""))
 
 (defn- enum-symbol [node]
-  (utils.uri/name
-   (iri node)))
+  (-> (iri node)
+      utils.uri/name
+      name
+      (string/split #"\.")
+      last
+      keyword))
 
 (defn- node-shape->enum [n]
   (l/enum-schema
@@ -61,7 +65,8 @@
   (-> (iri p :sh/path)
       utils.uri/name
       name
-      (string/replace "." "-")
+      (string/split #"\.")
+      last
       keyword))
 
 (defn- record-field-doc [p]
