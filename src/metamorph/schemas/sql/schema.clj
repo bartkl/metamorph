@@ -19,11 +19,11 @@
   (if (= 1 (p :sh/maxCount)) 1 ##Inf))
 
 (defn node-shape-name [n]
-  (utils.uri/fragment
+  (utils.uri/name
     (graph.db/entity-id (:sh/targetClass n))))
 
 (defn property-shape-name [p]
-  (utils.uri/fragment
+  (utils.uri/name
     (graph.db/entity-id (:sh/path p))))
 
 (defn primary-key? [p]
@@ -46,7 +46,7 @@
   (contains? n :sh/in))
 
 (defn enum-members [n]
-  (map (comp utils.uri/fragment
+  (map (comp utils.uri/name
          graph.db/entity-id)
     (rdf-list->seq (:sh/in n))))
 

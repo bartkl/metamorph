@@ -4,57 +4,70 @@
 
 (ns metamorph.schemas.avro.schema
   (:require [deercreeklabs.lancaster :as l]
-    [metamorph.graph.shacl :as shacl]
-    [metamorph.rdf.datatype :refer [rdf-list->seq]]
-    [metamorph.schemas.avro.cardinality :refer [cardinality->schema-fn]]
-    [metamorph.schemas.avro.datatype :refer [xsd->avro]]
-    [metamorph.utils.uri :as utils.uri]))
+            [clojure.string :as string]
+            [metamorph.graph.shacl :as shacl]
+            [metamorph.rdf.datatype :refer [rdf-list->seq]]
+            [metamorph.schemas.avro.cardinality :refer [cardinality->schema-fn]]
+            [metamorph.schemas.avro.datatype :refer [xsd->avro]]
+            [metamorph.utils.uri :as utils.uri]))
 
 (declare property->record-field
-  avro-schema)
+         avro-schema)
+
+(defn- iri
+  ([node t] (get-in node [t :id :id] (node t)))
+  ([node] (get-in node [:id :id] node)))
 
 ;; Enum
 (defn- enum-name [n]
-  (utils.uri/fragment
-    (get-in n [:sh/targetClass :id :id])))
+  (utils.uri/name
+   (iri n :sh/targetClass)))
 
 (defn- enum-doc [n]
-  (let [target-class (get n :sh/targetClass)]
-    (target-class :rdfs/comment)))
+  (get-in n [:sh/targetClass :rdfs/comment] ""))
 
 (defn- enum-symbol [node]
-  (utils.uri/fragment
-    (get-in node [:id :id])))
+  (-> (iri node)
+      utils.uri/name
+      name
+      (string/split #"\.")
+      last
+      keyword))
 
 (defn- node-shape->enum [n]
   (l/enum-schema
-    (enum-name n)
-    (enum-doc n)
-    (map enum-symbol (rdf-list->seq (:sh/in n)))))
+   (enum-name n)
+   (enum-doc n)
+   (map enum-symbol (rdf-list->seq (:sh/in n)))))
 
 ;; Record
 (defn- record-name [n]
-  (utils.uri/fragment
-    (get-in n [:sh/targetClass :id :id])))
+  (utils.uri/name
+   (iri n :sh/targetClass)))
 
 (defn- record-doc [n]
-  (get-in n [:sh/targetClass :rdfs/comment]))
+  (get-in n [:sh/targetClass :rdfs/comment] ""))
 
 (defn- node-shape->record [n]
   (let [properties (->> (shacl/properties n)
-                     (remove shacl/property-node-ref?)
-                     (sort-by (comp :id :id :sh/path)))]
+                        (remove shacl/property-node-ref?)
+                        (sort-by (comp :id :id :sh/path)))]  ;; Is ordering still unique when there's multiple `nil` coming from this due to lacking properties in the vocabulary?
     ; (println (map #(get-in % [:sh/path :id :id]) properties))
     (l/record-schema
-      (record-name n)
-      (record-doc n)
-      (if (some? properties)
-        (map property->record-field properties)
-        (vector)))))
+     (record-name n)
+     (record-doc n)
+     (if (some? properties)
+       (map property->record-field properties)
+       (vector)))))
 
 ;; Record field
 (defn- record-field-name [p]
-  (utils.uri/fragment (get-in p [:sh/path :id :id])))
+  (-> (iri p :sh/path)
+      utils.uri/name
+      name
+      (string/split #"\.")
+      last
+      keyword))
 
 (defn- record-field-doc [p]
   (get-in p [:sh/path :rdfs/comment] ""))
