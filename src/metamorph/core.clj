@@ -6,6 +6,7 @@
   (:require [cli-matic.core :refer [run-cmd run-cmd*]]
             [clojure.spec.alpha :as spec]
             [expound.alpha :as expound]
+            [clojure.set :as set]
             [metamorph.utils.spec :refer [one-key-of]]
             [metamorph.utils.cli :refer [kw->opt]]
             [honey.sql :as sql]
@@ -14,6 +15,7 @@
             [asami.core :as d]
             [clojure.java.io :as io]
             [ont-app.vocabulary.core :as vocab]
+            [cheshire.core :as json]
             [metamorph.rdf.reading :as rdf]
             [metamorph.schemas.avro.schema :refer [avro-schema]]
             [metamorph.schemas.sql.schema :as sql.schema]
@@ -21,7 +23,15 @@
             [metamorph.graph.avro :as graph.avro]
             [metamorph.graph.db :as graph.db]
             [metamorph.vocabs.prof :as prof]
-            [metamorph.vocabs.role :as role])
+            [metamorph.vocabs.role :as role]
+            [metamorph.utils.file :as utils.file]
+            [clojure.java.io :as jio]
+            [metamorph.rdf.datatype :as datatype])
+  (:import (org.eclipse.rdf4j.rio Rio)
+           (org.eclipse.rdf4j.model IRI)
+           (org.eclipse.rdf4j.rio WriterConfig)
+           (org.eclipse.rdf4j.rio.helpers BasicWriterSettings)
+           (org.eclipse.rdf4j.rio RDFFormat))
   (:gen-class))
 
 (def input-sources #{:shacl :dx-profile})
@@ -102,7 +112,7 @@
   (def conn (d/connect db-uri))
 
   (def model
-    (rdf/read-triples (io/file "/home/bartkl/Programming/alliander-opensource/metamorph/dev-resources/example_profile")))
+    (rdf/read-triples (io/file "dev-resources/example_profile")))
 
   (take 20 model)
 
@@ -116,7 +126,7 @@
   ;; Avro.
   (def s (avro-schema b-shape))
   (l/edn s)
-  (spit "testBShape.json" (l/json s))
+  (spit "testBShape.json" (json/encode s))
 
   (def root (graph.db/get-resource conn (graph.avro/get-root-node-shape-uri conn)))
 
@@ -142,12 +152,4 @@
 
   (def args {:dx-profile "dev-resources/example_profile",
              :format :json, :output "./avro.json", :_arguments []})
-  (def args {:shacl "dev-resources/example_profile/Constraints.ttl",
-             :format :json, :output "./avro.json", :_arguments []})
-  (def args {:dx-profile "dev-resources/MetamorphProfile",
-             :format :json, :output "./Tsoefiet.avsc", :_arguments []})
-  (def args {:dx-profile "/home/bart/Programming/Alliander/AIM-Assets-Netwerken/MetamorphProfile/",
-             :format :json, :output "./Tsoefiet.avsc", :_arguments []})
-  ;; (def args {:dx-profile "dev-resources/joep",
-  ;;            :format :json, :output "./avro.json", :_arguments []})
   ((generate-schema :avro) args))  ; Debugging possible exceptions is easier this way than through `run-cmd*`.

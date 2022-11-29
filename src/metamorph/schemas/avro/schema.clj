@@ -18,6 +18,21 @@
   ([node t] (get-in node [t :id :id] (node t)))
   ([node] (get-in node [:id :id] node)))
 
+(defn iri->schema-name [i]
+  (let [uri (URI. (string/replace-first (str i) ":" ""))
+        host (string/join "."
+                          (-> (.getHost uri)
+                              (string/split #"\.")
+                              reverse))
+        path (string/join "."
+                          (-> (.getPath uri)
+                              (string/replace-first #"/" "")
+                              (string/split #"/")))
+        fragment (.getFragment uri)]
+    (println path)
+    (keyword (str host "." path) fragment)))
+
+;; (iri->schema-name :https://w3id.org/schematransform/ExampleVocabulary#B)
 ;; Enum
 (defn- enum-name [n]
   (utils.uri/name
