@@ -24,7 +24,7 @@
    (iri n :sh/targetClass)))
 
 (defn- enum-doc [n]
-  (get-in n [:sh/targetClass :id :id :rdfs/comment] ""))
+  (get-in n [:sh/targetClass :rdfs/comment] ""))
 
 (defn- enum-symbol [node]
   (-> (iri node)
