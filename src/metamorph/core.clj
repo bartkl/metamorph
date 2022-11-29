@@ -6,7 +6,6 @@
   (:require [cli-matic.core :refer [run-cmd run-cmd*]]
             [clojure.spec.alpha :as spec]
             [expound.alpha :as expound]
-            [clojure.set :as set]
             [metamorph.utils.spec :refer [one-key-of]]
             [metamorph.utils.cli :refer [kw->opt]]
             [honey.sql :as sql]
@@ -15,6 +14,7 @@
             [asami.core :as d]
             [clojure.java.io :as io]
             [ont-app.vocabulary.core :as vocab]
+            [cheshire.generate :refer [add-encoder encode-str encode-nil remove-encoder]]
             [cheshire.core :as json]
             [metamorph.rdf.reading :as rdf]
             [metamorph.schemas.avro.schema :refer [avro-schema]]
@@ -23,15 +23,7 @@
             [metamorph.graph.avro :as graph.avro]
             [metamorph.graph.db :as graph.db]
             [metamorph.vocabs.prof :as prof]
-            [metamorph.vocabs.role :as role]
-            [metamorph.utils.file :as utils.file]
-            [clojure.java.io :as jio]
-            [metamorph.rdf.datatype :as datatype])
-  (:import (org.eclipse.rdf4j.rio Rio)
-           (org.eclipse.rdf4j.model IRI)
-           (org.eclipse.rdf4j.rio WriterConfig)
-           (org.eclipse.rdf4j.rio.helpers BasicWriterSettings)
-           (org.eclipse.rdf4j.rio RDFFormat))
+            [metamorph.vocabs.role :as role])
   (:gen-class))
 
 (def input-sources #{:shacl :dx-profile})
@@ -60,7 +52,8 @@
   (let [root-uri (graph.avro/get-root-node-shape-uri conn)]
     (->> (graph.db/get-resource conn root-uri)
          avro-schema
-         l/json
+         l/edn
+         (json/encode)
          (spit (:output args)))))
 
 (defn generate-schema [schema]
@@ -126,7 +119,8 @@
   ;; Avro.
   (def s (avro-schema b-shape))
   (l/edn s)
-  (spit "testBShape.json" (json/encode s))
+  ;; (json/generate-string (l/edn s)))
+  (spit "testBShape.json" (json/encode (l/edn s)))
 
   (def root (graph.db/get-resource conn (graph.avro/get-root-node-shape-uri conn)))
 
