@@ -13,8 +13,7 @@
             [clojure.string :as str]
             [asami.core :as d]
             [clojure.java.io :as io]
-            [ont-app.vocabulary.core :as vocab]
-            [cheshire.generate :refer [add-encoder encode-str encode-nil remove-encoder]]
+            [cheshire.generate :refer [add-encoder]]
             [cheshire.core :as json]
             [metamorph.rdf.reading :as rdf]
             [metamorph.schemas.avro.schema :refer [avro-schema]]
@@ -22,6 +21,7 @@
             [metamorph.graph.shacl :as graph.shacl]
             [metamorph.graph.avro :as graph.avro]
             [metamorph.graph.db :as graph.db]
+            [ont-app.vocabulary.core :as vocab]
             [metamorph.vocabs.prof :as prof]
             [metamorph.vocabs.role :as role]
             [clojure.string :as string])
