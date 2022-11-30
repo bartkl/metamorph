@@ -24,4 +24,5 @@
        keyword))
 
 (defn name [iri]
-  (or (fragment iri) (last (path iri))))
+  (let [iri-kw (keyword iri)]
+    (or (fragment iri-kw) (last (path iri-kw)))))

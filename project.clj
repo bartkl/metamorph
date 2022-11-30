@@ -12,7 +12,7 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [org.eclipse.rdf4j/rdf4j-rio-turtle "4.0.0"]
                  [deercreeklabs/lancaster "0.9.20"]
-                 [ont-app/vocabulary "0.2.0-SNAPSHOT"]
+                 [ont-app/vocabulary "0.2.0"]
                  [cli-matic "0.5.3"]
                  [tick "0.5.0"]
                  [org.slf4j/slf4j-nop "2.0.2"]

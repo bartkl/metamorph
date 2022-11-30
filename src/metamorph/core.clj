@@ -13,18 +13,31 @@
             [clojure.string :as str]
             [asami.core :as d]
             [clojure.java.io :as io]
-            [ont-app.vocabulary.core :as vocab]
+            [cheshire.generate :refer [add-encoder]]
+            [cheshire.core :as json]
             [metamorph.rdf.reading :as rdf]
             [metamorph.schemas.avro.schema :refer [avro-schema]]
             [metamorph.schemas.sql.schema :as sql.schema]
             [metamorph.graph.shacl :as graph.shacl]
             [metamorph.graph.avro :as graph.avro]
             [metamorph.graph.db :as graph.db]
+            [ont-app.vocabulary.core :as vocab]
             [metamorph.vocabs.prof :as prof]
-            [metamorph.vocabs.role :as role])
+            [metamorph.vocabs.role :as role]
+            [clojure.string :as string])
+  (:import (com.fasterxml.jackson.core JsonGenerator))
   (:gen-class))
 
 (def input-sources #{:shacl :dx-profile})
+
+(defn encode-keyword
+  "Encode a keyword to the json generator."
+  [^clojure.lang.Keyword k ^JsonGenerator jg]
+  (.writeString jg (if-let [ns (namespace k)]
+                     (str ns "." (name k))
+                     (name k))))
+
+(add-encoder clojure.lang.Keyword encode-keyword)
 
 (spec/def ::command-args
   (one-key-of (vec input-sources)))
@@ -50,7 +63,8 @@
   (let [root-uri (graph.avro/get-root-node-shape-uri conn)]
     (->> (graph.db/get-resource conn root-uri)
          avro-schema
-         l/json
+         l/edn
+         (json/encode)
          (spit (:output args)))))
 
 (defn generate-schema [schema]
@@ -102,7 +116,7 @@
   (def conn (d/connect db-uri))
 
   (def model
-    (rdf/read-triples (io/file "/home/bartkl/Programming/alliander-opensource/metamorph/dev-resources/example_profile")))
+    (rdf/read-triples (io/file "dev-resources/example_profile")))
 
   (take 20 model)
 
@@ -116,7 +130,8 @@
   ;; Avro.
   (def s (avro-schema b-shape))
   (l/edn s)
-  (spit "testBShape.json" (l/json s))
+  ;; (json/generate-string (l/edn s)))
+  (spit "testBShape.json" (json/encode (l/edn s)))
 
   (def root (graph.db/get-resource conn (graph.avro/get-root-node-shape-uri conn)))
 
@@ -142,12 +157,4 @@
 
   (def args {:dx-profile "dev-resources/example_profile",
              :format :json, :output "./avro.json", :_arguments []})
-  (def args {:shacl "dev-resources/example_profile/Constraints.ttl",
-             :format :json, :output "./avro.json", :_arguments []})
-  (def args {:dx-profile "dev-resources/MetamorphProfile",
-             :format :json, :output "./Tsoefiet.avsc", :_arguments []})
-  (def args {:dx-profile "/home/bart/Programming/Alliander/AIM-Assets-Netwerken/MetamorphProfile/",
-             :format :json, :output "./Tsoefiet.avsc", :_arguments []})
-  ;; (def args {:dx-profile "dev-resources/joep",
-  ;;            :format :json, :output "./avro.json", :_arguments []})
   ((generate-schema :avro) args))  ; Debugging possible exceptions is easier this way than through `run-cmd*`.

@@ -9,25 +9,58 @@
             [metamorph.rdf.datatype :refer [rdf-list->seq]]
             [metamorph.schemas.avro.cardinality :refer [cardinality->schema-fn]]
             [metamorph.schemas.avro.datatype :refer [xsd->avro]]
-            [metamorph.utils.uri :as utils.uri]))
+            [metamorph.utils.uri :as utils.uri]
+            [ont-app.vocabulary.core :as vocab]
+            [metamorph.utils.file :as utils.file])
+  (:import [java.net URI]))
 
 (declare property->record-field
          avro-schema)
 
 (defn- iri
-  ([node t] (get-in node [t :id :id] (node t)))
-  ([node] (get-in node [:id :id] node)))
+  ([node t] (vocab/uri-for (get-in node [t :id :id] (node t))))
+  ([node] (vocab/uri-for (get-in node [:id :id] node))))
+
+(defn iri->schema-name [i]
+  (let [uri (URI. i)
+        host (string/join "."
+                          (-> (.getHost uri)
+                              (string/split #"\.")
+                              reverse))
+        path-parts (-> (.getPath uri)
+                       (string/replace-first #"/" "")
+                       (string/split #"/"))
+        fragment (.getFragment uri)]
+    (if (some? fragment)
+      (keyword (str host "." (string/join "." path-parts)) fragment)
+      (keyword (str host "." (string/join "." (butlast path-parts)) (last path-parts))))))
+
+;; (defn iri->schema-name [i]
+;;   (let [uri (URI. i)
+;;         host (string/join "."
+;;                           (-> (.getHost uri)
+;;                               (string/split #"\.")
+;;                               reverse))
+;;         path (string/join "." (remove string/blank?
+;;                                       (-> (.getPath uri)
+;;                                           (string/split #"/"))))
+;;         fragment (.getFragment uri)]
+;;     (keyword (str host "." path (when (some? fragment) (str "/" fragment))))))
+
+;; (iri->schema-name (vocab/uri-for :https://w3id.org/schematransform/ExampleVocabulary#B))
+;; (iri->schema-name (vocab/uri-for :https://w3id.org/schematransform/ExampleVocabulary/B))
 
 ;; Enum
 (defn- enum-name [n]
-  (utils.uri/name
-   (iri n :sh/targetClass)))
+  ;; (iri->schema-name (iri n :sh/targetClass)))
+  (utils.uri/name (iri n :sh/targetClass)))
 
 (defn- enum-doc [n]
   (get-in n [:sh/targetClass :rdfs/comment] ""))
 
 (defn- enum-symbol [node]
   (-> (iri node)
+      keyword
       utils.uri/name
       name
       (string/split #"\.")
@@ -42,8 +75,8 @@
 
 ;; Record
 (defn- record-name [n]
-  (utils.uri/name
-   (iri n :sh/targetClass)))
+  ;; (iri->schema-name (iri n :sh/targetClass)))
+  (utils.uri/name (iri n :sh/targetClass)))
 
 (defn- record-doc [n]
   (get-in n [:sh/targetClass :rdfs/comment] ""))
@@ -63,6 +96,7 @@
 ;; Record field
 (defn- record-field-name [p]
   (-> (iri p :sh/path)
+      keyword
       utils.uri/name
       name
       (string/split #"\.")
