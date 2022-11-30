@@ -23,10 +23,21 @@
             [metamorph.graph.avro :as graph.avro]
             [metamorph.graph.db :as graph.db]
             [metamorph.vocabs.prof :as prof]
-            [metamorph.vocabs.role :as role])
+            [metamorph.vocabs.role :as role]
+            [clojure.string :as string])
+  (:import (com.fasterxml.jackson.core JsonGenerator))
   (:gen-class))
 
 (def input-sources #{:shacl :dx-profile})
+
+(defn encode-keyword
+  "Encode a keyword to the json generator."
+  [^clojure.lang.Keyword k ^JsonGenerator jg]
+  (.writeString jg (if-let [ns (namespace k)]
+                     (str ns "." (name k))
+                     (name k))))
+
+(add-encoder clojure.lang.Keyword encode-keyword)
 
 (spec/def ::command-args
   (one-key-of (vec input-sources)))

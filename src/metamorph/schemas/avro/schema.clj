@@ -26,15 +26,28 @@
                           (-> (.getHost uri)
                               (string/split #"\.")
                               reverse))
-        path (string/join "."
-                          (-> (.getPath uri)
-                              (string/replace-first #"/" "")
-                              (string/split #"/")))
+        path-parts (-> (.getPath uri)
+                       (string/replace-first #"/" "")
+                       (string/split #"/"))
         fragment (.getFragment uri)]
-    ;; TODO: If `fragment` is empty, use last path part.
-    (keyword (str host "." path) fragment)))
+    (if (some? fragment)
+      (keyword (str host "." (string/join "." path-parts)) fragment)
+      (keyword (str host "." (string/join "." (butlast path-parts)) (last path-parts))))))
 
-;; (iri->schema-name :https://w3id.org/schematransform/ExampleVocabulary#B)
+;; (defn iri->schema-name [i]
+;;   (let [uri (URI. i)
+;;         host (string/join "."
+;;                           (-> (.getHost uri)
+;;                               (string/split #"\.")
+;;                               reverse))
+;;         path (string/join "." (remove string/blank?
+;;                                       (-> (.getPath uri)
+;;                                           (string/split #"/"))))
+;;         fragment (.getFragment uri)]
+;;     (keyword (str host "." path (when (some? fragment) (str "/" fragment))))))
+
+;; (iri->schema-name (vocab/uri-for :https://w3id.org/schematransform/ExampleVocabulary#B))
+;; (iri->schema-name (vocab/uri-for :https://w3id.org/schematransform/ExampleVocabulary/B))
 
 ;; Enum
 (defn- enum-name [n]
@@ -44,14 +57,13 @@
   (get-in n [:sh/targetClass :rdfs/comment] ""))
 
 (defn- enum-symbol [node]
-  (iri->schema-name (iri node)))
-  ;; (-> (iri node)
-  ;;     keyword
-  ;;     utils.uri/name
-  ;;     name
-  ;;     (string/split #"\.")
-  ;;     last
-  ;;     keyword))
+  (-> (iri node)
+      keyword
+      utils.uri/name
+      name
+      (string/split #"\.")
+      last
+      keyword))
 
 (defn- node-shape->enum [n]
   (l/enum-schema
@@ -80,15 +92,13 @@
 
 ;; Record field
 (defn- record-field-name [p]
-  (iri->schema-name (iri (p :sh/path))))
-
-  ;; (-> (iri p :sh/path)
-  ;;     keyword
-  ;;     utils.uri/name
-  ;;     name
-  ;;     (string/split #"\.")
-  ;;     last
-  ;;     keyword))
+  (-> (iri p :sh/path)
+      keyword
+      utils.uri/name
+      name
+      (string/split #"\.")
+      last
+      keyword))
 
 (defn- record-field-doc [p]
   (get-in p [:sh/path :rdfs/comment] ""))
