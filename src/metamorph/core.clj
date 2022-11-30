@@ -8,34 +8,23 @@
             [expound.alpha :as expound]
             [metamorph.utils.spec :refer [one-key-of]]
             [metamorph.utils.cli :refer [kw->opt]]
-            [honey.sql :as sql]
             [deercreeklabs.lancaster :as l]
-            [clojure.string :as str]
             [asami.core :as d]
             [clojure.java.io :as io]
+            [clojure.string :as string]
             [cheshire.generate :refer [add-encoder]]
             [cheshire.core :as json]
             [metamorph.rdf.reading :as rdf]
             [metamorph.schemas.avro.schema :refer [avro-schema]]
-            [metamorph.schemas.sql.schema :as sql.schema]
-            [metamorph.graph.shacl :as graph.shacl]
             [metamorph.graph.avro :as graph.avro]
             [metamorph.graph.db :as graph.db]
             [ont-app.vocabulary.core :as vocab]
+            [metamorph.utils.json :refer [encode-keyword]]
             [metamorph.vocabs.prof :as prof]
-            [metamorph.vocabs.role :as role]
-            [clojure.string :as string])
-  (:import (com.fasterxml.jackson.core JsonGenerator))
+            [metamorph.vocabs.role :as role])
   (:gen-class))
 
 (def input-sources #{:shacl :dx-profile})
-
-(defn encode-keyword
-  "Encode a keyword to the json generator."
-  [^clojure.lang.Keyword k ^JsonGenerator jg]
-  (.writeString jg (if-let [ns (namespace k)]
-                     (str ns "." (name k))
-                     (name k))))
 
 (add-encoder clojure.lang.Keyword encode-keyword)
 
@@ -46,7 +35,7 @@
   (str
    "Please provide exactly one input.\n"
    "Choices:\n\t"
-   (str/join "\n\t" (map kw->opt input-sources))))
+   (string/join "\n\t" (map kw->opt input-sources))))
 
 (defn read-input [{:keys [dx-profile shacl]}]
   (rdf/read-triples (io/file (or dx-profile shacl))))
@@ -138,7 +127,18 @@
   (get-in root [:id :id])
   (avro-schema root)
 
+  ;; CLI Playground.
+  (def args ["--dx-profile" "dev-resources/example_profile" "avro"])
+  (run-cmd* command-spec args)
+
+  (def args {:dx-profile "dev-resources/example_profile",
+             :format :json, :output "./avro.json", :_arguments []})
+  ((generate-schema :avro) args)  ; Debugging possible exceptions is easier this way than through `run-cmd*`.
+
   ;; SQL.
+  (require '[honey.sql :as sql]
+           '[metamorph.schemas.sql.schema :as sql.schema]
+           '[metamorph.graph.shacl :as graph.shacl])
   (def node-shapes-names
     (graph.shacl/get-node-shapes conn))
 
@@ -149,12 +149,4 @@
   (sql/format (sql.schema/node-shape->table b-shape))
 
   (->> (sql.schema/sql-schema node-shapes)
-       (spit "testSql.sql"))
-
-  ;; CLI Playground.
-  (def args ["--dx-profile" "dev-resources/example_profile" "avro"])
-  (run-cmd* command-spec args)
-
-  (def args {:dx-profile "dev-resources/example_profile",
-             :format :json, :output "./avro.json", :_arguments []})
-  ((generate-schema :avro) args))  ; Debugging possible exceptions is easier this way than through `run-cmd*`.
+       (spit "testSql.sql")))
