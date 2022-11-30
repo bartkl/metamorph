@@ -10,7 +10,8 @@
             [metamorph.schemas.avro.cardinality :refer [cardinality->schema-fn]]
             [metamorph.schemas.avro.datatype :refer [xsd->avro]]
             [metamorph.utils.uri :as utils.uri]
-            [ont-app.vocabulary.core :as vocab])
+            [ont-app.vocabulary.core :as vocab]
+            [metamorph.utils.file :as utils.file])
   (:import [java.net URI]))
 
 (declare property->record-field
@@ -51,7 +52,8 @@
 
 ;; Enum
 (defn- enum-name [n]
-  (iri->schema-name (iri n :sh/targetClass)))
+  ;; (iri->schema-name (iri n :sh/targetClass)))
+  (utils.uri/name (iri n :sh/targetClass)))
 
 (defn- enum-doc [n]
   (get-in n [:sh/targetClass :rdfs/comment] ""))
@@ -73,7 +75,8 @@
 
 ;; Record
 (defn- record-name [n]
-  (iri->schema-name (iri n :sh/targetClass)))
+  ;; (iri->schema-name (iri n :sh/targetClass)))
+  (utils.uri/name (iri n :sh/targetClass)))
 
 (defn- record-doc [n]
   (get-in n [:sh/targetClass :rdfs/comment] ""))
