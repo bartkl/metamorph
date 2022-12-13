@@ -10,7 +10,7 @@
         :double l/double-schema
         :boolean l/boolean-schema
         :int l/int-schema
-        :decimal l/bytes-schema
+        :decimal l/float-schema
         :float l/float-schema
         :duration l/fixed-schema
         :dateTime l/string-schema
