@@ -83,8 +83,8 @@ jobs:
         with:
           java-version: 11
 
-      - name: "Setup Clojure"
-        uses: DeLaGuardo/setup-clojure@10.1
+      - name: Setup Clojure
+        uses: DeLaGuardo/setup-clojure@9.5
         with:
           # Install just one or all simultaneously
           # The value must indicate a particular version of the tool, or use 'latest'
