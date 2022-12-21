@@ -3,6 +3,7 @@
 ; SPDX-License-Identifier: Apache-2.0
 
 (ns metamorph.utils.uri
+  (:refer-clojure :exclude [name])
   (:require [ont-app.vocabulary.core :as vocab]
             [clojure.string :as string])
   (:import (java.net URI)))

@@ -6,7 +6,6 @@
   (:require [cli-matic.core :refer [run-cmd run-cmd*]]
             [clojure.spec.alpha :as spec]
             [expound.alpha :as expound]
-            [metamorph.utils.spec :refer [one-key-of]]
             [metamorph.utils.cli :refer [kw->opt]]
             [deercreeklabs.lancaster :as l]
             [asami.core :as d]
@@ -28,17 +27,14 @@
 
 (add-encoder clojure.lang.Keyword encode-keyword)
 
-(spec/def ::command-args
-  (one-key-of (vec input-sources)))
-
 (expound/defmsg ::command-args
   (str
    "Please provide exactly one input.\n"
    "Choices:\n\t"
    (string/join "\n\t" (map kw->opt input-sources))))
 
-(defn read-input [{:keys [dx-profile shacl]}]
-  (rdf/read-triples (io/file (or dx-profile shacl))))
+(defn read-input [{:keys [input]}]
+  (rdf/read-triples (io/file input)))
 
 (defn store-in-db [data]
   (let [db-uri "asami:mem://logical-model"]
@@ -63,30 +59,31 @@
                     store-in-db)]
       (gen-schema conn args))))
 
-(def command-spec
-  {:command "metamorph"
-   :description "Generate a schema of a variety of formats, from a DX Profile or SHACL model."
-   :version "0.3.0"
-   :opts [{:as "Input: DX Profile directory"
-           :option "dx-profile"
-           :type :string}
-          {:as "Input: SHACL file"
-           :option "shacl"
-           :type :string}]
-   :subcommands [{:command "avro"
-                  :description "Apache Avro schema"
-                  :opts [{:as "Serialization format"
-                          :default :json
-                          :option "format"
-                          :short  "f"
-                          :type #{:edn :json}}
-                         {:as "Output file"
-                          :default "./avro.json"
-                          :option "output"
-                          :short  "o"
-                          :type :string}]
-                  :runs (generate-schema :avro)}]
-   :spec ::command-args})
+
+  (def command-spec
+    (let [shared-opts [{:as "Input: DX Profile directory or SHACL file"
+                              :option "input"
+                              :short 0
+                              :type :string}]]
+      {:command "metamorph"
+       :description "Generate a schema of a variety of formats, from a DX Profile or SHACL model."
+       :version "0.3.0"
+       :opts []
+       :subcommands [{:command "avro"
+                      :description "Apache Avro schema"
+                      :opts (into [] (concat shared-opts
+                                             [{:as "Serialization format"
+                                               :default :avsc
+                                               :option "format"
+                                               :short  "f"
+                                               :type #{:edn :json :avsc}}
+                                              {:as "Output file"
+                                               :default "./schema.avsc"
+                                               :option "output"
+                                               :short 1
+                                               :type :string}]))
+                      :runs (generate-schema :avro)}]
+     }))
 
 (defn -main
   "This is our entry point.
