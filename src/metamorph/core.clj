@@ -82,6 +82,7 @@
                                                :option "output"
                                                :short 1
                                                :type :string}]))
+                      ;; :runs println}]
                       :runs (generate-schema :avro)}]
      }))
 
@@ -116,7 +117,7 @@
   ;; Avro.
   (def s (avro-schema b-shape))
   (l/edn s)
-  ;; (json/generate-string (l/edn s)))
+  ;; (json/generate-string (l/edn s))
   (spit "testBShape.json" (json/encode (l/edn s)))
 
   (def root (graph.db/get-resource conn (graph.avro/get-root-node-shape-uri conn)))
@@ -125,11 +126,11 @@
   (avro-schema root)
 
   ;; CLI Playground.
-  (def args ["--dx-profile" "dev-resources/example_profile" "avro"])
+  (def args ["avro" "dev-resources/example_profile"])
   (run-cmd* command-spec args)
 
-  (def args {:dx-profile "dev-resources/example_profile",
-             :format :json, :output "./avro.json", :_arguments []})
+  (def args {:input "dev-resources/example_profile",
+             :format :avsc, :output "./schema.avsc", :_arguments ["dev-resources/example_profile"]})
   ((generate-schema :avro) args)  ; Debugging possible exceptions is easier this way than through `run-cmd*`.
 
   ;; SQL.
