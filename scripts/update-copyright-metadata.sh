@@ -15,6 +15,8 @@ echo "Adding license and copyright related metadata... "
 
 git ls-files \
 | grep -v -e CODE_OF_CONDUCT.md \
+          -e .github \
+	  -e META-INF \
 | xargs \
 reuse annotate \
     --copyright "$COPYRIGHT" \
