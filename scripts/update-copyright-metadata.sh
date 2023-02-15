@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2022 Alliander N.V.
+# SPDX-FileCopyrightText: 2022 - 2023 Alliander N.V.
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -16,7 +16,7 @@ echo "Adding license and copyright related metadata... "
 git ls-files \
 | grep -v -e CODE_OF_CONDUCT.md \
 | xargs \
-reuse addheader \
+reuse annotate \
     --copyright "$COPYRIGHT" \
     --year "$YEAR" \
     --license "$LICENSE" \

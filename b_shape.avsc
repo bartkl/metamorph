@@ -1,0 +1,92 @@
+{
+  "name": "B",
+  "type": "record",
+  "fields": [
+    {
+      "name": "FromBtoD",
+      "type": [
+        "null",
+        {
+          "name": "D",
+          "type": "record",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string",
+              "default": "",
+              "doc": ""
+            },
+            {
+              "name": "def",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": "float"
+                }
+              ],
+              "default": null,
+              "doc": ""
+            }
+          ],
+          "doc": ""
+        }
+      ],
+      "default": null,
+      "doc": ""
+    },
+    {
+      "name": "FromBtoDButSomehowDifferent",
+      "type": "D",
+      "default": {
+        "id": "",
+        "def": null
+      },
+      "doc": ""
+    },
+    {
+      "name": "bcd",
+      "type": {
+        "type": "array",
+        "items": "double"
+      },
+      "default": [],
+      "doc": ""
+    },
+    {
+      "name": "id",
+      "type": "string",
+      "default": "",
+      "doc": ""
+    },
+    {
+      "name": "abc",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "string"
+        }
+      ],
+      "default": null,
+      "doc": ""
+    },
+    {
+      "name": "FromAtoC",
+      "type": {
+        "name": "C",
+        "type": "enum",
+        "symbols": [
+          "Individual3",
+          "individual2",
+          "individual1"
+        ],
+        "default": "Individual3",
+        "doc": ""
+      },
+      "default": "Individual3",
+      "doc": ""
+    }
+  ],
+  "doc": ""
+}

@@ -1,0 +1,302 @@
+{:rdf/type :sh/NodeShape,
+ :sh/and
+ {:rdf/first
+  {:rdf/type :sh/NodeShape,
+   :sh/targetClass
+   :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#A,
+   :sh/property
+   #{{:sh/path
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#abc,
+      :sh/datatype :xsd/dateTime,
+      :sh/minCount 0,
+      :sh/maxCount 5,
+      :id {:id :_:f3f9280d449d4d759460495e31da75ba2}}
+     {:rdf/type :sh/PropertyShape,
+      :sh/path
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#id,
+      :sh/datatype :xsd/string,
+      :sh/minCount 1,
+      :sh/maxCount 1,
+      :id
+      {:id
+       :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#idShape}}
+     {:sh/path
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromAtoC,
+      :sh/node
+      {:rdf/type :sh/NodeShape,
+       :sh/targetClass
+       :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#C,
+       :sh/property
+       {:rdf/type :sh/PropertyShape,
+        :sh/path
+        :https:%2F%2Fw3id.org%2Fsch{:rdf/type :sh/NodeShape,
+ :sh/and
+ {:rdf/first
+  {:rdf/type :sh/NodeShape,
+   :sh/targetClass
+   :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#A,
+   :sh/property
+   #{{:sh/path
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#abc,
+      :sh/datatype :xsd/dateTime,
+      :sh/minCount 0,
+      :sh/maxCount 5,
+      :id {:id :_:f3f9280d449d4d759460495e31da75ba2}}
+     {:rdf/type :sh/PropertyShape,
+      :sh/path
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#id,
+      :sh/datatype :xsd/string,
+      :sh/minCount 1,
+      :sh/maxCount 1,
+      :id
+      {:id
+       :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#idShape}}
+     {:sh/path
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromAtoC,
+      :sh/node
+      {:rdf/type :sh/NodeShape,
+       :sh/targetClass
+       :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#C,
+       :sh/property
+       {:rdf/type :sh/PropertyShape,
+        :sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#id,
+        :sh/datatype :xsd/string,
+        :sh/minCount 1,
+        :sh/maxCount 1,
+        :id
+        {:id
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#idShape}},
+       :sh/in
+       {:rdf/first
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#individual1,
+        :rdf/rest
+        {:rdf/first
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#individual2,
+         :rdf/rest
+         {:rdf/first
+          :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#Individual3,
+          :rdf/rest :rdf/nil,
+          :id {:id :_:f3f9280d449d4d759460495e31da75ba9}},
+         :id {:id :_:f3f9280d449d4d759460495e31da75ba8}},
+        :id {:id :_:f3f9280d449d4d759460495e31da75ba7}},
+       :id
+       {:id
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#CShape}},
+      :sh/minCount 1,
+      :sh/maxCount 1,
+      :id {:id :_:f3f9280d449d4d759460495e31da75ba1}}},
+   :id
+   {:id
+    :https:%2F%2Fw3id.org%2Fschemematransform%2FExampleVocabulary#id,
+        :sh/datatype :xsd/string,
+        :sh/minCount 1,
+        :sh/maxCount 1,
+        :id
+        {:id
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#idShape}},
+       :sh/in
+       {:rdf/first
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#individual1,
+        :rdf/rest
+        {:rdf/first
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#individual2,
+         :rdf/rest
+         {:rdf/first
+          :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#Individual3,
+          :rdf/rest :rdf/nil,
+          :id {:id :_:f3f9280d449d4d759460495e31da75ba9}},
+         :id {:id :_:f3f9280d449d4d759460495e31da75ba8}},
+        :id {:id :_:f3f9280d449d4d759460495e31da75ba7}},
+       :id
+       {:id
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#CShape}},
+      :sh/minCount 1,
+      :sh/maxCount 1,
+      :id {:id :_:f3f9280d449d4d759460495e31da75ba1}}},
+   :id
+   {:id
+    :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#AShape}},
+  :rdf/rest :rdf/nil,
+  :id {:id :_:f3f9280d449d4d759460495e31da75ba3}},
+ :rdfs/comment "RootObject",
+ :sh/targetClass
+ :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#B,
+ :sh/property
+ #{{:rdf/type :sh/PropertyShape,
+    :sh/path
+    :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#id,
+    :sh/datatype :xsd/string,
+    :sh/minCount 1,
+    :sh/maxCount 1,
+    :id
+    {:id
+     :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#idShape}}
+   {:sh/path
+    :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromBtoD,
+    :sh/node
+    {:rdf/type :sh/NodeShape,
+     :sh/targetClass
+     :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#D,
+     :sh/property
+     #{{:sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromDtoB,
+        :sh/node
+        {:id
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#BShape},
+        :sh/minCount 1,
+        :sh/maxCount 3,
+        :id {:id :_:f3f9280d449d4d759atransform%2FExampleShape#AShape}},
+  :rdf/rest :rdf/nil,
+  :id {:id :_:f3f9280d449d4d759460495e31da75ba3}},
+ :rdfs/comment "RootObject",
+ :sh/targetClass
+ :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#B,
+ :sh/property
+ #{{:rdf/type :sh/PropertyShape,
+    :sh/path
+    :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#id,
+    :sh/datatype :xsd/string,
+    :sh/minCount 1,
+    :sh/maxCount 1,
+    :id
+    {:id
+     :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#idShape}}
+   {:sh/path
+    :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromBtoD,
+    :sh/node
+    {:rdf/type :sh/NodeShape,
+     :sh/targetClass
+     :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#D,
+     :sh/property
+     #{{:sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromDtoB,
+        :sh/node
+        {:id
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#BShape},
+        :sh/minCount 1,
+        :sh/maxCount 3,
+        :id {:id :_:f3f9280d449d4d759460495e31da75ba11}}
+       {:sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#def,
+        :sh/datatype :xsd/float,
+        :sh/minCount 0,
+        :sh/maxCount 3,
+        :id {:id :_:f3f9280d449d4d759460495e31da75ba10}}
+       {:rdf/type :sh/PropertyShape,
+        :sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#id,
+        :sh/datatype :xsd/string,
+        :sh/minCount 1,
+        :sh/maxCount 1,
+        :id
+        {:id
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#idShape}}},
+     :id
+     {:id
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#DShape}},
+    :sh/minCount 0,
+    :sh/maxCount 1,
+    :id {:id :_:f3f9280d449d4d759460495e31da75ba4}}
+   {:sh/path
+    :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromBtoDButSomehowDifferent,
+    :sh/node
+    {:rdf/type :sh/NodeShape,
+     :sh/targetClass
+     :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#D,
+     :sh/property
+     #{{:sh/path
+        :htt460495e31da75ba11}}
+       {:sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#def,
+        :sh/datatype :xsd/float,
+        :sh/minCount 0,
+        :sh/maxCount 3,
+        :id {:id :_:f3f9280d449d4d759460495e31da75ba10}}
+       {:rdf/type :sh/PropertyShape,
+        :sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#id,
+        :sh/datatype :xsd/string,
+        :sh/minCount 1,
+        :sh/maxCount 1,
+        :id
+        {:id
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#idShape}}},
+     :id
+     {:id
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#DShape}},
+    :sh/minCount 0,
+    :sh/maxCount 1,
+    :id {:id :_:f3f9280d449d4d759460495e31da75ba4}}
+   {:sh/path
+    :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromBtoDButSomehowDifferent,
+    :sh/node
+    {:rdf/type :sh/NodeShape,
+     :sh/targetClass
+     :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#D,
+     :sh/property
+     #{{:sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromDtoB,
+        :sh/node
+        {:id
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#BShape},
+        :sh/minCount 1,
+        :sh/maxCount 3,
+        :id {:id :_:f3f9280d449d4d759460495e31da75ba11}}
+       {:sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#def,
+        :sh/datatype :xsd/float,
+        :sh/minCount 0,
+        :sh/maxCount 3,
+        :id {:id :_:f3f9280d449d4d759460495e31da75ba10}}
+       {:rdf/type :sh/PropertyShape,
+        :sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#id,
+        :sh/datatype :xsd/string,
+        :sh/minCount 1,
+        :sh/maxCount 1,
+        :id
+        {:id
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#idShape}}},
+     :id
+     {:id
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#DShape}},
+    :sh/minCount 1,
+    :sh/maxCount 1,
+    :id {:id :_:f3f9280d449d4d759460495e31da75ba5}}
+   {:sh/path
+    :https:%2F%2Fwps:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromDtoB,
+        :sh/node
+        {:id
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#BShape},
+        :sh/minCount 1,
+        :sh/maxCount 3,
+        :id {:id :_:f3f9280d449d4d759460495e31da75ba11}}
+       {:sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#def,
+        :sh/datatype :xsd/float,
+        :sh/minCount 0,
+        :sh/maxCount 3,
+        :id {:id :_:f3f9280d449d4d759460495e31da75ba10}}
+       {:rdf/type :sh/PropertyShape,
+        :sh/path
+        :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#id,
+        :sh/datatype :xsd/string,
+        :sh/minCount 1,
+        :sh/maxCount 1,
+        :id
+        {:id
+         :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#idShape}}},
+     :id
+     {:id
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#DShape}},
+    :sh/minCount 1,
+    :sh/maxCount 1,
+    :id {:id :_:f3f9280d449d4d759460495e31da75ba5}}
+   {:sh/path
+    :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#bcd,
+    :sh/datatype :xsd/double,
+    :sh/minCount 2,
+    :id {:id :_:f3f9280d449d4d759460495e31da75ba6}}},
+ :id
+ {:id :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#BShape}}
