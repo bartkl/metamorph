@@ -2,25 +2,8 @@
 name: Feature request / change
 about: Suggest an idea for this project
 title: ''
-labels: ''
-assignees: ''
-
----
-
-<!--
-SPDX-FileCopyrightText: 2023 Alliander N.V.
-
-SPDX-License-Identifier: Apache-2.0
--->
-
----
-name: Feature request / change
-about: Suggest an idea for this project
-title: ''
 labels: enhancement
 assignees: ''
-
----
 
 ### Report
 **Is your feature request related to a problem? Please describe.**
