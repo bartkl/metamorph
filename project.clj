@@ -2,7 +2,7 @@
 ;
 ; SPDX-License-Identifier: Apache-2.0
 
-(defproject metamorph "0.3.0"
+(defproject metamorph "0.3.1"
   :description "Metamorph is a Clojure libary that allows the generation of a variety of schemas from a DX-PROF profile."
   :url "https://github.com/alliander-opensource/metamorph"
   :license {:name "Apache License 2.0"
