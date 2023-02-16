@@ -15,6 +15,7 @@
                  [deercreeklabs/lancaster "0.9.20"]
                  [ont-app/vocabulary "0.2.0"]
                  [cli-matic "0.5.3"]
+                 [metosin/malli "0.10.1"]
                  [codox-theme-rdash "0.1.2"]
                  [tick "0.5.0"]
                  [org.slf4j/slf4j-nop "2.0.2"]
