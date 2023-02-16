@@ -31,4 +31,4 @@
   :cljfmt {:remove-consecutive-blank-lines? false  ;; Tonsky formatting.
            :indents ^:replace {#"^[-*+!?_a-zA-Z]" [[:inner 0]]}}
   :codox {:metadata {:doc/format :markdown}
-        :themes [:rdash]})
+          :themes [:rdash]})
