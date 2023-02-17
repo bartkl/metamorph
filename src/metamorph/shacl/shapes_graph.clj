@@ -5,22 +5,27 @@
 (ns metamorph.shacl.shapes-graph
   "SHACL shapes graph.
 
-Example use:
+### Example use:
 
 ```clojure
-(def conn (load \"shapes.ttl\"))
-(def b-shape (node-shape :ex/b-shape conn))
-(:sh/targetClass b-shape)  ;; => :vocab/B
-(node-shape? :ex/b-shape)  ;; => true
+(def conn (load \"dev-resources/example_profile/Constraints.ttl\"))
+(def b-shape (get conn
+               :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#BShape))
 (node-shape? b-shape)  ;; => true
+(property-shape? b-shape)  ;; => false
+(def from-b-to-d-but-somehow-different-shape
+  (property b-shape
+    :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromBtoDButSomehowDifferent))
+(pprint/pprint from-b-to-d-but-somehow-different-shape)
+(pprint/pprint (first (:sh/and b-shape)))  ;; RDF lists are converted to Clojure vectors
 ```
-
 
 "
   (:require
     [clojure.java.io :as io]
+    [clojure.pprint :as pprint]
     [clojure.set :as set]
-    [ont-app.vocabulary.core :as vocab]
+    [ont-app.vocabulary.core :as voc]
     [metamorph.rdf.datatype :as datatype]
     [metamorph.utils.file :as utils.file]
     [expound.alpha :as expound]
@@ -36,7 +41,6 @@ Example use:
     [metamorph.schemas.avro.schema :refer [avro-schema]]
     [metamorph.graph.avro :as graph.avro]
     [metamorph.graph.db :as graph.db]
-    [ont-app.vocabulary.core :as vocab]
     [metamorph.utils.json :refer [encode-keyword]]
     [metamorph.vocabs.prof :as prof]
     [clojure.walk :as walk]
@@ -76,7 +80,7 @@ Example use:
 
 (defn- Statement->triple
   [st]
-  (letfn [(IRI->kw [iri] (vocab/keyword-for (str iri)))
+  (letfn [(IRI->kw [iri] (voc/keyword-for (str iri)))
           (BNode->kw [bnode] (keyword (str bnode)))]
     (let [st-subj (.getSubject st)
           st-pred (.getPredicate st)
@@ -88,8 +92,8 @@ Example use:
           pred (IRI->kw st-pred)
           obj (#(cond
                   (.isLiteral %) (datatype/literal->type %)
-                  (.isIRI %) (vocab/keyword-for (str %))
-                  :else (vocab/keyword-for (str %)))
+                  (.isIRI %) (voc/keyword-for (str %))
+                  :else (voc/keyword-for (str %)))
                 st-obj)]
       [subj pred obj])))
 
@@ -103,6 +107,15 @@ Example use:
 (defn add-id [resource]
   [resource :id resource])
 
+;;;; shacl.query
+
+(defn node-shape-iris
+  [conn]
+  (map first
+    (d/q '[:find ?shape
+           :where [?shape _ _]]
+      conn)))
+
 ;;;; shacl.shapes-graph
 (defn store-shapes!
   ([conn] (fn [triples] (println "Hello") (store-shapes! conn triples)))
@@ -114,15 +127,6 @@ Example use:
                        (add-id %))
                     (node-shape-iris conn))]
      (store! conn metadata))))
-
-;;;; shacl.query
-
-(defn node-shape-iris
-  [conn]
-  (map first
-    (d/q '[:find ?shape
-           :where [?shape _ _]]
-      conn)))
 
 (defn load
   "Loads a shapes graph from files found at the provided path.
@@ -177,6 +181,16 @@ Example use:
   []
   :todo)
 
+(defn property  ;; TODO: rename
+  "Get the property shape that constrains the property identified by `sh:path`.
+"
+  [node-shape path]
+  (->>
+    (:sh/property node-shape)
+    (filter #(= (:sh/path %) path))
+    first))
+      
+
 (defn property-shapes
   "Get all property shapes.
 "
@@ -218,27 +232,85 @@ Example use:
     (not (property-shape? shape))))
 
 (comment
-  (def shapes-graph-file "dev-resources/example_profile/Constraints.ttl")
-  (def conn (load shapes-graph-file))
-  (def b-shape (get conn :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#BShape))
-  (node-shape? b-shape)
-  (property-shape? b-shape)
-  (println (second (:sh/and b-shape)))
-  
+  (def conn (load "dev-resources/example_profile/Constraints.ttl"))
+  (def b-shape (get conn :shape/BShape))
+  (node-shape? b-shape)  ;; => true
+  (property-shape? b-shape)  ;; => false
+  (def from-b-to-d-but-somehow-different-shape
+    (property b-shape
+      :https:%2F%2Fw3id.org%2Fschematransform%2FExampleVocabulary#FromBtoDButSomehowDifferent))
+  (pprint/pprint from-b-to-d-but-somehow-different-shape)
+  (pprint/pprint (first (:sh/and b-shape)))  ;; RDF lists are converted to Clojure vectors
 
-  "1. Read the turtle files into RDF4j model
-   2. Load them into Asami
-   3. Mark entities
-   4. Provide API for interacting with SHACL
-    - When fetching entities:
-      - rdf-lists -> clj vec
-      - convert XSD primitives
+  "
+  * Around the edges (public stuff and model): malli?
+  * Include tests and documentation, especially around the edges
+  * Use Malli parsing in entity fetching?
+  * Think of error handling, invariants, assumptions and logging/UI messaging.
 
-      Around the edges (public stuff and model): malli?
+  * Is it possible to register ont-app namespaces for the shapes graph prefix?
+    * Most challenging part is the potential reuse of shapes from other namespaces.
+    Then again, these probably already have prefixes...
 
-      Include tests and documentation.
+Use only SHACL, not vocab, not DX-PROF. Before feeding shapes graph into Metamorph, enrich it with descriptions and names using GraphDB or something:
+
+CONSTRUCT {
+  ?shape sh:description ?description ;
+             sh:name ?className ;
+}
+WHERE {
+  ?shape  
+  ?label (
+}
+
+You still have targetClass and path parameters, so you still need to handle that vocabulary as well. How?
+
+Better generic solution: fetch all namespaces with no prefix and create dynamic anonymous ones. Must be deterministic, so use sorting!
+
+ TODO ^
 "
 
   
+  (defn namespaces [sts]
+    (into {} (map
+               #(vector (.getPrefix %) (.getName %))
+               (.getNamespaces sts))))
+
+  (def sts (read-statements "dev-resources/example_profile/Constraints.ttl"))
+  (namespaces sts)
+
+  (map voc/ns-to-namespace (vals (voc/prefix-to-ns)))
+
+  (def unnamed-keys (set/difference
+                      (into #{} (keys (namespaces sts)))
+                      (into #{} (keys (voc/prefix-to-ns)))))
+
+  (vals (namespaces sts))
+  (map voc/ns-to-namespace (vals (voc/prefix-to-ns)))
+  (def unnamed (set/difference
+                 (into #{} (vals (namespaces sts)))
+                 (into #{} (map voc/ns-to-namespace (vals (voc/prefix-to-ns))))))
+
+  unnamed-keys
+  unnamed
   
+  (doseq [[uri n] (map-indexed #(vector %2 %1) (sort unnamed))]
+    (println (str uri n))
+    (voc/put-ns-meta!
+      (symbol (str "ont-app.vocabulary.ns" n))
+      {
+       :dc/description "Shapes graph"
+       :vann/preferredNamespaceUri uri
+       :vann/preferredNamespacePrefix (str "ns" n)
+       }
+      ))
+  (voc/prefix-to-ns)
+  (->
+    ((voc/prefix-to-ns) "ns0")
+    voc/ns-to-namespace)
+
+  (->
+    ((voc/prefix-to-ns) "ns1")
+    voc/ns-to-namespace)
+    
   )
