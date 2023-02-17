@@ -39,6 +39,7 @@ Example use:
     [ont-app.vocabulary.core :as vocab]
     [metamorph.utils.json :refer [encode-keyword]]
     [metamorph.vocabs.prof :as prof]
+    [clojure.walk :as walk]
     [metamorph.vocabs.role :as role])
   (:import
     (org.eclipse.rdf4j.rio Rio)
@@ -65,7 +66,7 @@ Example use:
       (reduce set/union))
     ))
 
-(defn- read-statements!
+(defn- read-statements
   [path]
   (let [path (io/file path)]
     (cond
@@ -92,49 +93,82 @@ Example use:
                 st-obj)]
       [subj pred obj])))
 
+;;;; asami  ;; todo: name this better
+(defn store! [conn statements]
+  @(d/transact conn {:tx-triples statements}))
+
+(defn mark-entity [resource]
+  [resource :a/entity true])
+
+(defn add-id [resource]
+  [resource :id resource])
+
 ;;;; shacl.shapes-graph
+(defn store-shapes!
+  ([conn] (fn [triples] (println "Hello") (store-shapes! conn triples)))
+  ([conn triples]
+   (store! conn triples)
+   (let [metadata (mapcat
+                    #(list
+                       (mark-entity %)
+                       (add-id %))
+                    (node-shape-iris conn))]
+     (store! conn metadata))))
+
+;;;; shacl.query
+
+(defn node-shape-iris
+  [conn]
+  (map first
+    (d/q '[:find ?shape
+           :where [?shape _ _]]
+      conn)))
 
 (defn load
   "Loads a shapes graph from files found at the provided path.
 
   If `path` is a single file, it will simply be read. If it's a directory,
   all files in it will be read.
+
+  An Asami database is created with a fixed name, and it will be recreated
+  on subsequent calls to `load`.
+
+  Returns:
+    Asami database URI.
 "
-  {:malli/schema [:=> [:cat :path] :asami-db/conn]}
+  {:malli/schema [:=> [:cat :path] :asami/conn]}
   [path]
-  (->>
-    (read-statements! path)
-    (map Statement->triple)
-    ; store!))
-    ))
+  (let [db-uri "asami:mem://shapes-graph"]
+    (d/delete-database db-uri)
+    (d/create-database db-uri)
+    (let [conn (d/connect db-uri)]
+      (->>
+        (read-statements path)
+        (map Statement->triple)
+        (store-shapes! conn))
+      conn)))
+
+(defn- parse-rdf-lists
+  [shape]
+  (walk/prewalk
+    #(if
+       (and (:rdf/first %) (:rdf/rest %))
+       (datatype/rdf-list->seq %)
+       %)
+    shape))
 
 (defn get
   "Gets a shape.
 "
-  {:malli/schema [:=> [:cat :sh/IRI] :sh/Shape]}
-  [iri]
-  :todo)
-
-(defn shape
-  "Gets a shape.
-"
-  {:malli/schema [:=> [:cat :sh/IRI] :sh/Shape]}
-  [iri]
-  :todo)
-
-(defn node-shape
-  "Gets a node shape.
-"
-  {:malli/schema [:=> [:cat :sh/IRI] :sh/NodeShape]}
-  [iri]
-  :todo)
-
-(defn property-shape
-  "Gets a property shape.
-"
-  {:malli/schema [:=> [:cat :sh/IRI] :sh/PropertyShape]}
-  [iri]
-  :todo)
+  {:malli/schema [:=>
+                  [:cat :asami/conn :sh/IRI]
+                  [:or
+                   :sh/NodeShape
+                   :sh/PropertyShape]]}
+  [conn iri]
+  (->>
+    (d/entity conn iri true)
+    (parse-rdf-lists)))
 
 (defn node-shapes
   "Get all node shapes.
@@ -162,7 +196,8 @@ Example use:
 "
   {:malli/schema [:=> [:cat :sh/Shape] :boolean]}
   [shape]
-  :todo)
+  :todo
+  true)
 
 (defn property-shape?
   "Checks if resource is a property shape.
@@ -185,8 +220,10 @@ Example use:
 (comment
   (def shapes-graph-file "dev-resources/example_profile/Constraints.ttl")
   (def conn (load shapes-graph-file))
-  (println conn)
-
+  (def b-shape (get conn :https:%2F%2Fw3id.org%2Fschematransform%2FExampleShape#BShape))
+  (node-shape? b-shape)
+  (property-shape? b-shape)
+  (println (second (:sh/and b-shape)))
   
 
   "1. Read the turtle files into RDF4j model
