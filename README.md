@@ -20,4 +20,3 @@ Please read [Contributing](./CONTRIBUTING.md) if you're interested in contributi
 
 ## Contact
 Please refer to [Support](SUPPORT.md).
-
