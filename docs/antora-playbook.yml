@@ -1,0 +1,23 @@
+site:
+  title: Metamorph
+  url: https://alliander-opensource.github.io/metamorph/docs
+  start_page: metamorph::index.adoc
+content:
+  sources:
+  - url: https://github.com/alliander-opensource/metamorph.git
+    branches: ["feature/refactor"]
+    start_path: docs
+asciidoc:
+  attributes:
+    experimental: ''
+    idprefix: ''
+    idseparator: '-'
+    linkattrs: ''
+    toc: ~
+    page-pagination: ''
+output:
+  dir: .
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
