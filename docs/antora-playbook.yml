@@ -6,9 +6,9 @@ content:
   sources:
   - url: /home/bart/Programming/alliander-opensource/metamorph
     start_path: docs
-  - url: https://github.com/alliander-opensource/metamorph.git
-    branches: ["feature/refactor"]
-    start_path: docs
+    #- url: https://github.com/alliander-opensource/metamorph.git
+    #  branches: ["feature/refactor"]
+    #  start_path: docs
 asciidoc:
   attributes:
     experimental: ''
@@ -18,7 +18,7 @@ asciidoc:
     toc: ~
     page-pagination: ''
 output:
-  dir: .
+  dir: ./output
 urls:
   latest_version_segment: latest
 ui:
