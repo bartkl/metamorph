@@ -1,5 +1,5 @@
 name: metamorph
 title: Metamorph
-version: ~
+version: true
 nav:
-- modules/ROOT/index.adoc
+- modules/ROOT/nav.adoc

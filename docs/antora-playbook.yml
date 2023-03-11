@@ -4,6 +4,8 @@ site:
   start_page: metamorph::index.adoc
 content:
   sources:
+  - url: /home/bart/Programming/alliander-opensource/metamorph
+    start_path: docs
   - url: https://github.com/alliander-opensource/metamorph.git
     branches: ["feature/refactor"]
     start_path: docs
@@ -17,7 +19,10 @@ asciidoc:
     page-pagination: ''
 output:
   dir: .
+urls:
+  latest_version_segment: latest
 ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
     snapshot: true
+  supplemental_files: ./supplemental-ui

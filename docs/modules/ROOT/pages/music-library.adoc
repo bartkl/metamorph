@@ -1,0 +1,158 @@
+= Music Library =
+:toc: left
+
+Manual for maintaining my music library.
+
+== Decomposition
+From a library point of view, this decomposition should be sufficient to give an idea of what components play key roles in the setup:
+
+image::music-library-no-tools.png[]
+
+== Terminology
+Library:: Encompasses all music albums and songs.
+Player Library:: Subset of the library that contains only items with paths defined so that playback is possible.
+Listen Queue:: Special genre that serves as a queue for albums that are planned to be listened to shortly.
+
+== Current implementations
+[horizontal]
+Library:: Beets
+Player:: MPD (Music Player Daemon)
+
+== Maintenance
+=== Removing albums
+Depending on the scenario, it can be desired to remove albums in several different ways.
+
+
+==== Overview
+[cols="1,^1,^1,^1"]
+.Typical scenarions
+|===
+.2+.^h|scenario
+3+h|remove from
+
+h|player
+h|library
+h|disk
+
+|listen later
+|x
+|
+|
+
+|duplicate
+|x
+|x
+|x
+
+|dislike
+|x
+|
+|x
+|===
+
+NOTE: Removal from library implies removal from player library.
+
+* An album is added to the <<Listen Queue>>, but it turns out it isn't going to be listened to any time soon.
+* The album was once imported in my library, but I don't really know the album too well. It doesn't deserve a place in my library yet, and should be properly listened to at some point in time.
+* I'm not sure if some album still deserves a place in my library, since my liking of it has decreased or my standard has become more strict.
+
+
+==== Instructions
+To remove an album from the library, the `path` value of its items is removed.
+
+Using a single album as example, this can be done as follows:
+
+[source,shell]
+----
+$ beet mod path! album_id:13
+----
+
+One idea to make querying this way easy and safe is to replace the genre of those albums you wish to remove from the library with something like _To Remove_, and then run:
+
+----
+$ beet mod path! genre:To Remove
+----
+
+Or even better, give it a low rating and delete it based on that. Of course, this depends on the <<Ratings,rating guidelines>>.
+
+=== Remove and delete
+`beet rm -d`
+
+=== MusicBrainz syncing
+==== How to sync
+To update the library with metadata from MusicBrainz, run:
+
+[source,shell]
+----
+$ beet mbsync
+----
+
+WARNING: This could override metadata you have entered or modified manually.
+
+==== Checking for invalid and missing MBIDs
+The `mbsync` command will report invalid and missing MBIDs, and is the most reliable way to do it, but that command can take a long time to run.
+
+There's an easy way to query the missing ones:
+
+[source,shell]
+$ beet ls -a mb_albumid::^$
+
+To detect invalid ones as well, let's try to be clever. All MBIDs are 36-character UUIDs, so if the character count differs from that it's certainly invalid. The following SQL code can be used to query the database manually:
+
+[source,sql]
+----
+SELECT mb_albumid, album FROM albums WHERE LENGTH(mb_albumid) != 36;
+----
+
+WARNING: This method might not cover all invalid MBIDs, but certainly catches many.
+
+=== Album art
+
+=== MPD tag cache
+
+== Guidelines
+
+=== Listen Queue
+This is a special genre that serves as a queue for albums that I intend to listen to shortly.
+
+The most typical use cases are:
+* Discovery of new albums
+* Re-discovery of long-lost albums
+
+=== Ratings
+.Remove
+[horizontal,labelwidth=25,itemwidth=75]
+☆☆☆☆☆:: Unknown
+★☆☆☆☆:: Awful
+★★☆☆☆:: Okay
+
+.Keep
+[horizontal,labelwidth=25,itemwidth=75]
+★★★☆☆:: Enjoyable
+★★★★☆:: Great
+★★★★★:: Masterpiece
+
+=== Genres
+
+
+== Notes
+* `beet edit` with vim using macros to easily rate albums (even `zz` can be included to center the rating)
+* Should I worry about adding albums to the library of which I don't have physical files (anymore)? For rating bad stuff I don't want to have and once listened to?
+* Can I generate some nice view to see parts of my library?
+** Probably good to create a HTMl/adoc/whatever view for an album
+** Use beets queries to determine which ones should be in the result
+** Optionally specify what fields you're interested in to display
+* Still need to review my Beets config
+* Look into useful Beets plugins
+** https://github.com/adammillerio/beets-copyartifacts[copyartifacts]
+** https://github.com/igordertigor/beets-usertag[tags]
+* Start new library again?
+** High-level!
+** Only when you absolutely know how to rate it, it goes in
+** High quality album art
+** Replaygain scanned
+** Has MB record matched
+*** Release information (if available) matches MB record
+*** Fixed metadata at MB if it's sub-standard
+*** ...
+* Rating via MPD stickers, and them import the MPD stickers via a Beets plugin or some script
