@@ -4,11 +4,11 @@ site:
   start_page: metamorph::index.adoc
 content:
   sources:
-  #- url: /home/bart/Programming/alliander-opensource/metamorph
-  #  start_path: docs
-  - url: https://github.com/alliander-opensource/metamorph.git
-    branches: ["feature/refactor"]
-    start_path: docs
+  - url: /home/bart/Programming/alliander-opensource/metamorph
+    start_path: docs-src
+      #- url: https://github.com/alliander-opensource/metamorph.git
+      #  branches: ["feature/refactor"]
+      #  start_path: docs-src
 asciidoc:
   attributes:
     experimental: ''
@@ -18,11 +18,11 @@ asciidoc:
     toc: ~
     page-pagination: ''
 output:
-  dir: ./
+  dir: ./docs
 urls:
   latest_version_segment: latest
 ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
     snapshot: true
-  supplemental_files: ./supplemental-ui
+  supplemental_files: ./docs-src/supplemental-ui
