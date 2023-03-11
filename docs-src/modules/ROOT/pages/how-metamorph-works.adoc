@@ -1,0 +1,18 @@
+= How Metamorph Works
+
+////
+- Terminology
+	- physical data model, schema
+- Linked Data / Data Mesh
+- Input schema in SHACL
+	- Why SHACL?
+- Target schemas
+- Interfaces
+	- CLI
+	- API
+- General explanation of how transformations work
+
+
+
+
+////

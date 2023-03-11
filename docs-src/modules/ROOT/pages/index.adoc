@@ -1,2 +1,25 @@
 = Metamorph
-Hello, World!
+:fn-supported-schemas: footnote:[Adding support for new physical schemas is an ongoing process. Consult the documentation of the version of Metamorph you're using to inquire what target schemas are supported. Of course the latest version will likely offer the most support.]
+:link-data-model: https://en.wikipedia.org/w/index.php?title=Logical_schema#Conceptual,_logical_and_physical_data_model[Wikipedia -- Conceptual, logical and physical data model]
+:fn-data-model: footnote:data-model[Consult {link-data-model} for an overview of what data models Metamorph distinguishes between. Note that the terms "data model" and "schema" will be used somewhat interchangeably througout this documentation.]
+
+== Introduction
+
+Metamorph can generate a variety of physical data models {fn-supported-schemas} from a given logical data model{fn-data-model} specified as a https://www.w3.org/TR/shacl/[SHACL shapes graph].
+
+image::metamorph-functionality-overview.png[]
+
+== Purpose
+
+Datasets typically undergo several transformations when they are consumed and exchanged. The producing application might have stored the data in a relational database. One consumer might then want to use this data and serve it with a REST API. Another consumer perhaps wants to emit messages containing this data to a queue when a certain event occurs. Of course it doesn't end there. The data might be consumed even further, and undergo various more transformations.
+
+Each time the data is transformed, software and data engineers need to define schemas for the technology they're using.
+
+Writing schemas by hand:
+
+- means lots of liberty in how things are named and documented
+- is an error-prone task
+- is a rather dull task
+- takes up time that can be spend more usefully (and passionately)
+
+Having an authoritative logical data model from which you generate physical schemas eliminates all of these disadvantages. In particular, I'd like to emphasize that by having a deterministic way to generate schemas, things are named and documented automatically in a pre-determined way. This ensures the lineage of names and descriptions that have been carefully defined in the logical (or conceptual) data model, i.e. the meaning of your data encoded in tables, records, fields, keys, attributes, and what have you, will be easy to look up.
