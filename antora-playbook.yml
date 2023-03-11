@@ -4,11 +4,11 @@ site:
   start_page: metamorph::index.adoc
 content:
   sources:
-    #- url: /home/bart/Programming/alliander-opensource/metamorph
-    #  start_path: docs-src
-  - url: https://github.com/alliander-opensource/metamorph.git
-    branches: ["feature/refactor"]
+  - url: /home/bart/Programming/alliander-opensource/metamorph
     start_path: docs-src
+    #- url: https://github.com/alliander-opensource/metamorph.git
+    #  branches: ["feature/refactor"]
+    #  start_path: docs-src
 asciidoc:
   attributes:
     experimental: ''
