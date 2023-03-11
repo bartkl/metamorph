@@ -1,0 +1,24 @@
+site:
+  title: Metamorph
+  start_page: metamorph::index.adoc
+content:
+  sources:
+  - url: .
+    start_path: docs-src
+asciidoc:
+  attributes:
+    experimental: ''
+    idprefix: ''
+    idseparator: '-'
+    linkattrs: ''
+    toc: ~
+    page-pagination: ''
+output:
+  dir: ./docs
+urls:
+  latest_version_segment: latest
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+  supplemental_files: ./docs-src/supplemental-ui
