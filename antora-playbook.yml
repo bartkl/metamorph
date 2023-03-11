@@ -1,14 +1,14 @@
 site:
   title: Metamorph
-  url: https://alliander-opensource.github.io/metamorph/docs
+  url: https://alliander-opensource.github.io/metamorph/
   start_page: metamorph::index.adoc
 content:
   sources:
-  - url: /home/bart/Programming/alliander-opensource/metamorph
+    #- url: /home/bart/Programming/alliander-opensource/metamorph
+    #  start_path: docs-src
+  - url: https://github.com/alliander-opensource/metamorph.git
+    branches: ["feature/refactor"]
     start_path: docs-src
-      #- url: https://github.com/alliander-opensource/metamorph.git
-      #  branches: ["feature/refactor"]
-      #  start_path: docs-src
 asciidoc:
   attributes:
     experimental: ''
