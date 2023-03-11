@@ -44,9 +44,6 @@
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="apache-avro.html">Apache Avro</a>
   </li>
-  <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="music-library.html">Music Library</a>
-  </li>
 </ul>
   </li>
 </ul>
@@ -88,7 +85,61 @@
 </aside>
 <article class="doc">
 <h1 class="page">Metamorph</h1>
-
+<div class="sect1">
+<h2 id="introduction"><a class="anchor" href="#introduction"></a>Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Metamorph can generate a variety of physical data models <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> from a given logical data model<sup class="footnote" id="_footnote_data-model">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup> specified as a <a href="https://www.w3.org/TR/shacl/">SHACL shapes graph</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/metamorph-functionality-overview.png" alt="metamorph functionality overview">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="purpose"><a class="anchor" href="#purpose"></a>Purpose</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Datasets typically undergo several transformations when they are consumed and exchanged. The producing application might have stored the data in a relational database. One consumer might then want to use this data and serve it with a REST API. Another consumer perhaps wants to emit messages containing this data to a queue when a certain event occurs. Of course it doesn&#8217;t end there. The data might be consumed even further, and undergo various more transformations.</p>
+</div>
+<div class="paragraph">
+<p>Each time the data is transformed, software and data engineers need to define schemas for the technology they&#8217;re using.</p>
+</div>
+<div class="paragraph">
+<p>Writing schemas by hand:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>means lots of liberty in how things are named and documented</p>
+</li>
+<li>
+<p>is an error-prone task</p>
+</li>
+<li>
+<p>is a rather dull task</p>
+</li>
+<li>
+<p>takes up time that can be spend more usefully (and passionately)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Having an authoritative logical data model from which you generate physical schemas eliminates all of these disadvantages. In particular, I&#8217;d like to emphasize that by having a deterministic way to generate schemas, things are named and documented automatically in a pre-determined way. This ensures the lineage of names and descriptions that have been carefully defined in the logical (or conceptual) data model, i.e. the meaning of your data encoded in tables, records, fields, keys, attributes, and what have you, will be easy to look up.</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. Adding support for new physical schemas is an ongoing process. Consult the documentation of the version of Metamorph you&#8217;re using to inquire what target schemas are supported. Of course the latest version will likely offer the most support.
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. Consult <a href="https://en.wikipedia.org/w/index.php?title=Logical_schema#Conceptual,_logical_and_physical_data_model">Wikipedia&#8201;&#8212;&#8201;Conceptual, logical and physical data model</a> for an overview of what data models Metamorph distinguishes between. Note that the terms "data model" and "schema" will be used somewhat interchangeably througout this documentation.
+</div>
+</div>
 <nav class="pagination">
   <span class="next"><a href="apache-avro.html">Apache Avro</a></span>
 </nav>
