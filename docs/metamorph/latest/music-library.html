@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Music Library :: Metamorph</title>
+    <link rel="canonical" href="https://alliander-opensource.github.io/metamorph/docs/metamorph/latest/music-library.html">
+    <link rel="prev" href="apache-avro.html">
+    <meta name="generator" content="Antora 3.1.2">
+    <link rel="stylesheet" href="../../_/css/site.css">
+    <script>var uiRootPath = '../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://alliander-opensource.github.io/metamorph/docs">Metamorph</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <a class="navbar-item" href="https://github.com/alliander-opensource/metamorph">GitHub</a>
+    	<a class="navbar-item" href="https://github.com/orgs/alliander-opensource/projects/3/views/2">Project Board</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="body">
+<div class="nav-container" data-component="metamorph" data-version="feature-refactor">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="index.html">Metamorph</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="apache-avro.html">Apache Avro</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="music-library.html">Music Library</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Metamorph</span>
+    <span class="version">feature-refactor</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="index.html">Metamorph</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">feature-refactor</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Metamorph</a></li>
+    <li><a href="music-library.html">Music Library</a></li>
+  </ul>
+</nav>
+  <div class="edit-this-page"><a href="file:///home/bart/Programming/alliander-opensource/metamorph/docs/modules/ROOT/pages/music-library.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Music Library</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Manual for maintaining my music library.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="decomposition"><a class="anchor" href="#decomposition"></a>Decomposition</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>From a library point of view, this decomposition should be sufficient to give an idea of what components play key roles in the setup:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/music-library-no-tools.png" alt="music library no tools">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="terminology"><a class="anchor" href="#terminology"></a>Terminology</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Library</dt>
+<dd>
+<p>Encompasses all music albums and songs.</p>
+</dd>
+<dt class="hdlist1">Player Library</dt>
+<dd>
+<p>Subset of the library that contains only items with paths defined so that playback is possible.</p>
+</dd>
+<dt class="hdlist1">Listen Queue</dt>
+<dd>
+<p>Special genre that serves as a queue for albums that are planned to be listened to shortly.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="current-implementations"><a class="anchor" href="#current-implementations"></a>Current implementations</h2>
+<div class="sectionbody">
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Library
+</td>
+<td class="hdlist2">
+<p>Beets</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Player
+</td>
+<td class="hdlist2">
+<p>MPD (Music Player Daemon)</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="maintenance"><a class="anchor" href="#maintenance"></a>Maintenance</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="removing-albums"><a class="anchor" href="#removing-albums"></a>Removing albums</h3>
+<div class="paragraph">
+<p>Depending on the scenario, it can be desired to remove albums in several different ways.</p>
+</div>
+<div class="sect3">
+<h4 id="overview"><a class="anchor" href="#overview"></a>Overview</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Typical scenarions</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-middle" rowspan="2"><p class="tableblock">scenario</p></th>
+<th class="tableblock halign-center valign-top" colspan="3"><p class="tableblock">remove from</p></th>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">player</p></th>
+<th class="tableblock halign-center valign-top"><p class="tableblock">library</p></th>
+<th class="tableblock halign-center valign-top"><p class="tableblock">disk</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">listen later</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">duplicate</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dislike</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-center valign-top"></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">x</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Removal from library implies removal from player library.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An album is added to the <a href="#listen-queue">Listen Queue</a>, but it turns out it isn&#8217;t going to be listened to any time soon.</p>
+</li>
+<li>
+<p>The album was once imported in my library, but I don&#8217;t really know the album too well. It doesn&#8217;t deserve a place in my library yet, and should be properly listened to at some point in time.</p>
+</li>
+<li>
+<p>I&#8217;m not sure if some album still deserves a place in my library, since my liking of it has decreased or my standard has become more strict.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="instructions"><a class="anchor" href="#instructions"></a>Instructions</h4>
+<div class="paragraph">
+<p>To remove an album from the library, the <code>path</code> value of its items is removed.</p>
+</div>
+<div class="paragraph">
+<p>Using a single album as example, this can be done as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ beet mod path! album_id:13</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One idea to make querying this way easy and safe is to replace the genre of those albums you wish to remove from the library with something like <em>To Remove</em>, and then run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ beet mod path! genre:To Remove</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or even better, give it a low rating and delete it based on that. Of course, this depends on the <a href="#ratings">rating guidelines</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="remove-and-delete"><a class="anchor" href="#remove-and-delete"></a>Remove and delete</h3>
+<div class="paragraph">
+<p><code>beet rm -d</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="musicbrainz-syncing"><a class="anchor" href="#musicbrainz-syncing"></a>MusicBrainz syncing</h3>
+<div class="sect3">
+<h4 id="how-to-sync"><a class="anchor" href="#how-to-sync"></a>How to sync</h4>
+<div class="paragraph">
+<p>To update the library with metadata from MusicBrainz, run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ beet mbsync</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This could override metadata you have entered or modified manually.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="checking-for-invalid-and-missing-mbids"><a class="anchor" href="#checking-for-invalid-and-missing-mbids"></a>Checking for invalid and missing MBIDs</h4>
+<div class="paragraph">
+<p>The <code>mbsync</code> command will report invalid and missing MBIDs, and is the most reliable way to do it, but that command can take a long time to run.</p>
+</div>
+<div class="paragraph">
+<p>There&#8217;s an easy way to query the missing ones:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ beet ls -a mb_albumid::^$</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To detect invalid ones as well, let&#8217;s try to be clever. All MBIDs are 36-character UUIDs, so if the character count differs from that it&#8217;s certainly invalid. The following SQL code can be used to query the database manually:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-sql hljs" data-lang="sql">SELECT mb_albumid, album FROM albums WHERE LENGTH(mb_albumid) != 36;</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This method might not cover all invalid MBIDs, but certainly catches many.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="album-art"><a class="anchor" href="#album-art"></a>Album art</h3>
+
+</div>
+<div class="sect2">
+<h3 id="mpd-tag-cache"><a class="anchor" href="#mpd-tag-cache"></a>MPD tag cache</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guidelines"><a class="anchor" href="#guidelines"></a>Guidelines</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="listen-queue"><a class="anchor" href="#listen-queue"></a>Listen Queue</h3>
+<div class="paragraph">
+<p>This is a special genre that serves as a queue for albums that I intend to listen to shortly.</p>
+</div>
+<div class="paragraph">
+<p>The most typical use cases are:
+* Discovery of new albums
+* Re-discovery of long-lost albums</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ratings"><a class="anchor" href="#ratings"></a>Ratings</h3>
+<div class="hdlist">
+<div class="title">Remove</div>
+<table>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tr>
+<td class="hdlist1">
+☆☆☆☆☆
+</td>
+<td class="hdlist2">
+<p>Unknown</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+★☆☆☆☆
+</td>
+<td class="hdlist2">
+<p>Awful</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+★★☆☆☆
+</td>
+<td class="hdlist2">
+<p>Okay</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="hdlist">
+<div class="title">Keep</div>
+<table>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tr>
+<td class="hdlist1">
+★★★☆☆
+</td>
+<td class="hdlist2">
+<p>Enjoyable</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+★★★★☆
+</td>
+<td class="hdlist2">
+<p>Great</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+★★★★★
+</td>
+<td class="hdlist2">
+<p>Masterpiece</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="genres"><a class="anchor" href="#genres"></a>Genres</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="notes"><a class="anchor" href="#notes"></a>Notes</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><code>beet edit</code> with vim using macros to easily rate albums (even <code>zz</code> can be included to center the rating)</p>
+</li>
+<li>
+<p>Should I worry about adding albums to the library of which I don&#8217;t have physical files (anymore)? For rating bad stuff I don&#8217;t want to have and once listened to?</p>
+</li>
+<li>
+<p>Can I generate some nice view to see parts of my library?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Probably good to create a HTMl/adoc/whatever view for an album</p>
+</li>
+<li>
+<p>Use beets queries to determine which ones should be in the result</p>
+</li>
+<li>
+<p>Optionally specify what fields you&#8217;re interested in to display</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Still need to review my Beets config</p>
+</li>
+<li>
+<p>Look into useful Beets plugins</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/adammillerio/beets-copyartifacts">copyartifacts</a></p>
+</li>
+<li>
+<p><a href="https://github.com/igordertigor/beets-usertag">tags</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Start new library again?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>High-level!</p>
+</li>
+<li>
+<p>Only when you absolutely know how to rate it, it goes in</p>
+</li>
+<li>
+<p>High quality album art</p>
+</li>
+<li>
+<p>Replaygain scanned</p>
+</li>
+<li>
+<p>Has MB record matched</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Release information (if available) matches MB record</p>
+</li>
+<li>
+<p>Fixed metadata at MB if it&#8217;s sub-standard</p>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Rating via MPD stickers, and them import the MPD stickers via a Beets plugin or some script</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="apache-avro.html">Apache Avro</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright 2022 - 2023 Alliander N.V.</p>
+  <p>Licensed under <a href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a></p>
+</footer>
+
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

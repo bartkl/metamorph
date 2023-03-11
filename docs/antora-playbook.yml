@@ -18,7 +18,7 @@ asciidoc:
     toc: ~
     page-pagination: ''
 output:
-  dir: ./output
+  dir: ./
 urls:
   latest_version_segment: latest
 ui:
