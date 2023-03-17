@@ -1,0 +1,29 @@
+= Command-line Interface
+
+== Interface Definition
+To generate Apache Avro schemas one should use the subcommand `avro`:
+
+```cli
+$ metamorph avro --help
+NAME:
+ metamorph avro - Apache Avro schema.
+
+USAGE:
+ metamorph avro [command options] input output
+
+OPTIONS:
+       --input S                               Input: file or directory containing a SHACL shapes graph.
+   -r, --root S*                               Root node shape IRI. This is the starting point which will be mapped onto the root node of the Avro schema.
+       --all-fields-optional F  false          Whether to make all fields optional.
+   -f, --format avsc|edn|json   :avsc          Serialization format. EDN and JSON outputs will be pretty-printed.
+       --output S               ./schema.avsc  Output: file containing the generated Avro schema.
+   -?, --help
+```
+
+Since Avro schemas are https://en.wikipedia.org/wiki/Hierarchical_database_model[hierarchical] (tree shaped), it is required to supply a root node shape IRI from which to start building the tree.
+
+== Usage
+
+```shell
+$ metamorph avro shapes.ttl --root :MyRootShape
+```

@@ -1,0 +1,80 @@
+= Quick Start
+
+== Using the CLI
+
+=== Apache Avro
+Say we have a SHACL shapes graph residing in `model/shapes.ttl` and desire to generate an Apache Avro schema from it.
+
+Using minimal effort, all we need to do is specify the input schema and from what node shape to start:
+
+==== Minimal effort
+```cli
+$ metamorph avro model/shapes.ttl --root :MyRootShape
+```
+
+=== Naming
+==== Node shapes
+Names:
+1. `:MyNodeShape rdfs:label ...`
+2. `:MyNodeShape sh:targetClass`
+3. `:MyNodeShape`
+
+Descriptions:
+1. `:MyNodeShape rdfs:comment ...`
+2. `:MyNodeShape sh:targetClass (skos:definition|rdfs:comment)`
+3. ""
+
+==== Property shapes
+Names:
+1. `:MyPropShape sh:name ...`
+2. `:MyPropShape rdfs:label ...`
+3. `:MyPropShape sh:path`
+
+Descriptions:
+1. `:MyPropShape sh:description ...`
+2. `:MyPropShape rdfs:comment`
+3. `:MyPropShape sh:path (skos:definition|rdfs:comment)`
+4. ""
+
+=== Specifying default values
+In the shapes graph, one can use `sh:defaultValue` to specify what value to use if for some property no value is present.
+
+
+
+
+////
+naming-source
+	logical
+		node-shape:
+			name <- rdfs:label|shapename
+			docs <- rdfs:comment|
+
+////
+
+
+
+```cli
+$ metamorph avro --help
+NAME:
+ metamorph avro - Apache Avro schema.
+
+USAGE:
+ metamorph avro [command options] input output
+
+OPTIONS:
+       --input S                                          Input: file or directory containing a SHACL shapes graph.
+       --[no-]mapping                                     Dump mapping between input and output schema to console.
+       --naming-source conceptual|logical                 Where to get names and descriptions from. Consult the documentation for more details.
+   -r, --root S*                                          Root node shape IRI. This is the starting point which will be mapped onto the root node of the Avro schema.
+   -f, --format avsc|edn|json              :avsc          Serialization format. EDN and JSON outputs will be pretty-printed.
+       --output S                          ./schema.avsc  Output: file containing the generated Avro schema.
+   -?, --help
+```
+
+Since Avro schemas are https://en.wikipedia.org/wiki/Hierarchical_database_model[hierarchical] (tree shaped), it is required to supply a root node shape IRI from which to start building the tree.
+
+== Usage
+
+```shell
+$ metamorph avro shapes.ttl --root :MyRootShape
+```

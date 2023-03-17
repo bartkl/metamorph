@@ -1,7 +1,7 @@
 = Apache Avro
 :sectnums:
-:datetime-as-number: footnote:[It is also possible to map the XSD datetime fields to Avro `int` or `long` types, annotated with logical type `timestamp-millis` or  `timestamp-micros`, but this has been found to be confusing to developers.]
 :toc: left
+:datetime-as-number: footnote:[It is also possible to map the XSD datetime fields to Avro `int` or `long` types, annotated with logical type `timestamp-millis` or  `timestamp-micros`, but this has been found to be confusing to developers.]
 
 In this document an informal description will be provided of how an Apache Avro schema is generated from a SHACL shapes graph.
 

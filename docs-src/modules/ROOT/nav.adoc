@@ -1,1 +1,3 @@
-* xref:apache-avro.adoc[]
+* Avro
+** xref:avro/usage.adoc[]
+** xref:apache-avro.adoc[Mapping Specification]

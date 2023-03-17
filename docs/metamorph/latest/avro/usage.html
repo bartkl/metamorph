@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Command-line Interface :: Metamorph</title>
+    <link rel="prev" href="../index.html">
+    <link rel="next" href="../apache-avro.html">
+    <meta name="generator" content="Antora 3.1.2">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="../../..">Metamorph</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <a class="navbar-item" href="https://github.com/alliander-opensource/metamorph">GitHub</a>
+    	<a class="navbar-item" href="https://github.com/orgs/alliander-opensource/projects/3/views/2">Project Board</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="body">
+<div class="nav-container" data-component="metamorph" data-version="feature-refactor">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Metamorph</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <span class="nav-text">Avro</span>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="usage.html">Command-line Interface</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../apache-avro.html">Mapping Specification</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Metamorph</span>
+    <span class="version">feature-refactor</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Metamorph</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">feature-refactor</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Metamorph</a></li>
+    <li>Avro</li>
+    <li><a href="usage.html">Command-line Interface</a></li>
+  </ul>
+</nav>
+</div>
+
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Command-line Interface</h1>
+<div class="sect1">
+<h2 id="interface-definition"><a class="anchor" href="#interface-definition"></a>Interface Definition</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To generate Apache Avro schemas one should use the subcommand <code>avro</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cli hljs" data-lang="cli">$ metamorph avro --help
+NAME:
+ metamorph avro - Apache Avro schema.
+
+USAGE:
+ metamorph avro [command options] input output
+
+OPTIONS:
+       --input S                               Input: file or directory containing a SHACL shapes graph.
+   -r, --root S*                               Root node shape IRI. This is the starting point which will be mapped onto the root node of the Avro schema.
+       --all-fields-optional F  false          Whether to make all fields optional.
+   -f, --format avsc|edn|json   :avsc          Serialization format. EDN and JSON outputs will be pretty-printed.
+       --output S               ./schema.avsc  Output: file containing the generated Avro schema.
+   -?, --help</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since Avro schemas are <a href="https://en.wikipedia.org/wiki/Hierarchical_database_model">hierarchical</a> (tree shaped), it is required to supply a root node shape IRI from which to start building the tree.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ metamorph avro shapes.ttl --root :MyRootShape</code></pre>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="../index.html">Metamorph</a></span>
+  <span class="next"><a href="../apache-avro.html">Mapping Specification</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>Copyright 2022 - 2023 Alliander N.V.</p>
+  <p>Licensed under <a href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a></p>
+</footer>
+
+<script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

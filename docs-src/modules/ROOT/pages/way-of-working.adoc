@@ -1,0 +1,91 @@
+= Way of Working
+
+image::metamorph-issues-overview.png[]
+
+= Project Management
+The work is managed through a workflow that loosely resembles Kanban.
+
+= Manage
+
+image::metamorph-issues-flowchart.png[]
+
+
+= Backlog
+
+=== Types of tasks
+
+[cols="1,1,1,1"]
+|===
+|Type |Label |Version increment |Description
+
+|Bug report
+|`bug`
+|patch
+|Bugs are incongruencies between the promised functionality and what is offered.
+
+|Feature request
+|`feature`
+|minor (if backward compatible)\nmajor (if not backward compatible)
+|A new feature or requested, or the enhancement or removal of an existing one.\n\nAdding new features is backward compatible, enhancing or removing existing features is not.
+
+|Quality improvement
+|`quality`
+|patch
+|Code and documentation improvement.\n\nThese changes must not change functionality in any way.
+
+|===
+
+
+
+==== Bugfix
+Bugs are incongruencies between the promised functionality and what is offered.
+
+.Issue label
+bug
+
+.Version increment
+Patch
+
+==== Feature request
+
+.Issue label
+feature
+
+.Version increment
+Minor if backward compatible, major if not
+
+==== Quality improvement
+Code and documentation improvement.
+
+These changes must not change functionality in any way, and patch version upgrade is required.
+
+.Issue label
+quality
+
+.Version increment
+Patch
+
+== Milestones
+
+== Versioning strategy
+We follow https://semver.org/spec/v2.0.0.html[Semantic Versioning 2.0.0] for versioning.
+
+
+
+
+////
+* Issues
+	* Irrelevant: wontdo + close
+	* Not actionable => discussion
+	* Backlog
+		* quality
+			** patch
+		* feature
+			** minor or major
+		* bug
+			** patch
+
+	*
+////
+
+==
