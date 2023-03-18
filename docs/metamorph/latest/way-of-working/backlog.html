@@ -3,9 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Command-line Interface :: Metamorph</title>
-    <link rel="prev" href="../index.html">
-    <link rel="next" href="../apache-avro.html">
+    <title>Backlog :: Metamorph</title>
     <meta name="generator" content="Antora 3.1.2">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -49,8 +47,8 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Avro</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="3">
-    <a class="nav-link" href="usage.html">Command-line Interface</a>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../avro/usage.html">Command-line Interface</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../apache-avro.html">Mapping Specification</a>
@@ -61,7 +59,7 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../way-of-working/overview.html">Way of Working</a>
+    <a class="nav-link" href="overview.html">Way of Working</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
@@ -114,9 +112,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Metamorph</a></li>
-    <li>Schemas</li>
-    <li>Avro</li>
-    <li><a href="usage.html">Command-line Interface</a></li>
+    <li><a href="backlog.html">Backlog</a></li>
   </ul>
 </nav>
 </div>
@@ -126,50 +122,71 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Command-line Interface</h1>
-<div class="sect1">
-<h2 id="interface-definition"><a class="anchor" href="#interface-definition"></a>Interface Definition</h2>
+<h1 class="page">Backlog</h1>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>To generate Apache Avro schemas one should use the subcommand <code>avro</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-cli hljs" data-lang="cli">$ metamorph avro --help
-NAME:
- metamorph avro - Apache Avro schema.
-
-USAGE:
- metamorph avro [command options] input output
-
-OPTIONS:
-       --input S                               Input: file or directory containing a SHACL shapes graph.
-   -r, --root S*                               Root node shape IRI. This is the starting point which will be mapped onto the root node of the Avro schema.
-       --all-fields-optional F  false          Whether to make all fields optional.
-   -f, --format avsc|edn|json   :avsc          Serialization format. EDN and JSON outputs will be pretty-printed.
-       --output S               ./schema.avsc  Output: file containing the generated Avro schema.
-   -?, --help</code></pre>
-</div>
+<p>When creating an issue, users are asked to choose what kind of issue they wish to create. There&#8217;s templates set up for each type to help out the user and maintainer(s) with providing sufficient and helpful information.</p>
 </div>
 <div class="paragraph">
-<p>Since Avro schemas are <a href="https://en.wikipedia.org/wiki/Hierarchical_database_model">hierarchical</a> (tree shaped), it is required to supply a root node shape IRI from which to start building the tree.</p>
+<p>After the issue has been submitted, a maintainer will assess it. After potentially asking for clarification one or more times, at some point the maintainer decides that the issue has one of three fates:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>It won&#8217;t be done.</p>
+</li>
+<li>
+<p>It is more suited to become a discussion.</p>
+</li>
+<li>
+<p>It is added to the backlog. Note this requires further preparation.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+<h2 id="types-of-tasks"><a class="anchor" href="#types-of-tasks"></a>Types of tasks</h2>
 <div class="sectionbody">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ metamorph avro shapes.ttl --root :MyRootShape</code></pre>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Label</th>
+<th class="tableblock halign-left valign-top">Version increment</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bug report</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bug</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">patch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bugs are incongruencies between the promised functionality and what is offered.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Feature request</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>feature</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">minor (if backward compatible)\nmajor (if not backward compatible)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A new feature or requested, or the enhancement or removal of an existing one.\n\nAdding new features is backward compatible, enhancing or removing existing features is not.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quality improvement</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quality</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">patch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Code and documentation improvement.\n\nThese changes must not change functionality in any way.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-</div>
-</div>
-<nav class="pagination">
-  <span class="prev"><a href="../index.html">Metamorph</a></span>
-  <span class="next"><a href="../apache-avro.html">Mapping Specification</a></span>
-</nav>
 </article>
   </div>
 </main>

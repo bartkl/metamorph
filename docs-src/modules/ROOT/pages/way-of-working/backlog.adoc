@@ -1,0 +1,35 @@
+= Backlog
+https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues[GitHub issues] is used for the backlog.
+
+When creating an issue, users are asked to choose what kind of issue they wish to create. There's templates set up for each type to help out the user and maintainer(s) with providing sufficient and helpful information.
+
+After the issue has been submitted, a maintainer will assess it. After potentially asking for clarification one or more times, at some point the maintainer decides that the issue has one of three fates:
+
+1. It won't be done.
+2. It is more suited to become a discussion.
+3. It is added to the backlog. Note this requires further preparation.
+
+== Types of tasks
+
+[cols="1,1,1,1"]
+|===
+|Type |Label |Version increment |Description
+
+|Bug report
+|`bug`
+|patch
+|Bugs are incongruencies between the promised functionality and what is offered.
+
+|Feature request
+|`feature`
+|minor (if backward compatible)\nmajor (if not backward compatible)
+|A new feature or requested, or the enhancement or removal of an existing one.\n\nAdding new features is backward compatible, enhancing or removing existing features is not.
+
+|Quality improvement
+|`quality`
+|patch
+|Code and documentation improvement.\n\nThese changes must not change functionality in any way.
+
+|===
+
+

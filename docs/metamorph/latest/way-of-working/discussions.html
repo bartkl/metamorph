@@ -3,9 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Command-line Interface :: Metamorph</title>
-    <link rel="prev" href="../index.html">
-    <link rel="next" href="../apache-avro.html">
+    <title>Discussions :: Metamorph</title>
     <meta name="generator" content="Antora 3.1.2">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -49,8 +47,8 @@
     <button class="nav-item-toggle"></button>
     <span class="nav-text">Avro</span>
 <ul class="nav-list">
-  <li class="nav-item is-current-page" data-depth="3">
-    <a class="nav-link" href="usage.html">Command-line Interface</a>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../avro/usage.html">Command-line Interface</a>
   </li>
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../apache-avro.html">Mapping Specification</a>
@@ -61,7 +59,7 @@
   </li>
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../way-of-working/overview.html">Way of Working</a>
+    <a class="nav-link" href="overview.html">Way of Working</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
@@ -114,9 +112,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Metamorph</a></li>
-    <li>Schemas</li>
-    <li>Avro</li>
-    <li><a href="usage.html">Command-line Interface</a></li>
+    <li><a href="discussions.html">Discussions</a></li>
   </ul>
 </nav>
 </div>
@@ -126,50 +122,8 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Command-line Interface</h1>
-<div class="sect1">
-<h2 id="interface-definition"><a class="anchor" href="#interface-definition"></a>Interface Definition</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To generate Apache Avro schemas one should use the subcommand <code>avro</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-cli hljs" data-lang="cli">$ metamorph avro --help
-NAME:
- metamorph avro - Apache Avro schema.
+<h1 class="page">Discussions</h1>
 
-USAGE:
- metamorph avro [command options] input output
-
-OPTIONS:
-       --input S                               Input: file or directory containing a SHACL shapes graph.
-   -r, --root S*                               Root node shape IRI. This is the starting point which will be mapped onto the root node of the Avro schema.
-       --all-fields-optional F  false          Whether to make all fields optional.
-   -f, --format avsc|edn|json   :avsc          Serialization format. EDN and JSON outputs will be pretty-printed.
-       --output S               ./schema.avsc  Output: file containing the generated Avro schema.
-   -?, --help</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Since Avro schemas are <a href="https://en.wikipedia.org/wiki/Hierarchical_database_model">hierarchical</a> (tree shaped), it is required to supply a root node shape IRI from which to start building the tree.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
-<div class="sectionbody">
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">$ metamorph avro shapes.ttl --root :MyRootShape</code></pre>
-</div>
-</div>
-</div>
-</div>
-<nav class="pagination">
-  <span class="prev"><a href="../index.html">Metamorph</a></span>
-  <span class="next"><a href="../apache-avro.html">Mapping Specification</a></span>
-</nav>
 </article>
   </div>
 </main>

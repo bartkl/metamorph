@@ -1,3 +1,13 @@
-* Avro
-** xref:avro/usage.adoc[]
-** xref:apache-avro.adoc[Mapping Specification]
+* Schemas
+** Avro
+*** xref:avro/usage.adoc[]
+*** xref:apache-avro.adoc[Mapping Specification]
+* xref:way-of-working/overview.adoc[]
+** Project Management
+*** Adding or Requesting Work to be Done
+*** Preparing and Organizing Work
+** Doing Tasks
+// Git (forking +) branching and obeying acceptance criteria
+** Merging and Releasing Work
+
+

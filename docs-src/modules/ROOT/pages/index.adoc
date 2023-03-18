@@ -7,7 +7,8 @@
 
 Metamorph can generate a variety of physical data models {fn-supported-schemas} from a given logical data model{fn-data-model} specified as a https://www.w3.org/TR/shacl/[SHACL shapes graph].
 
-image::metamorph-functionality-overview.png[]
+//image::metamorph-functionality-overview.png[]
+image::metamorph-functionality-overview.svg[]
 
 == Purpose
 
