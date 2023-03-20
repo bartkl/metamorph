@@ -1,0 +1,194 @@
+= Mapping Specification
+:sectnums:
+:link-xsd-11: https://www.w3.org/XML/Schema#dev[XSD 1.1]
+:link-avro-1-11-0: https://avro.apache.org/docs/1.11.0/spec.html[Avro 1.11.0]
+:link-shacl-2017: https://www.w3.org/TR/2017/REC-shacl-20170720/[SHACL (20 July 2017)]
+:datetime-as-number: footnote:[It is also possible to map the XSD datetime fields to Avro `int` or `long` types, annotated with logical type `timestamp-millis` or  `timestamp-micros`, but this has been found to be confusing to developers.]
+
+== Introduction
+
+In this document an informal description will be provided of how an Apache Avro schema is generated from a SHACL shapes graph.
+
+Roughly speaking we will be mapping SHACL node shapes onto Avro records or enum schemas. There will need to be a designated root node shape to start the transformation on, which corresponds to the root of the Avro schema.
+
+== Used standards
+* {link-xsd-11}
+* {link-avro-1-11-0}
+* {link-shacl-2017}
+
+== Mappings
+
+=== Primitive types
+
+[cols="1,1,1",stripes=none]
+|===
+|XSD |Avro |Notes
+
+|`boolean`
+|`xsd:boolean`
+|
+
+|`int`
+.2+.^|`xsd:int`
+.2+.^|
+
+|`xsd:integer`
+
+|`xsd:float`
+|`float`
+|
+
+|`xsd:long`
+|`long`
+|
+
+|`xsd:double`
+|`double`
+|
+
+|`xsd:decimal`
+|`bytes`
+|annotated with logical type `decimal`
+
+
+|`xsd:string`
+|`string`
+|
+
+|`xsd:duration`
+|`fixed`
+|annotated with logical type `duration`
+
+|`xsd:dateTime`
+.3+.^|`string`
+.3+.^|conforming to https://en.wikipedia.org/wiki/ISO_8601[ISO 8601]
+
+|`xsd:date`
+m|xsd:time{datetime-as-number}
+|===
+
+=== Node shapes
+[cols="1,1",stripes=none]
+|===
+|SHACL |Avro
+
+2+|`sh:NodeShape`
+
+|`sh:in`
+m| <<Enumerations,enum>>
+
+|`sh:property`
+m| <<Records,record>>
+|===
+
+Note there's either exactly one statement with predicate `sh:in`, or at least one with predicate `sh:property`, but not both.
+
+==== Shape conjunction
+===== `sh:and`
+Using `sh:and` one can specify a list of shapes, all of which need to be conformed to. Currently, our implementation supports node shapes only.
+
+For purposes in the context of Avro schema generation `sh:and` is interpreted to mean recursively combining all the properties of all the specified node shapes. As soon as there is no `sh:and` left to follow, the recursion bottoms out.
+
+Furthermore:
+
+* At most one `sh:and` statement is expected.
+
+
+==== Enumerations
+Each stated individual in the list value of the `sh:in` statement becomes an enum symbol.
+
+
+[cols="1,1",stripes=none]
+|===
+|SHACL |Avro
+
+2+|`sh:NodeShape`
+
+|`sh:targetClass`
+|`name`
+
+|`sh:in`
+|`symbols`
+|===
+
+==== Records
+If there are `sh:property` statements about a node shape, it is mapped onto the Avro record type. Each of these property shapes are themselves mapped onto Avro record fields.
+
+
+
+////
+<table>
+<tr>
+<td><b>SHACL</b></td>
+<td colspan="4"><b>Avro</b></td>
+</tr>
+<tr>
+<td><code>sh:NodeShape</code></td>
+<td colspan="4"><code>record</code></td>
+</tr>
+<tr>
+<td>&ensp;&ensp;<code>sh:targetClass</code></td>
+<td colspan="4">&ensp;&ensp;<code>name</code></td>
+</tr>
+<tr>
+<td>&ensp;&ensp;<code>sh:property</code></td>
+<td colspan="4">&ensp;&ensp;<code>field</code></td>
+<tr>
+<td>&ensp;&ensp;&ensp;&ensp;<code>sh:path</code></td>
+<td colspan="4">&ensp;&ensp;&ensp;&ensp;<code>name</code></td>
+</tr>
+<tr>
+<td></td>
+<td colspan="4" align="center"><code>sh:minCount, sh:maxCount</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>1, 1</code></td>
+<td><code>0, 1</code></td>
+<td><code>1, > 1</code></td>
+<td><code>0, > 1</code></td>
+</tr>
+<tr>
+<td>&ensp;&ensp;&ensp;&ensp;<code>sh:node</code></td>
+<td><a href="#node-shapes">node shape</a></td>
+<td rowspan="2"><code>union(null, …)</code></td>
+<td rowspan="2"><code>array(…)</code></td>
+<td rowspan="2"><code>union(null, array(…))</code></td>
+</tr>
+<tr>
+<td>&ensp;&ensp;&ensp;&ensp;<code>sh:datatype</code></td>
+<td><a href="#primitive-types">primitive</a></td>
+</tr>
+</table>
+////
+
+== Limitations and notes
+Mapping a SHACL shapes graph onto an Avro schema means transforming a graph structure into a tree. Also, both have their own peculiarities. These lead to certain implications.
+
+=== Root node shape
+Since Avro schemas are trees, they have a root. It is therefore necessary to indicate what node shape represents this root.
+
+IMPORTANT: There must be exactly one designated root node shape.
+
+=== Ignored statements
+Any node shapes, property shapes and in fact all statements that do not belong to any subgraph of the root node shape, will be ignored.
+
+Designating a node shape to be the root node shape is currently done by stating a `rdfs:comment` with value `"RootObject"` for it.
+
+=== Structural loops
+****
+https://avro.apache.org/docs/current/spec.html#names[Named types] in Avro allow referring to an earlier defined type by its name. So, if a record `D` occurs more than once in the schema, only the first time will it be defined, and all subsequent times it is referred to by its name (`D`).
+
+Note, however, that Avro does not support forward referencing: there is no way to use the name `D` in advance, the record must already be defined. A particular consequence of this is that during the definition of the `D` record schema - i.e. prior to having finished that definition - no reference to it can be made.
+
+Now imagine the following example case where there's a structural loop in the shapes graph.
+
+Node shape `A` has a property that refers to node shape `B`, which in turn has a property that refers to node shape `A` again. When we generate a record schema for `A`, at some point we'll generate the record `B` with a field that refers to the `A` record again. However, since we haven't finished defining `A` yet, we can't reference it. In practice this leads to the application redefining the `A` record, which for the same reasons causes `B` to also be redefined (assuming it too wasn't defined earlier), which causes another redefinition of `A`, and so on. The program hangs and probably runs into a stack overflow at some point.
+
+To elimiate this issue, properties that cause it are simply ignored in the transformation.
+****
+
+=== Limited cardinality support
+Avro schemas only support cardinalities of `0`, `1` and `*` (more than `1`). The mapping table shows how to deal with SHACL's finer grained cardinalities.
+
+image::https://www.planttext.com/api/plantuml/svg/SoWkIImgAStDuU9ooazIqBLJSCp9J4wrKl18pSd9L-JYSaZDIm5A0m00[Static,300]

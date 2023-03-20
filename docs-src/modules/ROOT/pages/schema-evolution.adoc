@@ -1,0 +1,33 @@
+== Schema evolution considerations
+
+=== Don't validate in your schema
+For most purposes, schemas should not be used for validation, since validation is very context dependent. For example, some field can be required by one service, but not by another. This unavoidably means that the requiredness cannot be enforced in the schema, and has to be implemented in that consumer's application logic.
+
+More importantly, such cases can arise at a later time. In fact, we must always expect changes to come, and never assume that we know our invariants. Even if we feel certain something is absolutely invariant, it often isn't. All it takes is one counterexample, at some point in time, and your rigid structure will come to haunt you.
+
+=== Make changing easy
+So, if implementing validation logic is the responsiblity of the application, what is the purpose of the schema?
+
+It's simply to allow for the encoding and decoding of messages between a myriad of producers and consumers, and the differing versions of the schema they may use.
+
+The idea, then, is to let _producers produce what they know, and consumers consume what they need_. You achieve this by making everything optional. This way, encoding and decoding will never break. From there, the consumers can parse the data they managed to decode, and make up their mind on how to validate and handle it.
+
+The take away point is this: Metamorph will - by default - make all fields optional to enhance maximal compatibility and flexibility in the schema. Validation concerns are left to the consumers, enabling context-dependent requirements along the way.
+
+Flexibility is key here, both in evolution and validation.
+
+=== Default values
+Required fields in Avro support the provision of default values, which are a different way of making schema evolution easier. In fact, it provides https://docs.confluent.io/platform/current/schema-registry/avro.html#full-compatibility[full compatibility], just like making everything optional does. It is, however, less flexible than making everything optional.
+
+The idea, roughly, is that consumers with newer schemas can rely on the default values for missing required fields in older messages, much like optionality would have provided `null`. However, a major difference with optional fields is that default values are only used during reading, not writing. So, a writer can leave out an optional field in the message, but not a required field, regardless of the default value passed along.
+
+Personally I have not yet seen compelling reasons for not favoring optional values. Again, say, unexpectedly, some writer cannot provide some required field, but it turns out that the message would still be useful. If you had worked with optional fields, there was no problem, but now you will have to provide some meaningless value to make the encoding succeed.
+
+Another disadvantage of default values is that they can obscure intent. For example, say some field has `[]` as default value. How can you tell whether the field was missing and the default value used, or if `[]` was the actual value passed? Sure, you can have guidelines in place for this, but with choosing optionality you get it for free: everyone knows what `null` signifies. Things just get simpler.
+
+I'm sure I'm missing something here, since default values are the standard way of Avro to provide full compatibility. Probably there's use cases out there where people wish to have some rudimentary validation, or centralized constraints, perhaps for example in the context of something like a Kafka Topic.
+
+=== Aliases
+Apache aliases can be used to rename fields and improve compatibility between schemas. For this reason, Metamorph will never map something onto the alias concept.
+
+
