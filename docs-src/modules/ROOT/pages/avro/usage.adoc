@@ -27,7 +27,7 @@ OPTIONS:
 
 Note:
 
-* The asterisk (`*`) denotes a required option or parameter.
+* The asterisk (`pass:[*]`) denotes a required option or parameter.
 * The `input` and `output` options can also be passed as positional arguments with position indices 0 and 1 respectively.
 
 It should come as no surprise that the input shapes graph is required. Furthermore, since Avro schemas are https://en.wikipedia.org/wiki/Hierarchical_database_model[hierarchical] (tree shaped), it is required to supply a root node shape IRI from which to start building the tree.

@@ -13,57 +13,74 @@
 == Introduction
 In this document an informal description will be provided of how an Apache Avro schema is generated from a SHACL shapes graph.
 
-=== Strategy
 Every node shape will be mapped onto a schema in Avro, starting with the root node shape. Which schema to map to is determined based on the constraint components used.
 
-NOTE: A property shape cannot be used as root by design. Although there's ways to make sense of this, it is unnecessarily complicated and provides nothing that a node shape does more explicitly.
+////
+
+-------
+- How to Model Schemas in SHACL
+-------
+
+- Naming
+- Cardinality
+- Default values
+- Node shape to schema mapping
+- Property shape to schema mapping
+
+
+-------
+node shape
+
+////
+
+
 
 ////
 
 correct:
-	node shape
-		// Value Type
-		sh:datatype	->	primitive
-		sh:class	->	?
-		sh:nodeKind	->	n/a
+    node shape
+        // Value Type
+        sh:datatype ->  primitive
+        sh:class    ->  ?
+        sh:nodeKind ->  n/a
 
-		// Cardinality
-		sh:minCount + sh:maxCount	->	affect schema cardinality
+        // Cardinality
+        sh:minCount + sh:maxCount   ->  affect schema cardinality
 
-		// Value Range
-		not supported
+        // Value Range
+        not supported
 
-		// String-based
-		not supported
+        // String-based
+        not supported
 
-		// Property Pair
-		not supported
+        // Property Pair
+        not supported
 
-		// Logical
-		sh:not		->	n/a
-		sh:xone		->	n/a
-		sh:and		->	record: merge props; enums: merge members (TODO)
-		sh:or		->	affects type (TODO)
+        // Logical
+        sh:not      ->  n/a
+        sh:xone     ->  n/a
+        sh:and      ->  record: merge props; enums: merge members (TODO)
+        sh:or       ->  affects type (TODO)
 
-		// Shape-based
-		sh:node		->	
-
-		
-		sh:property	->	record
-		sh:in		->	enum
+        // Shape-based
+        sh:node     ->
 
 
+        sh:property ->  record
+        sh:in       ->  enum
 
-	
-		
+
+
+
+
 
 
 incompatible constr. comp.:
-	node shape
-		sh:property + sh:in	->	record ~ enum
+    node shape
+        sh:property + sh:in ->  record ~ enum
 
 invalid constr. comp. params:
-	node shape
+    node shape
 
 
 functions:
@@ -79,16 +96,104 @@ functions:
         (node-shape? subj) ...
         :else ...)
 )
-		
 
 
-	
+
+
 
 
 ////
 
 
-== Mapping
+== Mappings
+
+=== Node shapes
+_Node shapes_ are mapped to schemas.
+
+The defined constraint components and their parameters determine what type of schema will be generated.
+
+NOTE: Only a limited set of constraint components will be considered, all of which are https://www.w3.org/TR/2017/REC-shacl-20170720/#core-components[Core constraint components].
+
+==== Value Type Constraint Component
+
+===== `sh:ClassConstraintComponent`
+n/a
+
+===== `sh:DatatypeConstraintComponent`
+.Parameters
+|===
+|Property |Supported range |Description |Multiplicity
+
+
+|`sh:datatype`
+|https://www.w3.org/TR/xmlschema-2/#built-in-datatypes[XSD datatypes]
+|The datatype of all value nodes. This translates
+|0..1
+|===
+
+.SHACL
+```ttl
+[ a sh:NodeShape ;
+  sh:datatype xsd:int ]
+```
+→
+
+.Avro
+```json
+"int"
+
+// or
+
+{"type": "int"}
+```
+
+
+////
+
+Node shape
+
+sh:property -> record
+sh:datatype -> primitive
+sh:in -> enum schema
+
+sh:node -> schema
+
+sh:and -> schema
+sh:or -> union
+
+sh:minCount , sh:maxCount -> schema type card.
+
+////
+
+
+```ttl
+.
+
+[ a sh:NodeShape
+  sh:property :mridShape ;
+  sh:node [
+    sh:property xsd:string ;
+    sh:maxLength 5
+  ]
+]
+
+```
+
+->
+
+```json
+{
+  "type": "record",
+  "fields":
+}
+```
+
+
+
+===== `sh:NodeKindConstraintComponent`
+n/a
+
+
 
 
 
@@ -105,7 +210,6 @@ From SHACL to Avro:
 ====
 ////
 
-=== 
 
 
 

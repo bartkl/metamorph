@@ -1,0 +1,96 @@
+= Defining Logical Schemas in SHACL
+:link-shacl: https://www.w3.org/TR/2017/REC-shacl-20170720/[SHACL]
+
+The input logical schema for Metamorph is expressed in the {link-shacl} language. Although the main purpose of the language is validation, it should serve our needs of schema generation just fine:
+
+[quote,SHACL specification]
+As SHACL *shape graphs* are used to validate that data graphs satisfy a set of conditions they *can also be viewed as a description of the data graphs* that do satisfy these conditions. Such descriptions may be used for a variety of purposes beside validation, including user interface building, *code generation* and data integration.
+
+Using SHACL this way means we cannot rely on most (if not all) of its existing semantics, since those are defined with validation of a data graph in mind. For our purpose, we are interested solely in the structural and logical information described in the shapes graph. Depending on the shape definitions and in particular their constraint component parameters, mappings can be made to concepts in the target schema.
+
+NOTE: You may be wondering why we didn't choose to have an intermediate representation of our SHACL subset. Although that approach has its benefits, particularly being able to unambiguously instruct those who write the SHACL logical schemas, there is too much risk involved since it is very hard to tell up front what capabilities and limitations target schemas that will be added in the future will have. By sticking to the structural make up and terminology from SHACL, we can rely on its high degree of expressivity without committing to risky assumptions. The schema generation logic for each target schema can itself determine how to perform the actual mapping based on the structural information obtained from the shapes graph.
+
+////
+^ te lang
+^ ietje beter uitleggen nog; maar het idee is: je parsed wel de concepten uit SHACL die de structuur opmaken (shapes, value type constraint, cardinality constraint component, etc.), maar de betekenis ervan doe je uiteraard niks mee. Je gebruikt deze structurele parse om later een soortgelijke structuur (zo goed mogelijk) in het doelschema te maken.
+////
+
+////
+This document sets to do that by providing guidelines on how to model a logical schema using SHACL. This way we shall encounter exactly those concepts from SHACL that make sense to use. Also, the way Metamorph interprets these concepts, i.e. their reinterpreted meaning, will be tended to as we go.
+////
+
+== Modeling a Logical Schema
+
+
+TODO: Ik twijfel dus of onderstaande nog wel handig is:
+Ik heb soort van besloten dit niet meer te willen. Echter, het kan zijn dat je dit nog steeds voorschrijft, maar de mapping niet laat omkijken naar "entiteiten" en zo, dwz hoe dingen hier zijn genoemd.
+
+TODO: GOED idee wellicht: los artikel maken waarin je zegt "Modeling a UML Class Diagram in SHACL"
+
+=== Entities
+Entities are modeled as class-targeting node shapes:
+
+```ttl
+:AlbumShape
+    a sh:NodeShape ;
+    sh:targetClass music:Album
+.
+```
+
+The presence of the `sh:targetClass` value signifies intent to Metamorph that this node shape should be considered an entity.
+
+NOTE: `sh:targetClass` is also used for naming the class in the target schema, that is if no rule with higher priority is present. Read more about naming <<here,Naming>>
+
+=== Attributes
+Typically, entities have attributes. Attributes have values with primitive types.
+
+To specify attributes, use the `sh:property` constraint component parameter:
+
+```ttl
+:AlbumShape
+    a sh:NodeShape ;
+    sh:targetClass music:Album ;
+    sh:property :idShape ;
+    sh:property [
+        sh:path dct:title ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string
+    ]
+.
+```
+
+In this example we've allocated two attributes to the `Album`{fn-naming-by-targetclass} entity:
+
+* an attribute described by the property shape `:idShape`
+* an attribute described by an anonymous property shape
+
+TODO The value of `sh:path` refers to the definition of the conceptual data model.
+TODO The `sh:datatype` value tells what the datatype of this attribute is.
+
+
+
+It is very common to use blank nodes to specify anonymous blank nodes like this, since attributes are often tightly-coupled to the entity they are allocated to. Using named property shapes can hinder readability and is only encouraged if certain attributes are re-used in several entities. This is a very powerful concept, so make sure you use it whenever it makes sense.
+
+=== Associations
+Associations differ from attributes in that their values are not primitive, i.e. refer to other entities.
+
+SHACL does not distinguish between attributes and associations{fn-rdf-properties}, so we can use `sh:property` just like before:
+
+```ttl
+:AlbumShape
+    a sh:NodeShape ;
+    sh:targetClass music:Album ;
+    sh:property :idShape ;
+    sh:property [
+        sh:path music:artist ;
+        sh:minCount 1 ;
+        sh:node :AlbumArtistShape
+    ]
+.
+```
+
+Note the use of the `sh:node` parameter. This
+
+
+=== Enumerations
