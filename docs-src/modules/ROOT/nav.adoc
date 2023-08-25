@@ -1,0 +1,18 @@
+// SPDX-FileCopyrightText: 2023 Bart Kleijngeld
+//
+// SPDX-License-Identifier: Apache-2.0
+
+* Schemas
+** Apache Avro
+*** xref:avro/usage.adoc[]
+*** xref:avro/transformation-specification.adoc[]
+* xref:way-of-working/overview.adoc[]
+
+////
+** Project Management
+*** Adding or Requesting Work to be Done
+*** Preparing and Organizing Work
+** Doing Tasks
+// Git (forking +) branching and obeying acceptance criteria
+** Merging and Releasing Work
+////

@@ -1,0 +1,88 @@
+// SPDX-FileCopyrightText: 2023 Bart Kleijngeld
+//
+// SPDX-License-Identifier: Apache-2.0
+
+= Command Line Interface
+:link-rdf-turtle: https://www.w3.org/TR/turtle/[RDF 1.1 Turtle]
+:link-curie: https://www.w3.org/TR/curie/[CURIE Syntax 1.0]
+:fn-prefixed-names-vs-curie: footnote:[The prefixed names in the {link-rdf-turtle} specification may remind one of Compact URIs (CURIEs) as defined in {link-curie}. Despite the resemblance, it cannot be assumed recklessly that they are equivalent.]
+
+== Interface Overview
+To generate Apache Avro schemas one uses the subcommand `avro`. The usage screen gives a nice overview of what features the interface exposes:
+
+.Usage screen for the `avro` subcommand
+
+```cli
+$ metamorph avro --help
+NAME:
+ metamorph avro - Apache Avro schema.
+
+USAGE:
+ metamorph avro [command options] input output
+
+OPTIONS:
+       --input S*                              Input: file or directory containing a SHACL shapes graph.
+   -r, --root S*                               Root node shape IRI. This is the starting point which will be mapped onto the root node of the Avro schema.
+       --all-fields-optional F  false          Whether to make all fields optional.
+   -f, --format avsc|edn|json   :avsc          Serialization format. EDN and JSON outputs will be pretty-printed.
+       --output S               schema.avsc  Output: file containing the generated Avro schema.
+   -?, --help
+```
+
+Note:
+
+* The asterisk (`pass:[*]`) denotes a required option or parameter.
+* The `input` and `output` options can also be passed as positional arguments with position indices 0 and 1 respectively.
+
+It should come as no surprise that the input shapes graph is required. Furthermore, since Avro schemas are https://en.wikipedia.org/wiki/Hierarchical_database_model[hierarchical] (tree shaped), it is required to supply a root node shape IRI from which to start building the tree.
+
+== Example Usage
+In the following examples the input SHACL shapes graph is assumed to be defined in the file `shapes.ttl`.
+
+=== Default usage
+The minimum amount of information that's required to provide is the input shapes graph and the node shape to use as root. Specifying this root node shape can be done in two ways, namely using a fully qualified URI or a prefixed name {fn-prefixed-names-vs-curie}.
+
+.Root specified as fully qualified URI
+```shell
+$ metamorph avro shapes.ttl --root 'http://data.example.com/1234-5678'
+```
+
+.Root specified as prefixed name
+```shell
+$ metamorph avro --input shapes.ttl --root 'ex:1234-5678'
+```
+
+Metamorph knows how to derive the root URI from this prefixed name, using the prefix and base directives from the SHACL file.
+
+=== All fields optional
+In certain use cases it may be desirable to have all fields be optional, usually for schema evolution purposes. For more information on this, please read xref:TODO:
+
+```shell
+$ metamorph avro -r 'ex:1234-5678' --all-fields-optional shapes.ttl
+```
+
+=== Pretty printed JSON
+By default the schema is serialized in the https://avro.apache.org/docs/1.11.1/specification/#binary-encoding[binary encoding]. If a pretty printed JSON serialization is preferred, this can be specified as follows:
+
+```shell
+$ metamorph avro --root 'ex:1234-5678' -f :json shapes.ttl
+```
+
+=== Custom output location
+To customize where to output the target schema, simply specify the output path as following:
+
+```shell
+$ metamorph avro shapes.ttl ~/schema.json
+```
+
+=== Maximal customization
+For demonstrative purposes, let's go all out and customize the call entirely:
+
+```shell
+$ metamorph avro \
+    --root 'ex:1234-5678' \
+    --all-fields-optional \
+    --format :json \
+    shapes.ttl \      # input
+    /tmp/schema.json  # output
+```

@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: 2023 Bart Kleijngeld
+#
+# SPDX-License-Identifier: Apache-2.0
+
+site:
+  title: Metamorph
+  url: https://bartkl.github.io/metamorph/
+  start_page: metamorph::index.adoc
+content:
+  sources:
+    - url: https://github.com/bartkl/metamorph.git
+      branches: ["master", "develop"]
+      tags: ["v*"]
+      start_path: docs-src
+asciidoc:
+  attributes:
+    experimental: ''
+    idprefix: ''
+    idseparator: '-'
+    linkattrs: ''
+    toc: ~
+    page-pagination: ''
+output:
+  dir: ./docs
+urls:
+  latest_version_segment: latest
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+  supplemental_files: ./docs-src/supplemental-ui

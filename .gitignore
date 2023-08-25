@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2022 - 2023 Alliander N.V.
+# SPDX-FileCopyrightText: 2023 Bart Kleijngeld
+#
+# SPDX-License-Identifier: Apache-2.0
+
+/target
+/classes
+/checkouts
+profiles.clj
+pom.xml
+pom.xml.asc
+*.jar
+*.class
+/.lein-*
+/.nrepl-port
+/.prepl-port
+.hgignore
+.hg/
+/.clj-kondo
+/.lsp
+/.calva
+resources
+*.swp
+.idea

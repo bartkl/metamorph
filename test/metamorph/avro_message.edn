@@ -1,0 +1,4 @@
+{:from-ato-c :individual-1
+ :from-bto-d-but-somehow-different {:id "D"}
+ :id "B"
+ :bcd [1.0 2.0]}

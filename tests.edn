@@ -1,0 +1,7 @@
+;
+; SPDX-License-Identifier: Apache-2.0
+
+#kaocha/v1 {:tests [{:id :unit
+                     :test-paths ["test/"]
+                     :skip-meta [:wip]}]
+            :reporter kaocha.report/documentation}

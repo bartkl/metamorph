@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2023 Bart Kleijngeld
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: metamorph
+title: Metamorph
+version: true
+nav:
+- modules/ROOT/nav.adoc

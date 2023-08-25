@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2022 - 2023 Alliander N.V.
+# SPDX-FileCopyrightText: 2023 Bart Kleijngeld
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# EditorConfig is awesome: https://EditorConfig.org
+
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+
+[*.clj]
+indent_style = space
+indent_size = 2
